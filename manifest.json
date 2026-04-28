@@ -1,6 +1,6 @@
 {
   "name": "MUAAWINA Tracker",
-  "short_name": "MUAAWINA",
+  "short_name": "Muaawina",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
