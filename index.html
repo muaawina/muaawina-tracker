@@ -5,8 +5,8 @@
     <link rel="apple-touch-icon" href="logo.png">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#1e3a8a">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/192/882/882730.png">
-    <title>MUAAWINA വരിസംഖ്യ ട്രാക്കർ</title>
+    <link rel="apple-touch-icon" href="logo.png">
+    <title>MUAAWINA</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 <script>
@@ -52,57 +52,6 @@
         select, option, .custom-select, input { font-family: 'Manjari', sans-serif !important; }
         .swal2-popup { font-family: 'Manjari', sans-serif !important; border-radius: 24px !important; }
         .swal2-container { z-index: 20000 !important; }
-   /* പഴയ ലോഡർ CSS ഒഴിവാക്കി ഇത് മാത്രം നൽകുക */
-#loader {
-    background: rgba(255, 255, 255, 0.95); /* ബാക്ക്ഗ്രൗണ്ട് കുറച്ചുകൂടി തെളിച്ചമുള്ളതാക്കി */
-    backdrop-filter: blur(8px); /* ബ്ലർ ഇഫക്റ്റ് */
-}
-
-/* ലോഡറിന്റെ വലിപ്പം 80px ആയി കുറച്ചു */
-.loader-container {
-    position: relative;
-    width: 80px;
-    height: 80px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* കറങ്ങുന്ന പുതിയ AI ഔട്ടർ റിംഗ് */
-.ai-ring {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    border: 4px solid transparent; /* കട്ടി കൂട്ടി */
-    border-top-color: #3b82f6; /* Blue */
-    border-bottom-color: #10b981; /* Emerald */
-    animation: rotate-ai-loader 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-}
-
-.ai-ring::before {
-    content: '';
-    position: absolute;
-    inset: 6px; /* വിടവ് കൂട്ടി */
-    border-radius: 50%;
-    border: 4px solid transparent;
-    border-left-color: #6366f1; /* Indigo */
-    border-right-color: #f59e0b; /* Amber */
-    animation: rotate-ai-loader 1.8s linear infinite reverse;
-}
-
-/* നടുവിലെ ലോഗോ (Pulse Animation ഒഴിവാക്കി) */
-.loader-logo {
-    width: 40px; /* വലിപ്പം കുറച്ചു */
-    height: 40px;
-    object-fit: contain;
-    z-index: 10;
-}
-
-@keyframes rotate-ai-loader {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
     </style>
 </head>
 <body class="min-h-screen text-slate-800 pb-10">
@@ -114,7 +63,7 @@
     <div class="flex-1 flex flex-col items-center justify-center text-white p-5 pointer-events-none z-10">
         <img src="logo_white.png" class="w-28 h-28 object-contain mb-4 drop-shadow-lg" alt="Logo">
         <h2 class="text-2xl font-black tracking-[0.2em] m-0">MUAAWINA</h2>
-        <p class="text-[11px] font-bold mt-2 opacity-70 tracking-[0.2em] uppercase">വരിസംഖ്യ ട്രാക്കർ</p>
+        <p class="text-[11px] font-bold mt-2 opacity-70 tracking-[0.2em] uppercase"></p>
     </div>
 
     <div class="login-card-bottom z-20">
@@ -157,13 +106,7 @@
 </div>
 
         <div id="memberPage" class="hidden p-4 sm:p-6 fade-in">
-          <div id="announcementBox" class="hidden mb-4 p-4 bg-amber-50 border-l-4 border-amber-400 rounded-2xl flex items-start gap-3 shadow-sm fade-in">
-    <div class="text-amber-500 mt-0.5"><i class="fas fa-bullhorn text-lg"></i></div>
-    <div class="flex-1">
-        <p class="text-[10px] font-black text-amber-600 uppercase tracking-widest mb-1">അറിയിപ്പ്</p>
-        <p id="announcementText" class="text-sm font-bold text-slate-700 leading-snug"></p>
-    </div>
-</div>
+
 
             <div class="gradient-bg p-6 rounded-[28px] text-white shadow-xl mb-6 relative overflow-hidden">
                 
@@ -204,36 +147,155 @@
             </div>
             <div id="yearTabs" class="flex w-full justify-between gap-1.5 mb-5"></div>
             <div id="monthsGrid" class="grid grid-cols-3 gap-3"></div>
-           <div class="fixed bottom-5 left-0 right-0 mx-auto w-[92%] max-w-[400px] z-[9000]">
-    <div class="bg-white/95 backdrop-blur-xl border border-slate-200 shadow-[0_10px_40px_rgba(0,0,0,0.15)] rounded-full p-1.5 flex items-center justify-between">
+<div class="h-28 w-full"></div>
+        </div>
+            
+         <!-- പുതിയ സ്റ്റാൻഡേർഡ് ബോട്ടം നാവിഗേഷൻ ബാർ -->
+<div id="bottomNav" class="hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 shadow-[0_-5px_20px_rgba(0,0,0,0.05)] z-[9000]" style="padding-bottom: env(safe-area-inset-bottom);">
+    <div class="flex items-center justify-around p-2 max-w-md mx-auto">
         
-        <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="flex-1 flex flex-col items-center gap-1 p-1">
-            <div class="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center shadow-md active:scale-90 transition-all">
-                <i class="fas fa-home text-sm"></i>
-            </div>
-            <span class="text-[9px] font-black text-blue-600 uppercase tracking-widest">Home</span>
+        <!-- ഡാഷ്‌ബോർഡ് ബട്ടൺ -->
+        <button onclick="switchAppTab('home')" id="nav-home" class="flex flex-col items-center p-2 text-slate-400 transition-all active:scale-90">
+            <i class="fas fa-home text-xl mb-1"></i>
+            <span class="text-[9px] font-black uppercase tracking-widest">Home</span>
         </button>
 
-        <button onclick="openHistoryModal()" class="flex-1 flex flex-col items-center gap-1 p-1">
-            <div class="w-10 h-10 text-slate-400 flex items-center justify-center active:scale-90 transition-all">
-                <i class="fas fa-history text-lg"></i>
-            </div>
-            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">History</span>
+        <!-- വരിസംഖ്യ ബട്ടൺ (നിലവിലെ മെയിൻ പേജ്) -->
+        <button onclick="switchAppTab('dues')" id="nav-dues" class="flex flex-col items-center p-2 text-blue-600 transition-all active:scale-90">
+            <i class="fas fa-wallet text-xl mb-1"></i>
+            <span class="text-[9px] font-black uppercase tracking-widest">Dues</span>
         </button>
 
-        <button onclick="openNoticeModal()" class="flex-1 flex flex-col items-center gap-1 p-1">
-            <div class="w-10 h-10 text-slate-400 flex items-center justify-center relative active:scale-90 transition-all">
-                <i class="fas fa-bullhorn text-lg"></i>
-                <span class="absolute top-2 right-2 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
-            </div>
-            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Notice</span>
+        <!-- ഹിസ്റ്ററി ബട്ടൺ -->
+       <button onclick="switchAppTab('history')" id="nav-history" class="flex flex-col items-center p-2 text-slate-400 transition-all active:scale-90">
+    <i class="fas fa-history text-xl mb-1"></i>
+    <span class="text-[9px] font-black uppercase tracking-widest">History</span>
+</button>
+
+        <!-- പ്രൊഫൈൽ ബട്ടൺ -->
+        <button onclick="switchAppTab('profile')" id="nav-profile" class="flex flex-col items-center p-2 text-slate-400 transition-all active:scale-90">
+            <i class="fas fa-user-circle text-xl mb-1"></i>
+            <span class="text-[9px] font-black uppercase tracking-widest">Profile</span>
         </button>
 
     </div>
 </div>
-<div class="h-28 w-full"></div>
-        </div>
 
+<!-- ================= പുതിതായി ചേർത്ത ഡാഷ്‌ബോർഡ് (HOME) പേജ് ================= -->
+        <div id="homePage" class="hidden p-4 sm:p-6 fade-in pb-24">
+            
+            <!-- വെൽകം ഹെഡർ -->
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <p class="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-1">Welocme,</p>
+                    <h2 id="homeWelcomeName" class="text-xl font-black text-slate-800 uppercase tracking-tight">അംഗം</h2>
+                </div>
+               <div class="w-12 h-12 bg-slate-100 rounded-full border-2 border-white shadow-sm flex items-center justify-center text-slate-400 overflow-hidden">
+                    <img id="homeProfileImg" src="" class="hidden w-full h-full object-cover">
+                    <i id="homeProfileIcon" class="fas fa-user text-xl"></i>
+                </div>
+            </div>
+
+            <!-- പ്രധാന അറിയിപ്പ് ബോർഡ് -->
+            <div class="bg-blue-600 p-6 rounded-3xl text-white shadow-lg mb-6 relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-4 opacity-20"><i class="fas fa-bullhorn text-6xl"></i></div>
+                <p class="text-blue-200 text-[10px] font-black uppercase tracking-widest mb-2 relative z-10">അറിയിപ്പ്</p>
+                <p id="homeNoticeText" class="text-sm font-bold leading-relaxed relative z-10">പുതിയ അറിയിപ്പുകൾ ഒന്നുമില്ല. അലുമിനി മീറ്റിംഗുകളും മറ്റു വിവരങ്ങളും ഇവിടെ കാണാം.</p>
+            </div>
+
+            <!-- ക്വിക്ക് ഇൻഫോ (ചെറിയ കാർഡുകൾ) -->
+            <div class="grid grid-cols-2 gap-3 mb-6">
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+                    <p class="text-[9px] text-slate-400 font-black uppercase mb-1">നിങ്ങളുടെ കുടിശ്ശിക</p>
+                    <p id="homeDueAmount" class="text-lg font-black text-rose-500">₹0</p>
+                </div>
+               <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+                    <p class="text-[9px] text-slate-400 font-black uppercase mb-1">ആകെ അംഗങ്ങൾ</p>
+                    <p id="homeTotalMembers" class="text-lg font-black text-blue-600">...</p>
+                </div>
+            </div>
+<div id="homeHighlightsArea" class="mt-4"></div>
+        </div>
+        
+
+        <!-- ================= പുതിതായി ചേർത്ത പ്രൊഫൈൽ പേജ് ================= -->
+       <div id="profilePage" class="hidden p-4 sm:p-6 fade-in pb-24">
+            
+            <h2 class="text-lg font-black text-slate-800 uppercase tracking-tight mb-8 text-center">പ്രൊഫൈൽ</h2>
+            
+            <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center mb-6 relative mt-10">
+                
+                <div class="w-24 h-24 bg-slate-100 rounded-full border-4 border-white shadow-md -mt-16 flex items-center justify-center text-slate-400 text-3xl relative overflow-visible z-10">
+                    <div class="w-full h-full rounded-full overflow-hidden flex items-center justify-center bg-slate-100">
+                        <img id="profImgDisplay" src="" class="hidden w-full h-full object-cover">
+                        <i id="profIconDisplay" class="fas fa-user"></i>
+                    </div>
+                    <label for="profPhotoUpload" class="absolute bottom-0 right-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center shadow-sm border-2 border-white cursor-pointer active:scale-90 transition-all hover:bg-blue-700 z-20">
+                        <i class="fas fa-camera text-[10px]"></i>
+                        <input type="file" id="profPhotoUpload" accept="image/*" class="hidden" onchange="uploadProfilePhoto(event)">
+                    </label>
+                </div>
+
+                <h3 id="profName" class="text-xl font-black text-slate-800 uppercase mt-4 w-full text-center">...</h3>
+                <p id="profBatch" class="text-[10px] font-black text-blue-600 bg-blue-50 px-3 py-1 rounded-full inline-block mt-2 uppercase tracking-widest text-center mx-auto">...</p>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 mb-4 text-left">
+                <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 border-b pb-2">അടിസ്ഥാന വിവരങ്ങൾ</h4>
+                
+                <div class="space-y-4">
+                    <div>
+                        <p class="text-[9px] text-slate-400 font-bold uppercase">ഫോൺ നമ്പർ</p>
+                        <p id="profPhone" class="text-sm font-black text-slate-800">...</p>
+                    </div>
+                    <div>
+                        <p class="text-[9px] text-slate-400 font-bold uppercase">ഈമെയിൽ (Email)</p>
+                        <input type="email" id="profEmail" placeholder="email@example.com" class="w-full p-3 mt-1 border border-slate-200 rounded-xl text-xs font-bold outline-none focus:border-blue-500 bg-slate-50">
+                    </div>
+                    <div>
+                        <p class="text-[9px] text-slate-400 font-bold uppercase">രക്ത ഗ്രൂപ്പ് (Blood Group)</p>
+                        <select id="profBlood" class="w-full p-3 mt-1 border border-slate-200 rounded-xl text-xs font-bold outline-none focus:border-blue-500 bg-slate-50">
+                            <option value="">തിരഞ്ഞെടുക്കുക</option>
+                            <option value="A+">A+</option><option value="O+">O+</option><option value="B+">B+</option><option value="AB+">AB+</option>
+                            <option value="A-">A-</option><option value="O-">O-</option><option value="B-">B-</option><option value="AB-">AB-</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 mb-6 text-left">
+                <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 border-b pb-2">പ്രൊഫഷണൽ വിവരങ്ങൾ</h4>
+                
+                <div class="space-y-4">
+                    <div>
+                        <p class="text-[9px] text-slate-400 font-bold uppercase">നിലവിലെ ജോലി / സ്ഥാനം</p>
+                        <input type="text" id="profJob" placeholder="ഉദാ: Muallim" class="w-full p-3 mt-1 border border-slate-200 rounded-xl text-xs font-bold outline-none focus:border-blue-500 bg-slate-50">
+                    </div>
+                    <div>
+                        <p class="text-[9px] text-slate-400 font-bold uppercase">കമ്പനി / സ്ഥാപനം</p>
+                        <input type="text" id="profCompany" placeholder="ഉദാ: Madrassa" class="w-full p-3 mt-1 border border-slate-200 rounded-xl text-xs font-bold outline-none focus:border-blue-500 bg-slate-50">
+                    </div>
+                    <div>
+                        <p class="text-[9px] text-slate-400 font-bold uppercase">ജോലി ചെയ്യുന്ന സ്ഥലം</p>
+                        <input type="text" id="profLocation" placeholder="Nilambur" class="w-full p-3 mt-1 border border-slate-200 rounded-xl text-xs font-bold outline-none focus:border-blue-500 bg-slate-50">
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="saveProfile()" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-black shadow-md active:scale-95 transition-all uppercase tracking-widest text-[11px] mb-3">Save Profile</button>
+            <button onclick="goHome()" class="w-full bg-rose-50 text-rose-600 py-4 rounded-2xl font-black active:scale-95 transition-all uppercase tracking-widest text-[11px] border border-rose-100">ലോഗൗട്ട് ചെയ്യുക (Logout)</button>
+
+        </div>
+        
+    
+        <!-- ================= പ്രൊഫൈൽ പേജ് അവസാനിച്ചു ================= -->
+        <div id="historyPage" class="hidden p-4 sm:p-6 fade-in pb-24">
+    <h2 class="text-lg font-black text-slate-800 uppercase tracking-tight mb-6"><i class="fas fa-history text-blue-500 mr-2"></i> പേയ്‌മെന്റ് ഹിസ്റ്ററി</h2>
+    
+    <div id="historyListContainer" class="space-y-4">
+        </div>
+</div>
+        
         <div id="adminPage" class="hidden p-4 sm:p-6 fade-in">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-lg font-black text-slate-800 tracking-tight italic">അഡ്മിൻ പാനൽ</h2>
@@ -407,16 +469,7 @@
                 <button onclick="document.getElementById('adminModal').classList.add('hidden')" class="text-slate-400 font-bold text-xs uppercase tracking-widest mt-2 active:scale-90">Cancel</button>
             </div>
         </div>
-<div id="historyModal" class="hidden fixed inset-0 bg-slate-900/90 flex flex-col justify-end sm:justify-center p-0 sm:p-4 z-[130]">
-    <div class="bg-white w-full max-w-sm mx-auto rounded-t-[32px] sm:rounded-[32px] p-6 shadow-2xl modal-up flex flex-col max-h-[85vh]">
-        <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-4 relative">
-            <h3 class="font-black text-lg text-slate-800 uppercase tracking-tight"><i class="fas fa-history text-blue-500 mr-2"></i> ഹിസ്റ്ററി</h3>
-            <button onclick="document.getElementById('historyModal').classList.add('hidden')" class="absolute right-0 w-8 h-8 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center active:scale-90 border border-rose-100"><i class="fas fa-times"></i></button>
-        </div>
-        <div id="historyListContainer" class="overflow-y-auto no-scrollbar space-y-3 pb-4">
-            </div>
-    </div>
-</div>
+
         <div id="noticeModal" class="fixed inset-0 z-[10000] hidden">
     <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="closeNoticeModal()"></div>
     <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-[40px] shadow-2xl transition-transform duration-300 translate-y-full" id="noticeCard">
@@ -499,13 +552,17 @@
                     </div>
             </div>
         </div>
-    <div id="loader" class="hidden fixed inset-0 flex items-center justify-center z-[99999]">
-    <div class="loader-container">
-        <div class="ai-ring"></div>
-        <img src="https://safwansafu123.github.io/muaawina-tracker/logo.png" class="loader-logo" alt="Logo">
+      <div id="loader" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-[20000]">
+            <div class="relative w-20 h-20 flex items-center justify-center spinner-group">
+                <svg viewBox="0 0 100 100" class="w-full h-full animate-spin">
+                    <circle cx="50" cy="50" r="40" stroke="#000" stroke-width="4" stroke-opacity="0.1" fill="transparent" />
+                    <circle cx="50" cy="50" r="40" stroke="#007bff" stroke-width="4" stroke-dasharray="25 15" stroke-linecap="round" fill="transparent" />
+                </svg>
+                
+                <img src="logo.png" class="absolute w-10 h-10 object-contain animate-pulse">
+            </div>
+        </div>
     </div>
-</div>
-         </div>
 
     <script>
         // എറർ വരികയാണെങ്കിൽ സ്ക്രീനിൽ കാണിക്കാൻ
@@ -531,7 +588,7 @@
         let lastMonthDataGlobal = null;
 
         // --- പുതിയ API സിസ്റ്റം ---
-        const API_URL = "https://script.google.com/macros/s/AKfycbzds-0Qc7RGLBf8gz6RVcyZwx429hZ8Ap4Ynlhor1zm_EMvm4VTcAp6mXgRh4O4Hmad/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbz69Jjr49YRHjHBElyw8zFc_zzJHoxCxifQ0LmTkFOKhV0frdohgmbCwP71cCXVdoOD/exec";
 
         async function callAPI(action, data = {}) {
             try {
@@ -584,7 +641,7 @@
             
             document.getElementById('loginError')?.classList.add('hidden');
             document.getElementById('loginPage')?.classList.remove('hidden');
-            
+            document.getElementById('bottomNav').classList.add('hidden');
             toggleScroll(true);
             
             // ലോഗൗട്ട് ചെയ്യുമ്പോൾ ഫോണിൽ സേവ് ചെയ്ത ലോഗിൻ വിവരങ്ങൾ ഡിലീറ്റ് ചെയ്യുന്നു
@@ -592,7 +649,8 @@
             localStorage.removeItem('muaawina_mid');
             
             currentMember = null; fullHistory = []; pendingMonthsList = []; upcomingMonthsList = []; lastMonthDataGlobal = null;
-        }
+        
+       }
        
 
      function fetchMemberDetails(isAutoLogin = false) {
@@ -651,14 +709,17 @@
                         }
                     }
 
-                    const annBox = document.getElementById('announcementBox');
-                    const annText = document.getElementById('announcementText');
-                    if (APP_CONFIG && APP_CONFIG.ANNOUNCEMENT && APP_CONFIG.ANNOUNCEMENT !== "") {
-                        annBox.classList.remove('hidden');
-                        annText.innerText = APP_CONFIG.ANNOUNCEMENT;
-                    } else {
-                        annBox.classList.add('hidden');
-                    }
+                  // ഡാഷ്‌ബോർഡിലെ പുതിയ അറിയിപ്പ് ഭാഗത്തേക്ക് മെസ്സേജ് നൽകാൻ
+        const homeNotice = document.getElementById('homeNoticeText');
+        if (homeNotice) {
+            if (APP_CONFIG && APP_CONFIG.ANNOUNCEMENT && APP_CONFIG.ANNOUNCEMENT !== "") {
+                // ഷീറ്റിൽ അറിയിപ്പ് ഉണ്ടെങ്കിൽ അത് കാണിക്കുന്നു
+                homeNotice.innerText = APP_CONFIG.ANNOUNCEMENT;
+            } else {
+                // അറിയിപ്പ് ഇല്ലെങ്കിൽ ഈ മെസ്സേജ് കാണിക്കുന്നു
+                homeNotice.innerText = "പുതിയ അറിയിപ്പുകൾ ഒന്നുമില്ല. അലുമിനി മീറ്റിംഗുകളും മറ്റു വിവരങ്ങളും ഇവിടെ കാണാം.";
+            }
+        }
 
                     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
                     let advancePaid = 0; let pendingCount = 0;
@@ -709,9 +770,9 @@
                     pendingMonthsList = fullHistory.filter(hist => hist.status === 'Pending');
                     upcomingMonthsList = fullHistory.filter(hist => hist.status === 'Upcoming');
                     
-                    document.getElementById('loginPage')?.classList.add('hidden');
-                    document.getElementById('memberPage')?.classList.remove('hidden');
-                    
+                   document.getElementById('loginPage')?.classList.add('hidden');
+switchAppTab('home'); // ലോഗിൻ ചെയ്ത ഉടനെ ഹോം പേജ് കാണിക്കാൻ വിളിക്കുന്നു
+                    document.getElementById('bottomNav').classList.remove('hidden');
                     toggleScroll(false);
                     
                     const mName = document.getElementById('mName');
@@ -728,6 +789,51 @@
                     if (mTotalExpected) mTotalExpected.innerText = '₹' + trueTotalExpected;
                     if (mPaid) mPaid.innerText = '₹' + d.totalPaid;
                     if (mBalance) mBalance.innerText = '₹' + trueBalance;
+                    // === പുതിയ ഡാഷ്‌ബോർഡിലേക്കും പ്രൊഫൈലിലേക്കും ഡാറ്റ നൽകുന്നു ===
+                    const homeName = document.getElementById('homeWelcomeName');
+                    const homeDue = document.getElementById('homeDueAmount');
+                    
+                    const profileName = document.getElementById('profName');
+                    const profileBatch = document.getElementById('profBatch');
+                    const profilePhone = document.getElementById('profPhone');
+
+                    // ഡാഷ്‌ബോർഡിലെ ഡാറ്റ
+                    if (homeName) homeName.innerText = d.name;
+                    if (homeDue) {
+                        homeDue.innerText = '₹' + trueBalance;
+                        // കുടിശ്ശിക ഉണ്ടെങ്കിൽ ചുവപ്പ് നിറം, ഇല്ലെങ്കിൽ പച്ച നിറം
+                        homeDue.className = trueBalance > 0 ? "text-lg font-black text-rose-500" : "text-lg font-black text-emerald-500";
+                    }
+
+                    // പ്രൊഫൈൽ പേജിലെ ഡാറ്റ
+                    if (profileName) profileName.innerText = d.name;
+                    if (profileBatch) profileBatch.innerText = d.batch || 'UNASSIGNED';
+                    if (profilePhone) profilePhone.innerText = d.phone;
+                    
+                    // പ്രൊഫൈലിലെ മറ്റ് വിവരങ്ങൾ ബോക്സുകളിൽ കാണിക്കാൻ
+                    document.getElementById('profEmail').value = d.email || '';
+                    document.getElementById('profBlood').value = d.blood || '';
+                    document.getElementById('profJob').value = d.job || '';
+                    document.getElementById('profCompany').value = d.company || '';
+                    document.getElementById('profLocation').value = d.location || '';
+                    // ==========================================================
+                    // ഡാഷ്‌ബോർഡിലെ ആകെ അംഗങ്ങൾ
+                    const homeTotal = document.getElementById('homeTotalMembers');
+                    if(homeTotal) homeTotal.innerText = d.totalMembers || 0;
+
+                    // ഫോട്ടോ ഉണ്ടെങ്കിൽ കാണിക്കാൻ
+                    const profImg = document.getElementById('profImgDisplay');
+                    const profIcon = document.getElementById('profIconDisplay');
+                    const homeImg = document.getElementById('homeProfileImg');
+                    const homeIcon = document.getElementById('homeProfileIcon');
+
+                    if(d.photoUrl && d.photoUrl !== "") {
+                        if(profImg) { profImg.src = d.photoUrl; profImg.classList.remove('hidden'); profIcon.classList.add('hidden'); }
+                        if(homeImg) { homeImg.src = d.photoUrl; homeImg.classList.remove('hidden'); homeIcon.classList.add('hidden'); }
+                    } else {
+                        if(profImg) { profImg.src = ""; profImg.classList.add('hidden'); profIcon.classList.remove('hidden'); }
+                        if(homeImg) { homeImg.src = ""; homeImg.classList.add('hidden'); homeIcon.classList.remove('hidden'); }
+                    }
                     
                     if (mAdvance) {
                         if (advancePaid > 0) {
@@ -744,6 +850,31 @@
                     const pText = document.getElementById('mProgressText');
                     if(pBar) pBar.style.width = pct + '%';
                     if(pText) pText.innerText = pct;
+
+                    // === ഡാഷ്‌ബോർഡിൽ പോസ്റ്ററുകൾ കാണിക്കുന്നു ===
+                    const highlightArea = document.getElementById('homeHighlightsArea');
+                    
+                    if(highlightArea) {
+                        highlightArea.innerHTML = '<h3 class="text-xs font-black text-slate-800 uppercase tracking-widest mb-6 mt-8"><i class="fas fa-star text-amber-500 mr-2"></i> അലുമിനി ഹൈലൈറ്റ്സ്</h3>';
+                        
+                        if(d.highlights && d.highlights.length > 0) {
+                            d.highlights.forEach(h => {
+                                highlightArea.innerHTML += `
+                                    <div class="mb-8">
+                                        ${h.heading ? `<h4 class="text-[10px] font-black text-blue-900 uppercase tracking-[0.2em] mb-3 ml-1">${h.heading}</h4>` : ''}
+                                        
+                                        <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden transition-all active:scale-[0.99]">
+                                            <img src="${h.url}" class="w-full h-auto block" alt="Poster">
+                                            
+                                            ${h.desc ? `<div class="p-4 border-t border-slate-50 bg-slate-50/30"><p class="text-[11px] font-bold text-slate-600 leading-relaxed">${h.desc}</p></div>` : ''}
+                                        </div>
+                                    </div>
+                                `;
+                            });
+                        } else {
+                            highlightArea.innerHTML += '<div class="bg-amber-50 p-5 rounded-2xl border border-amber-100 text-center"><p class="text-[10px] font-bold text-amber-600">പുതിയ അപ്ഡേറ്റുകൾ ഉടൻ വരുന്നു...</p></div>';
+                        }
+                    }
 
                     setupDynamicLastMonthButton();
                     renderYears();
@@ -1985,16 +2116,18 @@ function contactAdmin() {
     let textMsg = encodeURIComponent('السلام عليكم \n');
     window.open(`https://wa.me/${wpNumber}?text=${textMsg}`, '_blank');
 }
-// ഹിസ്റ്ററി മോഡൽ തുറക്കുന്ന ഫംഗ്ഷൻ
-function openHistoryModal() {
+function renderHistory() {
     if (!currentMember || !fullHistory) return;
     
     const container = document.getElementById('historyListContainer');
+    if(!container) return; // കണ്ടെയ്നർ ഉണ്ടെന്ന് ഉറപ്പുവരുത്തുന്നു
+    
     container.innerHTML = '';
     
-    // പണമടച്ചതും, പ്രോസസ്സിങ്ങും, ഒപ്പം റിജക്ട് ആയതുമായ റെക്കോർഡുകൾ മാത്രം എടുക്കുന്നു
+    // പഴയ ഫംഗ്ഷനിലെ അതേ ഫിൽട്ടറിംഗ് (Paid, Processing, Rejected മാത്രം)
     let displayHistory = fullHistory.filter(h => h.status === 'Paid' || h.status === 'Processing' || h.isRejected);
     
+    // വർഷവും മാസവും അനുസരിച്ചുള്ള സോർട്ടിംഗ്
     displayHistory.sort((a, b) => {
         if (b.year !== a.year) return parseInt(b.year) - parseInt(a.year);
         return b.monthIdx - a.monthIdx;
@@ -2007,7 +2140,7 @@ function openHistoryModal() {
             let isPaid = h.status === 'Paid';
             let isRejected = h.isRejected && !isPaid && h.status !== 'Processing'; 
             
-            // സ്റ്റാറ്റസിന് അനുസരിച്ചുള്ള കളർ മാറ്റങ്ങൾ
+            // സ്റ്റാറ്റസിന് അനുസരിച്ചുള്ള കളർ മാറ്റങ്ങൾ (പഴയ അതേ ലോജിക്)
             let borderColor = isPaid ? 'border-emerald-50' : (isRejected ? 'border-rose-50' : 'border-amber-50');
             let textColor = isPaid ? 'text-emerald-500' : (isRejected ? 'text-rose-500' : 'text-amber-500');
             let iconText = isPaid ? '<i class="fas fa-check-circle"></i> പണമടച്ചു' : (isRejected ? '<i class="fas fa-times-circle"></i> റിജക്ട് ചെയ്തു (Rejected)' : '<i class="fas fa-clock"></i> അഡ്മിൻ അപ്രൂവൽ പെൻഡിങ്');
@@ -2019,7 +2152,7 @@ function openHistoryModal() {
                 : `<div class="w-11 h-11 flex items-center justify-center text-amber-300 bg-amber-50 rounded-xl border border-amber-100"><i class="fas fa-spinner fa-spin text-lg"></i></div>`);
 
             return `
-            <div class="bg-white border-2 ${borderColor} p-4 rounded-2xl shadow-sm flex justify-between items-center">
+            <div class="bg-white border-2 ${borderColor} p-4 rounded-2xl shadow-sm flex justify-between items-center mb-3">
                 <div>
                     <p class="font-black text-slate-800 text-sm uppercase tracking-tight mb-1">${h.month} ${h.year}</p>
                     <p class="text-[9px] font-black ${textColor} uppercase tracking-widest">
@@ -2032,8 +2165,6 @@ function openHistoryModal() {
             </div>`;
         }).join('');
     }
-    
-    document.getElementById('historyModal').classList.remove('hidden');
 }
 
 // റെസീപ്റ്റ് ഇമേജ് ആക്കി ഡൗൺലോഡ് ചെയ്യുന്ന ഫംഗ്ഷൻ
@@ -2171,6 +2302,73 @@ function closeNoticeModal() {
         toggleScroll(false);
     }, 300);
 }
+  // പേജുകൾ മാറാനുള്ള ഫംഗ്ഷൻ (Updated)
+      function switchAppTab(tabName) {
+    // എല്ലാ ബട്ടണുകളുടെയും നിറം മാറ്റുന്നു
+    const tabs = ['home', 'dues', 'history', 'profile'];
+    tabs.forEach(tab => {
+        const btn = document.getElementById('nav-' + tab);
+        if(btn) btn.classList.replace('text-blue-600', 'text-slate-400');
+        
+        const page = (tab === 'home') ? 'homePage' : 
+                     (tab === 'dues') ? 'memberPage' : 
+                     (tab === 'history') ? 'historyPage' : 'profilePage';
+        const pageEl = document.getElementById(page);
+        if(pageEl) pageEl.classList.add('hidden');
+    });
+
+    // ക്ലിക്ക് ചെയ്ത ബട്ടണിനും പേജിനും മാറ്റം വരുത്തുന്നു
+    const activeBtn = document.getElementById('nav-' + tabName);
+    if(activeBtn) activeBtn.classList.replace('text-slate-400', 'text-blue-600');
+
+    const activePage = (tabName === 'home') ? 'homePage' : 
+                       (tabName === 'dues') ? 'memberPage' : 
+                       (tabName === 'history') ? 'historyPage' : 'profilePage';
+    const activePageEl = document.getElementById(activePage);
+    if(activePageEl) activePageEl.classList.remove('hidden');
+
+    // ഹിസ്റ്ററി ടാബ് ആണെങ്കിൽ ഡാറ്റ ലോഡ് ചെയ്യുന്നു
+    if(tabName === 'history') {
+        renderHistory(); 
+    }
+
+    window.scrollTo({top: 0, behavior: 'smooth'});
+}
+      // പ്രൊഫൈൽ ഫോട്ടോ ഗൂഗിൾ ഡ്രൈവിലേക്ക് അപ്‌ലോഡ് ചെയ്യാൻ
+        function uploadProfilePhoto(event) {
+            const file = event.target.files[0];
+            if(!file || !currentMember) return;
+            
+            showLoader(true);
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64Data = e.target.result;
+                
+                callAPI('uploadProfilePhoto', {
+                    id: currentMember.id,
+                    base64: base64Data,
+                    mimeType: file.type,
+                    fileName: currentMember.name + "_MUAAWINA.jpg"
+                }).then(res => {
+                    showLoader(false);
+                    if(res.error) {
+                        Swal.fire('Error', res.error, 'error');
+                    } else {
+                        // ഫോട്ടോ അപ്ഡേറ്റ് ചെയ്യുന്നു
+                        document.getElementById('profImgDisplay').src = res.url;
+                        document.getElementById('profImgDisplay').classList.remove('hidden');
+                        document.getElementById('profIconDisplay').classList.add('hidden');
+                        
+                        document.getElementById('homeProfileImg').src = res.url;
+                        document.getElementById('homeProfileImg').classList.remove('hidden');
+                        document.getElementById('homeProfileIcon').classList.add('hidden');
+                        
+                        Swal.fire('വിജയിച്ചു!', 'പ്രൊഫൈൽ ഫോട്ടോ അപ്‌ഡേറ്റ് ചെയ്തു.', 'success');
+                    }
+                });
+            };
+            reader.readAsDataURL(file);
+        }  
     </script>
     <div id="pdfTemplateContainer" class="fixed -left-[9999px] top-0 pointer-events-none z-[-1]">
     <div id="pdfCard" class="bg-white relative" style="width: 800px; height: 1131px; font-family: 'Manjari', sans-serif; padding: 60px;">
