@@ -73,19 +73,22 @@
 
 /* Logo-inu vendulla Class */
 .logo-glowing {
-  width: 60px;
-  height: 60px;
+  width: 60px !important; /* Force width */
+  height: 60px !important; /* Force height */
+  min-width: 60px; 
+  display: block;
   object-fit: contain;
   animation: glowPulse 2s infinite ease-in-out;
 }
 
-/* Logo-inte container */
 .logo-container {
   position: absolute;
-  top: 0;
-  right: 0;
-  padding: 1rem; /* p-4 */
-  opacity: 1 !important; /* Mangi kaanathirikkan */
+  top: 10px; /* Adjust as needed */
+  right: 10px; /* Adjust as needed */
+  width: 80px; /* Container-inu width nalkunnu */
+  height: 80px;
+  z-index: 999; /* Matulla elements-inte mukalil varaan */
+  opacity: 1 !important;
 }
 #loader {
     background: rgba(255, 255, 255, 0.95); /* ബാക്ക്ഗ്രൗണ്ട് കുറച്ചുകൂടി തെളിച്ചമുള്ളതാക്കി */
