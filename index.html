@@ -57,6 +57,36 @@
         .swal2-container { z-index: 20000 !important; }
          /* പഴയ ലോഡർ CSS ഒഴിവാക്കി ഇത് മാത്രം നൽകുക */
 /* പഴയ ലോഡർ CSS ഒഴിവാക്കി ഇത് മാത്രം നൽകുക */
+        /* Logo Pulse Animation */
+@keyframes glowPulse {
+  0% {
+    filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.6)) drop-shadow(0 0 10px rgba(59, 130, 246, 0.4));
+  }
+  50% {
+    filter: drop-shadow(0 0 15px rgba(59, 130, 246, 0.9)) drop-shadow(0 0 30px rgba(59, 130, 246, 0.6));
+    transform: scale(1.05);
+  }
+  100% {
+    filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.6)) drop-shadow(0 0 10px rgba(59, 130, 246, 0.4));
+  }
+}
+
+/* Logo-inu vendulla Class */
+.logo-glowing {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  animation: glowPulse 2s infinite ease-in-out;
+}
+
+/* Logo-inte container */
+.logo-container {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 1rem; /* p-4 */
+  opacity: 1 !important; /* Mangi kaanathirikkan */
+}
 #loader {
     background: rgba(255, 255, 255, 0.95); /* ബാക്ക്ഗ്രൗണ്ട് കുറച്ചുകൂടി തെളിച്ചമുള്ളതാക്കി */
     backdrop-filter: blur(8px); /* ബ്ലർ ഇഫക്റ്റ് */
@@ -349,7 +379,9 @@
             <!-- പ്രധാന അറിയിപ്പ് ബോർഡ് -->
             <div class="bg-blue-600 p-6 rounded-3xl text-white shadow-lg mb-6 relative overflow-hidden">
                 <div class="absolute top-0 right-0 p-4 opacity-20"><!-- Replace the existing <i> tag with this -->
-<img src="logo_white.png" alt="Logo" class="w-[60px] h-[60px] object-contain"></div>
+<div class="logo-container">
+    <img src="path/to/your-logo.png" alt="Logo" class="logo-glowing">
+</div></div>
                 <p class="text-blue-200 text-[10px] font-black uppercase tracking-widest mb-2 relative z-10">MUAAWINA</p>
                 <p id="homeNoticeText" class="text-sm font-bold leading-relaxed relative z-10">പുതിയ അറിയിപ്പുകൾ ഒന്നുമില്ല. അലുമിനി മീറ്റിംഗുകളും മറ്റു വിവരങ്ങളും ഇവിടെ കാണാം.</p>
             </div>
