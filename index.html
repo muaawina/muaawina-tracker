@@ -107,6 +107,103 @@
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
 }
+       /* പുതിയ ഫ്ലോട്ടിംഗ് ബാർ സ്റ്റൈൽ */
+.nav-floating-wrapper {
+    position: fixed;
+    bottom: 25px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    z-index: 9999;
+    pointer-events: none; /* സ്ക്രോളിംഗ് തടയാതിരിക്കാൻ ഇത് നിർബന്ധമാണ് */
+}
+
+.pill-bar {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    width: 92%;
+    max-width: 400px;
+    height: 75px;
+    border-radius: 40px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0 10px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    border: 1px solid rgba(255,255,255,0.5);
+    pointer-events: auto; /* ബട്ടണുകളിൽ ടച്ച് വർക്ക് ആവാൻ */
+}
+
+.nav-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 60px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+/* ആക്ടീവ് ആകുമ്പോൾ ഐക്കണിന് ചുറ്റുമുള്ള നീല വട്ടം */
+.icon-circle {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    color: #94a3b8; /* Default Slate-400 */
+}
+
+.nav-btn.active .icon-circle {
+    background-color: #2563eb;
+    color: white !important;
+    box-shadow: 0 6px 15px rgba(37, 99, 235, 0.3);
+    transform: translateY(-1px);
+}
+
+.nav-btn span {
+    font-size: 9px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #94a3b8;
+}
+
+.nav-btn.active span {
+    color: #2563eb;
+}
+
+/* സ്ക്രോളിംഗ് ഉറപ്പാക്കാൻ പേജുകൾക്ക് അടിയിൽ ഗ്യാപ്പ് നൽകുന്നു */
+#homePage, #memberPage, #historyPage, #profilePage {
+    padding-bottom: 120px !important;
+} 
+        /* ഹിസ്റ്ററി ഫിൽട്ടർ സ്റ്റൈൽ */
+.filter-pill {
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border: 1px solid #f1f5f9;
+    background: white;
+    color: #94a3b8;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.filter-pill.active {
+    background: #2563eb;
+    color: white;
+    border-color: #2563eb;
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+}
     </style>
 </head>
 <body class="min-h-screen text-slate-800 pb-10">
@@ -205,34 +302,32 @@
 <div class="h-28 w-full"></div>
         </div>
             
-         <!-- പുതിയ സ്റ്റാൻഡേർഡ് ബോട്ടം നാവിഗേഷൻ ബാർ -->
-<div id="bottomNav" class="hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 shadow-[0_-5px_20px_rgba(0,0,0,0.05)] z-[9000]" style="padding-bottom: env(safe-area-inset-bottom);">
-    <div class="flex items-center justify-around p-2 max-w-md mx-auto">
-        
-        <!-- ഡാഷ്‌ബോർഡ് ബട്ടൺ -->
-        <button onclick="switchAppTab('home')" id="nav-home" class="flex flex-col items-center p-2 text-slate-400 transition-all active:scale-90">
-            <i class="fas fa-home text-xl mb-1"></i>
-            <span class="text-[9px] font-black uppercase tracking-widest">Home</span>
+    <!-- പുതിയ ഫ്ലോട്ടിംഗ് ബോട്ടം ബാർ -->
+<div id="bottomNav" class="hidden nav-floating-wrapper">
+    <div class="pill-bar">
+        <!-- Home -->
+        <button onclick="switchAppTab('home')" id="nav-home" class="nav-btn active">
+            <div class="icon-circle"><i class="fas fa-home text-lg"></i></div>
+            <span>Home</span>
         </button>
 
-        <!-- വരിസംഖ്യ ബട്ടൺ (നിലവിലെ മെയിൻ പേജ്) -->
-        <button onclick="switchAppTab('dues')" id="nav-dues" class="flex flex-col items-center p-2 text-blue-600 transition-all active:scale-90">
-            <i class="fas fa-wallet text-xl mb-1"></i>
-            <span class="text-[9px] font-black uppercase tracking-widest">Dues</span>
+        <!-- Dues -->
+        <button onclick="switchAppTab('dues')" id="nav-dues" class="nav-btn">
+            <div class="icon-circle"><i class="fas fa-wallet text-lg"></i></div>
+            <span>Dues</span>
         </button>
 
-        <!-- ഹിസ്റ്ററി ബട്ടൺ -->
-       <button onclick="switchAppTab('history')" id="nav-history" class="flex flex-col items-center p-2 text-slate-400 transition-all active:scale-90">
-    <i class="fas fa-history text-xl mb-1"></i>
-    <span class="text-[9px] font-black uppercase tracking-widest">History</span>
-</button>
-
-        <!-- പ്രൊഫൈൽ ബട്ടൺ -->
-        <button onclick="switchAppTab('profile')" id="nav-profile" class="flex flex-col items-center p-2 text-slate-400 transition-all active:scale-90">
-            <i class="fas fa-user-circle text-xl mb-1"></i>
-            <span class="text-[9px] font-black uppercase tracking-widest">Profile</span>
+        <!-- History -->
+        <button onclick="switchAppTab('history')" id="nav-history" class="nav-btn">
+            <div class="icon-circle"><i class="fas fa-history text-lg"></i></div>
+            <span>History</span>
         </button>
 
+        <!-- Profile -->
+        <button onclick="switchAppTab('profile')" id="nav-profile" class="nav-btn">
+            <div class="icon-circle"><i class="fas fa-user-circle text-lg"></i></div>
+            <span>Profile</span>
+        </button>
     </div>
 </div>
 
@@ -344,11 +439,19 @@
         
     
         <!-- ================= പ്രൊഫൈൽ പേജ് അവസാനിച്ചു ================= -->
-        <div id="historyPage" class="hidden p-4 sm:p-6 fade-in pb-24">
-    <h2 class="text-lg font-black text-slate-800 uppercase tracking-tight mb-6"><i class="fas fa-history text-blue-500 mr-2"></i> പേയ്‌മെന്റ് ഹിസ്റ്ററി</h2>
+<div id="historyPage" class="hidden p-4 sm:p-6 fade-in pb-24">
+    <h2 class="text-lg font-black text-slate-800 uppercase tracking-tight mb-6">
+        <i class="fas fa-history text-blue-500 mr-2"></i> പേയ്‌മെന്റ് ഹിസ്റ്ററി
+    </h2>
+
+    <!-- ഫിൽട്ടർ ഓപ്ഷനുകൾ -->
+    <div class="flex gap-2 mb-6 overflow-x-auto no-scrollbar pb-2">
+        <button onclick="renderHistory('all')" class="filter-pill active" id="filter-all">എല്ലാം</button>
+        <button onclick="renderHistory('Paid')" class="filter-pill" id="filter-Paid">അടച്ചത്</button>
+        <button onclick="renderHistory('Processing')" class="filter-pill" id="filter-Processing">പെൻഡിങ്</button>
+    </div>
     
-    <div id="historyListContainer" class="space-y-4">
-        </div>
+    <div id="historyListContainer" class="space-y-4"></div>
 </div>
         
         <div id="adminPage" class="hidden p-4 sm:p-6 fade-in">
@@ -639,7 +742,7 @@
         let lastMonthDataGlobal = null;
 
         // --- പുതിയ API സിസ്റ്റം ---
-        const API_URL = "https://script.google.com/macros/s/AKfycbz69Jjr49YRHjHBElyw8zFc_zzJHoxCxifQ0LmTkFOKhV0frdohgmbCwP71cCXVdoOD/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbxDP6r_olkNhfDOP7AtNfysJGddnsi0PMCUqDD73AlpZFGErpPcYhQCu-6ODYzkvPVf_Q/exec";
 
         async function callAPI(action, data = {}) {
             try {
@@ -2167,77 +2270,92 @@ function contactAdmin() {
     let textMsg = encodeURIComponent('السلام عليكم \n');
     window.open(`https://wa.me/${wpNumber}?text=${textMsg}`, '_blank');
 }
-function renderHistory() {
+let activeHistoryFilter = 'all';
+
+function renderHistory(filterType = 'all') {
     if (!currentMember || !fullHistory) return;
-    
+    activeHistoryFilter = filterType;
+
+    // ഫിൽട്ടർ ബട്ടണുകളുടെ നിറം മാറ്റുന്നു
+    document.querySelectorAll('.filter-pill').forEach(btn => btn.classList.remove('active'));
+    document.getElementById('filter-' + filterType)?.classList.add('active');
+
     const container = document.getElementById('historyListContainer');
-    if(!container) return; // കണ്ടെയ്നർ ഉണ്ടെന്ന് ഉറപ്പുവരുത്തുന്നു
-    
     container.innerHTML = '';
     
-    // പഴയ ഫംഗ്ഷനിലെ അതേ ഫിൽട്ടറിംഗ് (Paid, Processing, Rejected മാത്രം)
+    // പണമടച്ചതും, പ്രോസസ്സിങ്ങും, റിജക്ട് ആയതും മാത്രം എടുക്കുന്നു
     let displayHistory = fullHistory.filter(h => h.status === 'Paid' || h.status === 'Processing' || h.isRejected);
     
-    // വർഷവും മാസവും അനുസരിച്ചുള്ള സോർട്ടിംഗ്
+    // ഫിൽട്ടർ അപ്ലൈ ചെയ്യുന്നു
+    if (filterType !== 'all') {
+        displayHistory = displayHistory.filter(h => h.status === filterType);
+    }
+    
     displayHistory.sort((a, b) => {
         if (b.year !== a.year) return parseInt(b.year) - parseInt(a.year);
         return b.monthIdx - a.monthIdx;
     });
 
-    if (displayHistory.length === 0) {
-        container.innerHTML = '<p class="text-center text-slate-400 font-bold text-[10px] uppercase tracking-widest py-10 bg-slate-50 rounded-2xl border border-dashed">ഹിസ്റ്ററി ലഭ്യമല്ല</p>';
-    } else {
-        container.innerHTML = displayHistory.map(h => {
-            let isPaid = h.status === 'Paid';
-            let isRejected = h.isRejected && !isPaid && h.status !== 'Processing'; 
-            
-            // സ്റ്റാറ്റസിന് അനുസരിച്ചുള്ള കളർ മാറ്റങ്ങൾ (പഴയ അതേ ലോജിക്)
-            let borderColor = isPaid ? 'border-emerald-50' : (isRejected ? 'border-rose-50' : 'border-amber-50');
-            let textColor = isPaid ? 'text-emerald-500' : (isRejected ? 'text-rose-500' : 'text-amber-500');
-            let iconText = isPaid ? '<i class="fas fa-check-circle"></i> പണമടച്ചു' : (isRejected ? '<i class="fas fa-times-circle"></i> റിജക്ട് ചെയ്തു (Rejected)' : '<i class="fas fa-clock"></i> അഡ്മിൻ അപ്രൂവൽ പെൻഡിങ്');
-            
-            let rightAction = isPaid ? 
-                `<button onclick="downloadReceipt('${h.month}', '${h.year}', ${h.amount})" class="bg-emerald-50 text-emerald-600 w-11 h-11 rounded-xl flex items-center justify-center active:scale-90 transition-all border border-emerald-100 shadow-sm"><i class="fas fa-download text-lg"></i></button>` 
-                : (isRejected ? 
-                `<div class="w-11 h-11 flex items-center justify-center text-rose-400 bg-rose-50 rounded-xl border border-rose-100"><i class="fas fa-exclamation-circle text-lg"></i></div>`
-                : `<div class="w-11 h-11 flex items-center justify-center text-amber-300 bg-amber-50 rounded-xl border border-amber-100"><i class="fas fa-spinner fa-spin text-lg"></i></div>`);
+   if (displayHistory.length === 0) {
+        // ഹിസ്റ്ററി ഒഴിഞ്ഞു കിടക്കുമ്പോൾ കാണിക്കേണ്ട ഡിസൈൻ
+        container.innerHTML = `
+            <div class="flex flex-col items-center justify-center py-32 text-slate-300 fade-in">
+                <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4 shadow-inner">
+                    <i class="fas fa-history text-3xl opacity-20"></i>
+                </div>
+                <p class="font-black text-[10px] uppercase tracking-[0.2em] text-slate-400">ഹിസ്റ്ററി ലഭ്യമല്ല</p>
+                <p class="text-[9px] font-bold text-slate-300 mt-1 uppercase tracking-widest">നിങ്ങളുടെ പേയ്‌മെന്റുകൾ ഇവിടെ കാണാം</p>
+            </div>`;
+        return;
+    }
 
-            return `
-            <div class="bg-white border-2 ${borderColor} p-4 rounded-2xl shadow-sm flex justify-between items-center mb-3">
+    container.innerHTML = displayHistory.map(h => {
+        const isPaid = h.status === 'Paid';
+        const isRejected = h.isRejected && !isPaid && h.status !== 'Processing';
+        
+        const bgColor = isPaid ? 'bg-emerald-50/30' : (isRejected ? 'bg-rose-50/30' : 'bg-amber-50/30');
+        const borderColor = isPaid ? 'border-emerald-100' : (isRejected ? 'border-rose-100' : 'border-amber-100');
+        const textColor = isPaid ? 'text-emerald-600' : (isRejected ? 'text-rose-600' : 'text-amber-600');
+        
+        return `
+        <div class="bg-white border ${borderColor} ${bgColor} p-4 rounded-[24px] shadow-sm flex justify-between items-center transition-all hover:shadow-md">
+            <div class="flex items-center gap-4">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center bg-white shadow-sm text-slate-400">
+                    <i class="fas ${isPaid ? 'fa-file-invoice text-emerald-500' : 'fa-clock'}"></i>
+                </div>
                 <div>
-                    <p class="font-black text-slate-800 text-sm uppercase tracking-tight mb-1">${h.month} ${h.year}</p>
-                    <p class="text-[9px] font-black ${textColor} uppercase tracking-widest">
-                        ${iconText}
+                    <p class="font-black text-slate-800 text-sm uppercase tracking-tight">${h.month} ${h.year}</p>
+                    <p class="text-[9px] font-black ${textColor} uppercase tracking-widest mt-1">
+                        ${isPaid ? 'പണമടച്ചു' : (isRejected ? 'Rejected' : 'Pending Approval')}
                     </p>
                 </div>
-                <div>
-                    ${rightAction}
-                </div>
-            </div>`;
-        }).join('');
-    }
+            </div>
+            ${isPaid ? `
+                <button onclick="downloadReceipt('${h.month}', '${h.year}', ${h.amount})" class="w-10 h-10 bg-white text-blue-600 rounded-full flex items-center justify-center shadow-sm active:scale-90 border border-slate-100">
+                    <i class="fas fa-download text-xs"></i>
+                </button>` : ''}
+        </div>`;
+    }).join('');
 }
-
 // റെസീപ്റ്റ് ഇമേജ് ആക്കി ഡൗൺലോഡ് ചെയ്യുന്ന ഫംഗ്ഷൻ
 function downloadReceipt(month, year, amount) {
     showLoader(true);
     
-   // വെള്ള ലോഗോയ്ക്ക് പകരം നിങ്ങൾക്ക് വേണ്ട ലോഗോയുടെ ഫയൽ പേര് ഇവിടെ നൽകുക
-let mainLogoSrc = "logo.png";
+    let mainLogoSrc = "logo.png";
     document.getElementById('receiptWatermark').src = mainLogoSrc;
     document.getElementById('receiptHeaderLogo').src = mainLogoSrc;
     
-    // ഹൈഡ് ചെയ്ത് വെച്ചിരിക്കുന്ന ഡിസൈനിലേക്ക് വിവരങ്ങൾ ഫിൽ ചെയ്യുന്നു
     document.getElementById('rcptName').innerText = currentMember.name;
     document.getElementById('rcptMonth').innerText = `${month} ${year}`;
-    document.getElementById('rcptAmount').innerText = `₹${amount}`;
+    
+    // തുക ലഭ്യമല്ലെങ്കിൽ 50 എന്ന് കാണിക്കാൻ താഴെ കാണുന്ന വരി മാറ്റുക
+    document.getElementById('rcptAmount').innerText = '₹' + (amount || 50);
     
     let d = new Date();
     document.getElementById('rcptDate').innerText = d.toLocaleDateString('en-IN', {day: '2-digit', month: 'short', year: 'numeric'}) + ' ' + d.toLocaleTimeString('en-IN', {hour: '2-digit', minute:'2-digit'});
     
     const rcptNode = document.getElementById('receiptCard');
     
-    // ഇമേജ് ജനറേറ്റ് ചെയ്യുന്നു
     setTimeout(() => { 
         html2canvas(rcptNode, { scale: 3, backgroundColor: '#ffffff' }).then(canvas => {
             let link = document.createElement('a');
@@ -2354,36 +2472,39 @@ function closeNoticeModal() {
     }, 300);
 }
   // പേജുകൾ മാറാനുള്ള ഫംഗ്ഷൻ (Updated)
-      function switchAppTab(tabName) {
-    // എല്ലാ ബട്ടണുകളുടെയും നിറം മാറ്റുന്നു
+function switchAppTab(tabName) {
     const tabs = ['home', 'dues', 'history', 'profile'];
+    
     tabs.forEach(tab => {
+        // 1. ബട്ടണുകളിലെ ആക്ടീവ് സ്റ്റൈൽ മാറ്റുന്നു
         const btn = document.getElementById('nav-' + tab);
-        if(btn) btn.classList.replace('text-blue-600', 'text-slate-400');
-        
+        if (btn) btn.classList.remove('active');
+
+        // 2. എല്ലാ പേജുകളും ഹൈഡ് ചെയ്യുന്നു
         const page = (tab === 'home') ? 'homePage' : 
                      (tab === 'dues') ? 'memberPage' : 
                      (tab === 'history') ? 'historyPage' : 'profilePage';
         const pageEl = document.getElementById(page);
-        if(pageEl) pageEl.classList.add('hidden');
+        if (pageEl) pageEl.classList.add('hidden');
     });
 
-    // ക്ലിക്ക് ചെയ്ത ബട്ടണിനും പേജിനും മാറ്റം വരുത്തുന്നു
+    // 3. ക്ലിക്ക് ചെയ്ത ബട്ടൺ ആക്ടീവ് ആക്കുന്നു
     const activeBtn = document.getElementById('nav-' + tabName);
-    if(activeBtn) activeBtn.classList.replace('text-slate-400', 'text-blue-600');
+    if (activeBtn) activeBtn.classList.add('active');
 
+    // 4. ക്ലിക്ക് ചെയ്ത പേജ് കാണിക്കുന്നു
     const activePage = (tabName === 'home') ? 'homePage' : 
                        (tabName === 'dues') ? 'memberPage' : 
                        (tabName === 'history') ? 'historyPage' : 'profilePage';
     const activePageEl = document.getElementById(activePage);
-    if(activePageEl) activePageEl.classList.remove('hidden');
-
-    // ഹിസ്റ്ററി ടാബ് ആണെങ്കിൽ ഡാറ്റ ലോഡ് ചെയ്യുന്നു
-    if(tabName === 'history') {
-        renderHistory(); 
+    if (activePageEl) {
+        activePageEl.classList.remove('hidden');
+        // പേജ് മാറുമ്പോൾ സ്ക്രോൾ ടോപ്പിലേക്ക് മാറ്റുന്നു
+        window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
-    window.scrollTo({top: 0, behavior: 'smooth'});
+    // ഹിസ്റ്ററി ആണെങ്കിൽ റെൻഡർ ചെയ്യുന്നു
+    if (tabName === 'history') renderHistory();
 }
       // പ്രൊഫൈൽ ഫോട്ടോ ഗൂഗിൾ ഡ്രൈവിലേക്ക് അപ്‌ലോഡ് ചെയ്യാൻ
         function uploadProfilePhoto(event) {
