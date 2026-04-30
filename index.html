@@ -1225,7 +1225,7 @@ switchAppTab('home'); // ലോഗിൻ ചെയ്ത ഉടനെ ഹോം 
             if (totalDisplay) totalDisplay.innerText = '₹' + tot;
            
             const subtext = document.getElementById('payModalSubtext');
-            if (subtext) subtext.innerText = t === 'single' ? `${m} ${y} വриസംഖ്യ` : `${y} മാസത്തെ വരിസംഖ്യ ഒന്നിച്ചു`;
+            if (subtext) subtext.innerText = t === 'single' ? `${m} ${y} വരിസംഖ്യ` : `${y} മാസത്തെ വരിസംഖ്യ ഒന്നിച്ചു`;
            
             const pModal = document.getElementById('paymentModal');
             if (pModal) pModal.classList.remove('hidden');
