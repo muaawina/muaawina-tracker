@@ -24,7 +24,9 @@
 </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
+    <!-- Cropper.js for Image Cropping -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -83,7 +85,7 @@
 /* Logo-inu vendulla Class */
 .logo-glowing {
   width: 60px !important; /* Force width */
-  height: 68px !important; /* Force height */
+  height: 63px !important; /* Force height */
   min-width: 79px; 
   display: block;
   object-fit: contain;
@@ -92,7 +94,7 @@
 
 .logo-container {
   position: absolute;
-  top: 14px; /* Adjust as needed */
+  top: 19px; /* Adjust as needed */
   right: 10px; /* Adjust as needed */
   width: 80px; /* Container-inu width nalkunnu */
   height: 80px;
@@ -365,6 +367,12 @@
             <span>History</span>
         </button>
 
+<!-- പുതിയ Members ബട്ടൺ -->
+        <button onclick="switchAppTab('directory')" id="nav-directory" class="nav-btn">
+            <div class="icon-circle"><i class="fas fa-users text-lg"></i></div>
+            <span>Members</span>
+        </button>
+
         <!-- Profile -->
         <button onclick="switchAppTab('profile')" id="nav-profile" class="nav-btn">
             <div class="icon-circle"><i class="fas fa-user-circle text-lg"></i></div>
@@ -401,11 +409,11 @@
             <!-- ക്വിക്ക് ഇൻഫോ (ചെറിയ കാർഡുകൾ) -->
             <div class="grid grid-cols-2 gap-3 mb-6">
                 <!-- Box Code -->
-<div class="bg-white/40 backdrop-blur-xl border border-white/20 border-b-4 border-b-blue-500 rounded-2xl p-6 shadow-xl flex flex-col items-center justify-center text-center">
+<div class="bg-white  border border-white/20 border-b-4 border-b-blue-500 rounded-[28px] p-6 shadow-lg shadow-blue-900/5 flex flex-col items-center justify-center text-center">
   <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-1">YEARS</p>
   <p class="text-2xl font-black bg-gradient-to-br from-blue-600 to-purple-600 bg-clip-text text-transparent">11</p>
 </div>
-              <div class="bg-white/40 backdrop-blur-xl border border-white/20 border-b-4 border-b-blue-500 rounded-2xl p-6 shadow-xl flex flex-col items-center justify-center text-center">
+              <div class="bg-white  border border-white/20 border-b-4 border-b-blue-500 rounded-[28px] p-6 shadow-lg shadow-blue-900/5 flex flex-col items-center justify-center text-center">
   <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-1">TOTAL MEMBERS</p>
                    
                     <p id="homeTotalMembers" class="text-2xl font-black bg-gradient-to-br from-blue-600 to-purple-600 bg-clip-text text-transparent">...</p>
@@ -415,74 +423,156 @@
         </div>
         
 
-        <!-- ================= പുതിതായി ചേർത്ത പ്രൊഫൈൽ പേജ് ================= -->
-       <div id="profilePage" class="hidden p-4 sm:p-6 fade-in pb-24">
-            
-            <h2 class="text-lg font-black text-slate-800 uppercase tracking-tight mb-8 text-center">പ്രൊഫൈൽ</h2>
-            
-            <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center mb-6 relative mt-10">
-                
-                <div class="w-24 h-24 bg-slate-100 rounded-full border-4 border-white shadow-md -mt-16 flex items-center justify-center text-slate-400 text-3xl relative overflow-visible z-10">
-                    <div class="w-full h-full rounded-full overflow-hidden flex items-center justify-center bg-slate-100">
-                        <img id="profImgDisplay" src="" class="hidden w-full h-full object-cover">
-                        <i id="profIconDisplay" class="fas fa-user"></i>
-                    </div>
-                    <label for="profPhotoUpload" class="absolute bottom-0 right-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center shadow-sm border-2 border-white cursor-pointer active:scale-90 transition-all hover:bg-blue-700 z-20">
-                        <i class="fas fa-camera text-[10px]"></i>
-                        <input type="file" id="profPhotoUpload" accept="image/*" class="hidden" onchange="uploadProfilePhoto(event)">
-                    </label>
-                </div>
-
-                <h3 id="profName" class="text-xl font-black text-slate-800 uppercase mt-4 w-full text-center">...</h3>
-                <p id="profBatch" class="text-[10px] font-black text-blue-600 bg-blue-50 px-3 py-1 rounded-full inline-block mt-2 uppercase tracking-widest text-center mx-auto">...</p>
-            </div>
-
-            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 mb-4 text-left">
-                <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 border-b pb-2">അടിസ്ഥാന വിവരങ്ങൾ</h4>
-                
-                <div class="space-y-4">
-                    <div>
-                        <p class="text-[9px] text-slate-400 font-bold uppercase">ഫോൺ നമ്പർ</p>
-                        <p id="profPhone" class="text-sm font-black text-slate-800">...</p>
-                    </div>
-                    <div>
-                        <p class="text-[9px] text-slate-400 font-bold uppercase">ഈമെയിൽ (Email)</p>
-                        <input type="email" id="profEmail" placeholder="email@example.com" class="w-full p-3 mt-1 border border-slate-200 rounded-xl text-xs font-bold outline-none focus:border-blue-500 bg-slate-50">
-                    </div>
-                    <div>
-                        <p class="text-[9px] text-slate-400 font-bold uppercase">രക്ത ഗ്രൂപ്പ് (Blood Group)</p>
-                        <select id="profBlood" class="w-full p-3 mt-1 border border-slate-200 rounded-xl text-xs font-bold outline-none focus:border-blue-500 bg-slate-50">
-                            <option value="">തിരഞ്ഞെടുക്കുക</option>
-                            <option value="A+">A+</option><option value="O+">O+</option><option value="B+">B+</option><option value="AB+">AB+</option>
-                            <option value="A-">A-</option><option value="O-">O-</option><option value="B-">B-</option><option value="AB-">AB-</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 mb-6 text-left">
-                <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 border-b pb-2">പ്രൊഫഷണൽ വിവരങ്ങൾ</h4>
-                
-                <div class="space-y-4">
-                    <div>
-                        <p class="text-[9px] text-slate-400 font-bold uppercase">നിലവിലെ ജോലി / സ്ഥാനം</p>
-                        <input type="text" id="profJob" placeholder="ഉദാ: Muallim" class="w-full p-3 mt-1 border border-slate-200 rounded-xl text-xs font-bold outline-none focus:border-blue-500 bg-slate-50">
-                    </div>
-                    <div>
-                        <p class="text-[9px] text-slate-400 font-bold uppercase">കമ്പനി / സ്ഥാപനം</p>
-                        <input type="text" id="profCompany" placeholder="ഉദാ: Madrassa" class="w-full p-3 mt-1 border border-slate-200 rounded-xl text-xs font-bold outline-none focus:border-blue-500 bg-slate-50">
-                    </div>
-                    <div>
-                        <p class="text-[9px] text-slate-400 font-bold uppercase">ജോലി ചെയ്യുന്ന സ്ഥലം</p>
-                        <input type="text" id="profLocation" placeholder="Nilambur" class="w-full p-3 mt-1 border border-slate-200 rounded-xl text-xs font-bold outline-none focus:border-blue-500 bg-slate-50">
-                    </div>
-                </div>
-            </div>
-
-            <button onclick="saveProfile()" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-black shadow-md active:scale-95 transition-all uppercase tracking-widest text-[11px] mb-3">Save Profile</button>
-            <button onclick="goHome()" class="w-full bg-rose-50 text-rose-600 py-4 rounded-2xl font-black active:scale-95 transition-all uppercase tracking-widest text-[11px] border border-rose-100">Logout</button>
-
+<!-- ================= പുതിയ മെമ്പേഴ്സ് ഡയറക്ടറി പേജ് ================= -->
+<div id="directoryPage" class="hidden p-4 sm:p-6 fade-in pb-24">
+    
+    <h2 class="text-xl font-black text-slate-800 uppercase tracking-tight mb-6 text-center drop-shadow-sm">അംഗങ്ങൾ</h2>
+    
+    <!-- തിരയാനുള്ള സെർച്ച് ബോക്സ് -->
+    <div class="bg-white p-4 rounded-[24px] shadow-sm border border-slate-100 mb-6 sticky top-2 z-30">
+        <div class="relative mb-3">
+            <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-blue-400"></i>
+            <input type="text" id="dirSearchInput" onkeyup="filterDirectory()" placeholder="പേരോ സ്ഥലമോ തിരയുക..." class="w-full pl-10 pr-4 py-3 bg-slate-50/50 border-2 border-slate-100 rounded-xl text-xs font-black text-slate-700 outline-none focus:border-blue-400 transition-all shadow-inner">
         </div>
+        
+        <!-- ബാച്ച് അടിസ്ഥാനത്തിൽ ഫിൽട്ടർ ചെയ്യാനുള്ള ബട്ടണുകൾ -->
+        <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1" id="dirBatchFilters">
+            <button onclick="filterDirBatch('all')" class="dir-filter-btn active px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest border-2 border-blue-500 bg-blue-500 text-white shadow-md transition-all whitespace-nowrap">എല്ലാവരും</button>
+            <!-- ബാക്കിവരുന്ന ബാച്ചുകൾ ജാവാസ്ക്രിപ്റ്റ് വഴി ഇവിടെ തനിയെ വരും -->
+        </div>
+    </div>
+
+    <!-- അംഗങ്ങളുടെ ലിസ്റ്റ് കാണിക്കുന്ന സ്ഥലം -->
+    <div id="directoryListContainer" class="space-y-3">
+        <!-- ഡാറ്റ ലോഡ് ആകുന്നത് വരെ കാണിക്കാൻ -->
+        <p class="text-center text-slate-400 font-bold text-xs p-5 uppercase tracking-widest animate-pulse mt-10">ഡാറ്റ ലോഡ് ചെയ്യുന്നു...</p>
+    </div>
+
+</div>
+<!-- ================= പുതിതായി ചേർത്ത പ്രൊഫൈൽ പേജ് (New Design) ================= -->
+<div id="profilePage" class="hidden p-4 sm:p-6 fade-in pb-24">
+    
+    <h2 class="text-xl font-black text-slate-800 uppercase tracking-tight mb-8 text-center drop-shadow-sm">പ്രൊഫൈൽ</h2>
+    
+    <!-- പ്രൊഫൈൽ അപൂർണ്ണമാണെങ്കിൽ കാണിക്കുന്ന മെസ്സേജ് -->
+    <div id="profileWarning" class="hidden bg-amber-50 p-4 rounded-2xl border-2 border-amber-200 mb-4 flex items-start gap-3 shadow-sm">
+        <i class="fas fa-exclamation-triangle text-amber-500 text-xl mt-1 animate-pulse"></i>
+        <div>
+            <p class="text-[10px] font-black text-amber-700 uppercase tracking-widest mb-1">പ്രൊഫൈൽ പൂർണ്ണമല്ല!</p>
+            <p class="text-[11px] font-bold text-amber-600 leading-tight">നിങ്ങളുടെ എല്ലാ വിവരങ്ങളും നൽകിയിട്ടില്ല. ദയവായി താഴെ കാണുന്ന വിവരങ്ങൾ പൂരിപ്പിച്ച് സേവ് ചെയ്യുക.</p>
+        </div>
+    </div>
+
+    <!-- പ്രൊഫൈൽ ഹെഡർ കാർഡ് -->
+    <div class="bg-white p-6 rounded-[32px] shadow-xl shadow-blue-900/5 border-2 border-blue-50 flex flex-col items-center justify-center text-center mb-8 relative mt-12">
+        <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 to-blue-300 rounded-t-[32px]"></div>
+        <div class="w-28 h-28 bg-blue-50 rounded-full border-4 border-white shadow-lg -mt-16 flex items-center justify-center text-blue-300 text-4xl relative overflow-visible z-10">
+            <div class="w-full h-full rounded-full overflow-hidden flex items-center justify-center bg-blue-50">
+                <img id="profImgDisplay" src="" class="hidden w-full h-full object-cover">
+                <i id="profIconDisplay" class="fas fa-user"></i>
+            </div>
+            <label for="profPhotoUpload" class="absolute bottom-0 right-0 w-9 h-9 bg-blue-600 text-white rounded-full flex items-center justify-center shadow-md border-4 border-white cursor-pointer active:scale-90 transition-all hover:bg-blue-700 z-20">
+                <i class="fas fa-camera text-[11px]"></i>
+                <input type="file" id="profPhotoUpload" accept="image/*" class="hidden" onchange="uploadProfilePhoto(event)">
+            </label>
+        </div>
+        <h3 id="profName" class="text-2xl font-black text-slate-800 uppercase mt-5 w-full text-center tracking-tight">...</h3>
+        <p id="profBatch" class="text-[10px] font-black text-blue-600 bg-blue-50 px-4 py-1.5 rounded-full inline-block mt-3 uppercase tracking-[0.2em] text-center mx-auto border border-blue-100 shadow-sm">...</p>
+    </div>
+
+    <!-- അടിസ്ഥാന വിവരങ്ങൾ -->
+    <div class="bg-white p-6 rounded-[28px] shadow-lg shadow-blue-900/5 border border-blue-100 mb-6 text-left relative overflow-hidden group hover:border-blue-300 transition-colors duration-300">
+        <div class="absolute top-0 left-0 w-full h-1.5 bg-blue-500 opacity-80"></div>
+        <h4 class="text-[11px] font-black text-blue-900 uppercase tracking-widest mb-6 flex items-center gap-2"><div class="w-7 h-7 rounded-full bg-blue-50 flex items-center justify-center text-blue-500"><i class="fas fa-address-card text-xs"></i></div> അടിസ്ഥാന വിവരങ്ങൾ</h4>
+        
+        <div class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+                <div class="col-span-2">
+                    <p class="text-[9px] text-slate-400 font-bold uppercase ml-1 mb-1">പേര് (Name)</p>
+                    <input type="text" id="profNameInput" class="w-full p-3.5 border-2 border-blue-50 rounded-xl text-xs font-black text-slate-700 outline-none focus:border-blue-500 focus:bg-white bg-slate-50/50 transition-all uppercase shadow-inner">
+                </div>
+                <div class="col-span-2 sm:col-span-1">
+                    <p class="text-[9px] text-slate-400 font-bold uppercase ml-1 mb-1">ഫോൺ നമ്പർ</p>
+                    <input type="tel" id="profPhoneInput" maxlength="10" class="w-full p-3.5 border-2 border-blue-50 rounded-xl text-xs font-black text-slate-700 outline-none focus:border-blue-500 focus:bg-white bg-slate-50/50 transition-all shadow-inner">
+                </div>
+                <div class="col-span-2 sm:col-span-1">
+                    <p class="text-[9px] text-slate-400 font-bold uppercase ml-1 mb-1">ജനനത്തീയതി (DOB)</p>
+                    <input type="date" id="profDob" class="w-full p-3.5 border-2 border-blue-50 rounded-xl text-xs font-black text-slate-700 outline-none focus:border-blue-500 focus:bg-white bg-slate-50/50 transition-all shadow-inner uppercase tracking-wider">
+                </div>
+            </div>
+            
+            <div>
+                <p class="text-[9px] text-slate-400 font-bold uppercase ml-1 mb-1">സ്ഥലം (Place)</p>
+                <input type="text" id="profPlace" placeholder="സ്വന്തം സ്ഥലം" class="w-full p-3.5 border-2 border-blue-50 rounded-xl text-xs font-black text-slate-700 outline-none focus:border-blue-500 focus:bg-white bg-slate-50/50 transition-all shadow-inner">
+            </div>
+            <div>
+                <p class="text-[9px] text-slate-400 font-bold uppercase ml-1 mb-1">വിലാസം (Address)</p>
+                <textarea id="profAddress" placeholder="മുഴുവൻ വിലാസം" rows="2" class="w-full p-3.5 border-2 border-blue-50 rounded-xl text-xs font-black text-slate-700 outline-none focus:border-blue-500 focus:bg-white bg-slate-50/50 transition-all shadow-inner resize-none"></textarea>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <div class="col-span-2">
+                    <p class="text-[9px] text-slate-400 font-bold uppercase ml-1 mb-1">ഈമെയിൽ (Email)</p>
+                    <input type="email" id="profEmail" placeholder="email@example.com" class="w-full p-3.5 border-2 border-blue-50 rounded-xl text-xs font-black text-slate-700 outline-none focus:border-blue-500 focus:bg-white bg-slate-50/50 transition-all shadow-inner">
+                </div>
+                <div class="col-span-2">
+                    <p class="text-[9px] text-slate-400 font-bold uppercase ml-1 mb-1">രക്ത ഗ്രൂപ്പ് (Blood Group)</p>
+                    <select id="profBlood" class="w-full p-3.5 border-2 border-blue-50 rounded-xl text-xs font-black text-slate-700 outline-none focus:border-blue-500 focus:bg-white bg-slate-50/50 transition-all shadow-inner appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%233b82f6%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E')] bg-[length:12px_12px] bg-[right_16px_center] bg-no-repeat pr-10">
+                        <option value="">തിരഞ്ഞെടുക്കുക</option>
+                        <option value="A+">A+</option><option value="O+">O+</option><option value="B+">B+</option><option value="AB+">AB+</option>
+                        <option value="A-">A-</option><option value="O-">O-</option><option value="B-">B-</option><option value="AB-">AB-</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- പ്രൊഫഷണൽ വിവരങ്ങൾ -->
+    <div class="bg-white p-6 rounded-[28px] shadow-lg shadow-blue-900/5 border border-blue-100 mb-6 text-left relative overflow-hidden group hover:border-blue-300 transition-colors duration-300">
+        <div class="absolute top-0 left-0 w-full h-1.5 bg-blue-500 opacity-80"></div>
+        <h4 class="text-[11px] font-black text-blue-900 uppercase tracking-widest mb-6 flex items-center gap-2"><div class="w-7 h-7 rounded-full bg-blue-50 flex items-center justify-center text-blue-500"><i class="fas fa-briefcase text-xs"></i></div> പ്രൊഫഷണൽ വിവരങ്ങൾ</h4>
+        
+        <div class="space-y-4">
+            <div>
+                <p class="text-[9px] text-slate-400 font-bold uppercase ml-1 mb-1">നിലവിലെ ജോലി / സ്ഥാനം</p>
+                <input type="text" id="profJob" placeholder="ഉദാ: Muallim" class="w-full p-3.5 border-2 border-blue-50 rounded-xl text-xs font-black text-slate-700 outline-none focus:border-blue-500 focus:bg-white bg-slate-50/50 transition-all shadow-inner">
+            </div>
+            <div>
+                <p class="text-[9px] text-slate-400 font-bold uppercase ml-1 mb-1">കമ്പനി / സ്ഥാപനം</p>
+                <input type="text" id="profCompany" placeholder="ഉദാ: Madrassa" class="w-full p-3.5 border-2 border-blue-50 rounded-xl text-xs font-black text-slate-700 outline-none focus:border-blue-500 focus:bg-white bg-slate-50/50 transition-all shadow-inner">
+            </div>
+            <div>
+                <p class="text-[9px] text-slate-400 font-bold uppercase ml-1 mb-1">ജോലി ചെയ്യുന്ന സ്ഥലം</p>
+                <input type="text" id="profLocation" placeholder="Nilambur" class="w-full p-3.5 border-2 border-blue-50 rounded-xl text-xs font-black text-slate-700 outline-none focus:border-blue-500 focus:bg-white bg-slate-50/50 transition-all shadow-inner">
+            </div>
+        </div>
+    </div>
+
+    <!-- സുരക്ഷാ വിവരങ്ങൾ -->
+    <div class="bg-white p-6 rounded-[28px] shadow-lg shadow-slate-900/5 border border-slate-200 mb-8 text-left relative overflow-hidden group hover:border-slate-400 transition-colors duration-300">
+        <div class="absolute top-0 left-0 w-full h-1.5 bg-slate-800 opacity-80"></div>
+        <h4 class="text-[11px] font-black text-slate-800 uppercase tracking-widest mb-6 flex items-center gap-2"><div class="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-slate-600"><i class="fas fa-shield-alt text-xs"></i></div> സുരക്ഷാ വിവരങ്ങൾ</h4>
+        
+        <div class="space-y-4">
+            <div>
+                <p class="text-[9px] text-slate-400 font-bold uppercase ml-1 mb-1">പാസ്‌വേഡ് മാറ്റുക (Password)</p>
+                <input type="text" id="profPassword" placeholder="പാസ്‌വേഡ് നൽകുക" class="w-full p-3.5 border-2 border-slate-100 rounded-xl text-xs font-black text-slate-700 outline-none focus:border-slate-800 focus:bg-white bg-slate-50/50 transition-all shadow-inner" style="font-family: monospace; letter-spacing: 2px;">
+                <p class="text-[9px] text-slate-400 mt-2 ml-1 flex items-center gap-1.5"><i class="fas fa-info-circle text-blue-400"></i> ലോഗിൻ ചെയ്യാൻ ഉപയോഗിക്കുന്ന പാസ്‌വേഡ് (MID).</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex flex-col gap-3">
+        <button onclick="saveProfile()" class="w-full py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-2xl font-black shadow-xl shadow-blue-600/30 active:scale-95 transition-all uppercase tracking-widest text-[11px] border border-blue-500 flex items-center justify-center gap-2">
+            <i class="fas fa-save text-sm"></i> Save Profile
+        </button>
+        <button onclick="goHome()" class="w-full py-4 bg-white text-rose-600 rounded-2xl font-black active:scale-95 transition-all uppercase tracking-widest text-[11px] border-2 border-rose-100 shadow-sm flex items-center justify-center gap-2">
+            <i class="fas fa-sign-out-alt"></i> ലോഗൗട്ട് ചെയ്യുക
+        </button>
+    </div>
+
+</div>
+       
         
     
         <!-- ================= പ്രൊഫൈൽ പേജ് അവസാനിച്ചു ================= -->
@@ -765,7 +855,23 @@
     </div>
 </div>
     </div>
-
+<!-- Image Cropper Modal -->
+<div id="cropModal" class="hidden fixed inset-0 bg-slate-900/95 flex flex-col items-center justify-center p-4 z-[20000]">
+    <div class="bg-white w-full max-w-md rounded-3xl p-5 shadow-2xl flex flex-col h-[70vh]">
+        <h3 class="font-black text-lg text-slate-800 uppercase tracking-tight mb-4 text-center">ഫോട്ടോ ക്രോപ്പ് ചെയ്യുക</h3>
+        
+        <!-- ഫോട്ടോ കാണിക്കുന്ന ഭാഗം -->
+        <div class="flex-1 bg-slate-100 rounded-2xl overflow-hidden mb-5 relative w-full flex items-center justify-center">
+            <img id="cropImage" src="" class="max-w-full max-h-full block">
+        </div>
+        
+        <!-- ബട്ടണുകൾ -->
+        <div class="flex gap-3">
+            <button onclick="closeCropper()" class="flex-1 bg-slate-50 text-slate-600 py-4 rounded-2xl font-black active:scale-95 transition-all uppercase tracking-widest text-[11px] border border-slate-200">Cancel</button>
+            <button onclick="confirmCrop()" class="flex-1 bg-blue-600 text-white py-4 rounded-2xl font-black shadow-lg shadow-blue-200 active:scale-95 transition-all uppercase tracking-widest text-[11px]">Crop & Save</button>
+        </div>
+    </div>
+</div>
     <script>
         // എറർ വരികയാണെങ്കിൽ സ്ക്രീനിൽ കാണിക്കാൻ
         window.onerror = function(message, source, lineno, colno, error) {
@@ -786,11 +892,13 @@
         let globalAppMonth = new Date().getMonth();
 
         let fullHistory = [], currentMember = null, pendingMonthsList = [], upcomingMonthsList = [], timerInterval, currentPaymentType = 'single', currentTargetData = null, adminMembers = [], pendingApprovalsList = [], adminChart = null;
+        let directoryMembers = [];
+        let currentDirBatch = 'all';
         let currentFilteredMembers = [];
         let lastMonthDataGlobal = null;
 
         // --- പുതിയ API സിസ്റ്റം ---
-        const API_URL = "https://script.google.com/macros/s/AKfycbxY8NJcB-CaZ_hM5qaAXFsRmW7zoA_ge0AIJFzsjnSBDR5J4nvM1dyhTq_E4j20Alz9/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbxQJYmwW_g01o-tZBPevFEMH4uZ4E_ZBqDiteHmloKYc6ulnWvamHHJXPX0HpmPZWvARA/exec";
 
         async function callAPI(action, data = {}) {
             try {
@@ -1012,12 +1120,43 @@ switchAppTab('home'); // ലോഗിൻ ചെയ്ത ഉടനെ ഹോം 
                     if (profileBatch) profileBatch.innerText = d.id || 'N/A';
                     if (profilePhone) profilePhone.innerText = d.phone;
                     
-                    // പ്രൊഫൈലിലെ മറ്റ് വിവരങ്ങൾ ബോക്സുകളിൽ കാണിക്കാൻ
-                    document.getElementById('profEmail').value = d.email || '';
-                    document.getElementById('profBlood').value = d.blood || '';
-                    document.getElementById('profJob').value = d.job || '';
-                    document.getElementById('profCompany').value = d.company || '';
-                    document.getElementById('profLocation').value = d.location || '';
+                    // പ്രൊഫൈലിലെ വിവരങ്ങൾ ബോക്സുകളിൽ കാണിക്കാൻ
+if(document.getElementById('profNameInput')) document.getElementById('profNameInput').value = d.name || '';
+if(document.getElementById('profPhoneInput')) document.getElementById('profPhoneInput').value = d.phone || '';
+if(document.getElementById('profEmail')) document.getElementById('profEmail').value = d.email || '';
+if(document.getElementById('profBlood')) document.getElementById('profBlood').value = d.blood || '';
+if(document.getElementById('profJob')) document.getElementById('profJob').value = d.job || '';
+if(document.getElementById('profCompany')) document.getElementById('profCompany').value = d.company || '';
+if(document.getElementById('profLocation')) document.getElementById('profLocation').value = d.location || '';
+// ആ പഴയ വരിക്ക് പകരം ഈ കോഡ് നൽകുക:
+if(document.getElementById('profDob')) {
+    if(d.dob && d.dob !== "") {
+        let dobDate = new Date(d.dob);
+        if(!isNaN(dobDate.getTime())) {
+            // ഇത് കൃത്യമായി YYYY-MM-DD എന്ന ഫോർമാറ്റിലേക്ക് മാറ്റുന്നു
+            let yyyy = dobDate.getFullYear();
+            let mm = String(dobDate.getMonth() + 1).padStart(2, '0');
+            let dd = String(dobDate.getDate()).padStart(2, '0');
+            document.getElementById('profDob').value = `${yyyy}-${mm}-${dd}`;
+        }
+    } else {
+        document.getElementById('profDob').value = '';
+    }
+}
+if(document.getElementById('profPlace')) document.getElementById('profPlace').value = d.place || '';
+if(document.getElementById('profAddress')) document.getElementById('profAddress').value = d.address || '';
+if(document.getElementById('profPassword')) document.getElementById('profPassword').value = d.password || d.id || '';
+
+// പ്രൊഫൈൽ പൂർണ്ണമാണോ എന്ന് പരിശോധിക്കുന്നു (Warning Box Logic)
+const warningBox = document.getElementById('profileWarning');
+if (warningBox) {
+    let isComplete = d.email && d.blood && d.job && d.location && d.dob && d.place && d.address;
+    if (!isComplete || isComplete === "") {
+        warningBox.classList.remove('hidden');
+    } else {
+        warningBox.classList.add('hidden');
+    }
+}
                     // ==========================================================
                     // ഡാഷ്‌ബോർഡിലെ ആകെ അംഗങ്ങൾ
                     const homeTotal = document.getElementById('homeTotalMembers');
@@ -1036,6 +1175,7 @@ switchAppTab('home'); // ലോഗിൻ ചെയ്ത ഉടനെ ഹോം 
                         if(profImg) { profImg.src = ""; profImg.classList.add('hidden'); profIcon.classList.remove('hidden'); }
                         if(homeImg) { homeImg.src = ""; homeImg.classList.add('hidden'); homeIcon.classList.remove('hidden'); }
                     }
+
                     
                     if (mAdvance) {
                         if (advancePaid > 0) {
@@ -1728,6 +1868,7 @@ function updateAdminStats(batch) {
                         }, 500);
                     }
                 <\/script>
+                
             </body>
             </html>
             `;
@@ -2319,7 +2460,136 @@ function contactAdmin() {
     window.open(`https://wa.me/${wpNumber}?text=${textMsg}`, '_blank');
 }
 let activeHistoryFilter = 'all';
+// ================= ഡയറക്ടറി ഫംഗ്ഷനുകൾ =================
 
+// ഡാറ്റ കൊണ്ടുവരാനുള്ള ഫംഗ്ഷൻ
+function fetchDirectoryData() {
+    // ഡാറ്റ നേരത്തെ എടുത്തിട്ടുണ്ടെങ്കിൽ വീണ്ടും എടുക്കേണ്ടതില്ല
+    if (directoryMembers.length > 0) {
+        renderDirectory(directoryMembers);
+        return;
+    }
+    
+    const container = document.getElementById('directoryListContainer');
+    if(container) container.innerHTML = '<p class="text-center text-slate-400 font-bold text-xs p-5 uppercase tracking-widest animate-pulse mt-10">ഡാറ്റ ലോഡ് ചെയ്യുന്നു...</p>';
+    
+    callAPI('getDirectoryData', {}).then(res => {
+        if (res.error) {
+            if(container) container.innerHTML = `<p class="text-center text-rose-500 font-bold text-xs p-5">${res.error}</p>`;
+        } else if (res.members) {
+            directoryMembers = res.members;
+            setupDirectoryBatches();
+            renderDirectory(directoryMembers);
+        }
+    }).catch(err => {
+        if(container) container.innerHTML = '<p class="text-center text-rose-500 font-bold text-xs p-5">നെറ്റ്‌വർക്ക് പ്രശ്നം!</p>';
+    });
+}
+
+// ബാച്ച് ബട്ടണുകൾ സെറ്റ് ചെയ്യാൻ
+function setupDirectoryBatches() {
+    let batches = [...new Set(directoryMembers.map(m => m.batch))].filter(b => b !== 'UNASSIGNED').sort();
+    const filterContainer = document.getElementById('dirBatchFilters');
+    if (!filterContainer) return;
+    
+    let html = `<button onclick="filterDirBatch('all')" id="dirBtn-all" class="dir-filter-btn active px-5 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest border-2 border-blue-500 bg-blue-500 text-white shadow-md transition-all whitespace-nowrap">എല്ലാവരും</button>`;
+    
+    batches.forEach(b => {
+        html += `<button onclick="filterDirBatch('${b}')" id="dirBtn-${b}" class="dir-filter-btn px-5 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest border-2 border-slate-100 bg-white text-slate-500 shadow-sm transition-all whitespace-nowrap hover:bg-slate-50">${b}</button>`;
+    });
+    
+    filterContainer.innerHTML = html;
+}
+
+// ബാച്ച് വെച്ച് ഫിൽട്ടർ ചെയ്യാൻ
+function filterDirBatch(batch) {
+    currentDirBatch = batch;
+    
+    // ബട്ടൺ സ്റ്റൈൽ മാറ്റുന്നു
+    document.querySelectorAll('.dir-filter-btn').forEach(btn => {
+        btn.className = "dir-filter-btn px-5 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest border-2 border-slate-100 bg-white text-slate-500 shadow-sm transition-all whitespace-nowrap hover:bg-slate-50";
+    });
+    const activeBtn = document.getElementById('dirBtn-' + batch);
+    if (activeBtn) {
+        activeBtn.className = "dir-filter-btn active px-5 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest border-2 border-blue-500 bg-blue-500 text-white shadow-md transition-all whitespace-nowrap";
+    }
+    
+    filterDirectory();
+}
+
+// സെർച്ച് & ഫിൽട്ടർ ചെയ്യാൻ
+function filterDirectory() {
+    const q = document.getElementById('dirSearchInput') ? document.getElementById('dirSearchInput').value.toLowerCase() : '';
+    
+    let filtered = directoryMembers.filter(m => {
+        const matchSearch = m.name.toLowerCase().includes(q) || m.place.toLowerCase().includes(q) || m.phone.includes(q) || m.id.toLowerCase().includes(q);
+        const matchBatch = (currentDirBatch === 'all') || (m.batch === currentDirBatch);
+        return matchSearch && matchBatch;
+    });
+    
+    renderDirectory(filtered);
+}
+
+// ഡിസൈൻ ചെയ്ത കാർഡുകൾ കാണിക്കാൻ
+function renderDirectory(membersList) {
+    const container = document.getElementById('directoryListContainer');
+    if (!container) return;
+    
+    if (membersList.length === 0) {
+        container.innerHTML = '<div class="bg-white p-8 rounded-3xl border border-dashed border-slate-200 text-center mt-4"><i class="fas fa-search text-3xl text-slate-200 mb-3"></i><p class="text-slate-400 font-bold text-[11px] uppercase tracking-widest">ആരെയും കണ്ടെത്തിയില്ല</p></div>';
+        return;
+    }
+    
+// പഴയ renderDirectory ഫംഗ്ഷനിലെ കാർഡ് ഡിസൈൻ ഭാഗം ഇങ്ങനെ മാറ്റുക
+container.innerHTML = membersList.map(m => `
+    <div class="bg-white p-5 rounded-[24px] shadow-sm border border-slate-100 flex flex-col gap-4 relative overflow-hidden group hover:shadow-md hover:border-blue-100 transition-all">
+        <div class="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-blue-400 to-blue-600 opacity-80"></div>
+        
+        <div class="flex justify-between items-start pl-2">
+            <div class="flex gap-4 items-center">
+                <!-- 👇 ഫോട്ടോ ഉണ്ടെങ്കിൽ അത് കാണിക്കും, ഇല്ലെങ്കിൽ ആദ്യത്തെ അക്ഷരം കാണിക്കും -->
+                <div class="w-12 h-12 rounded-full bg-blue-50 overflow-hidden flex items-center justify-center border-2 border-white shadow-inner">
+                    ${m.photo && m.photo !== "" ? 
+                        `<img src="${m.photo}" class="w-full h-full object-cover">` : 
+                        `<span class="text-blue-600 font-black text-xl uppercase">${m.name.charAt(0)}</span>`
+                    }
+                </div>
+                <div>
+                    <h3 class="font-black text-slate-800 text-sm uppercase tracking-tight leading-tight">${m.name}</h3>
+                    <p class="text-[9px] font-black text-blue-600 bg-blue-50 px-2.5 py-0.5 rounded border border-blue-100 uppercase tracking-widest inline-block mt-1.5 shadow-sm">${m.batch}</p>
+                </div>
+            </div>
+            <!-- ബാക്കി കോഡുകൾ (MID, Place തുടങ്ങിയവ) മാറ്റമില്ലാതെ തുടരും... -->
+            <div class="text-right bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100">
+                <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-0.5">MID</p>
+                <p class="font-black text-blue-700 text-xs tracking-wider">${m.id}</p>
+            </div>
+        </div>
+        
+        <!-- ബാക്കി വിവരങ്ങൾ... -->
+        <div class="grid grid-cols-2 gap-2 bg-slate-50 p-3 rounded-xl border border-slate-100 ml-2 shadow-inner">
+            <div class="flex items-center gap-2">
+                <i class="fas fa-map-marker-alt text-slate-400 text-[10px] w-3 text-center"></i>
+                <p class="text-[10px] font-bold text-slate-600 truncate">${m.place || 'ലഭ്യമല്ല'}</p>
+            </div>
+            <div class="flex items-center gap-2">
+                <i class="fas fa-tint text-rose-400 text-[10px] w-3 text-center"></i>
+                <p class="text-[10px] font-bold text-slate-600">${m.blood || 'N/A'}</p>
+            </div>
+        </div>
+        
+<!-- കോൾ / വാട്സ്ആപ്പ് ബട്ടണുകൾ -->
+            <div class="flex gap-2 ml-2 mt-1">
+                <a href="tel:${m.phone}" class="flex-1 bg-white border-2 border-slate-100 text-slate-600 py-3 rounded-xl flex justify-center items-center gap-2 active:scale-95 transition-all hover:bg-slate-50 hover:border-blue-200 hover:text-blue-600 shadow-sm">
+                    <i class="fas fa-phone-alt text-sm"></i> <span class="text-[11px] font-black tracking-widest">${m.phone}</span>
+                </a>
+                <a href="https://wa.me/91${m.phone.replace(/\D/g,'')}" target="_blank" class="w-14 bg-[#25D366]/10 border-2 border-[#25D366]/20 text-[#25D366] rounded-xl flex justify-center items-center active:scale-95 transition-all hover:bg-[#25D366]/20 shadow-sm">
+                    <i class="fab fa-whatsapp text-xl"></i>
+                </a>
+            </div>
+        </div>
+    `).join('');
+}
 function renderHistory(filterType = 'all') {
     if (!currentMember || !fullHistory) return;
     activeHistoryFilter = filterType;
@@ -2519,9 +2789,10 @@ function closeNoticeModal() {
         toggleScroll(false);
     }, 300);
 }
-  // പേജുകൾ മാറാനുള്ള ഫംഗ്ഷൻ (Updated)
+// പേജുകൾ മാറാനുള്ള ഫംഗ്ഷൻ (Directory ഉൾപ്പെടുത്തിയത്)
 function switchAppTab(tabName) {
-    const tabs = ['home', 'dues', 'history', 'profile'];
+    // ഇപ്പോൾ 5 ടാബുകൾ ഉണ്ട്
+    const tabs = ['home', 'dues', 'history', 'directory', 'profile'];
     
     tabs.forEach(tab => {
         // 1. ബട്ടണുകളിലെ ആക്ടീവ് സ്റ്റൈൽ മാറ്റുന്നു
@@ -2531,7 +2802,9 @@ function switchAppTab(tabName) {
         // 2. എല്ലാ പേജുകളും ഹൈഡ് ചെയ്യുന്നു
         const page = (tab === 'home') ? 'homePage' : 
                      (tab === 'dues') ? 'memberPage' : 
-                     (tab === 'history') ? 'historyPage' : 'profilePage';
+                     (tab === 'history') ? 'historyPage' : 
+                     (tab === 'directory') ? 'directoryPage' : 'profilePage';
+                     
         const pageEl = document.getElementById(page);
         if (pageEl) pageEl.classList.add('hidden');
     });
@@ -2543,18 +2816,22 @@ function switchAppTab(tabName) {
     // 4. ക്ലിക്ക് ചെയ്ത പേജ് കാണിക്കുന്നു
     const activePage = (tabName === 'home') ? 'homePage' : 
                        (tabName === 'dues') ? 'memberPage' : 
-                       (tabName === 'history') ? 'historyPage' : 'profilePage';
+                       (tabName === 'history') ? 'historyPage' : 
+                       (tabName === 'directory') ? 'directoryPage' : 'profilePage';
+                       
     const activePageEl = document.getElementById(activePage);
     if (activePageEl) {
         activePageEl.classList.remove('hidden');
-        // പേജ് മാറുമ്പോൾ സ്ക്രോൾ ടോപ്പിലേക്ക് മാറ്റുന്നു
         window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
-    // ഹിസ്റ്ററി ആണെങ്കിൽ റെൻഡർ ചെയ്യുന്നു
+    // പേജുകൾക്കനുസരിച്ച് ഡാറ്റ ലോഡ് ചെയ്യാൻ
     if (tabName === 'history') renderHistory();
+    if (tabName === 'directory') {
+        if(typeof fetchDirectoryData === 'function') fetchDirectoryData();
+    }
 }
-        // പ്രൊഫൈൽ സേവ് ചെയ്യാനുള്ള ഫംഗ്ഷൻ
+
 // പ്രൊഫൈൽ സേവ് ചെയ്യാനുള്ള ഫംഗ്ഷൻ
 function saveProfile() {
     if (!currentMember || !currentMember.id) {
@@ -2562,31 +2839,50 @@ function saveProfile() {
         return;
     }
 
-    // HTML-ൽ ഉള്ള യഥാർത്ഥ ID-കൾ വെച്ച് വിവരങ്ങൾ എടുക്കുന്നു
+    // എല്ലാ ഇൻപുട്ട് ഫീൽഡുകളിൽ നിന്നുമുള്ള വിവരങ്ങൾ എടുക്കുന്നു
+    let nameVal = document.getElementById('profNameInput') ? document.getElementById('profNameInput').value.trim() : currentMember.name;
+    let phoneVal = document.getElementById('profPhoneInput') ? document.getElementById('profPhoneInput').value.trim() : currentMember.phone;
     let emailVal = document.getElementById('profEmail') ? document.getElementById('profEmail').value : '';
     let bloodVal = document.getElementById('profBlood') ? document.getElementById('profBlood').value : '';
     let jobVal = document.getElementById('profJob') ? document.getElementById('profJob').value : '';
     let companyVal = document.getElementById('profCompany') ? document.getElementById('profCompany').value : '';
     let locationVal = document.getElementById('profLocation') ? document.getElementById('profLocation').value : '';
+    let dobVal = document.getElementById('profDob') ? document.getElementById('profDob').value : '';
+    let placeVal = document.getElementById('profPlace') ? document.getElementById('profPlace').value : '';
+    let addressVal = document.getElementById('profAddress') ? document.getElementById('profAddress').value : '';
+    let passwordVal = document.getElementById('profPassword') ? document.getElementById('profPassword').value : '';
+
+    if(nameVal === "" || phoneVal === "") {
+        Swal.fire('ശ്രദ്ധിക്കുക', 'പേരും ഫോൺ നമ്പറും നിർബന്ധമായും നൽകണം.', 'warning');
+        return;
+    }
 
     showLoader(true);
     
-    // API വഴി ഗൂഗിൾ ഷീറ്റിലേക്ക് ഡാറ്റ അയക്കുന്നു
     callAPI('updateProfileData', { 
         id: currentMember.id, 
+        name: nameVal,          // എഡിറ്റ് ചെയ്ത പേര്
+        phone: phoneVal,        // എഡിറ്റ് ചെയ്ത നമ്പർ
         email: emailVal, 
         blood: bloodVal, 
         job: jobVal, 
         company: companyVal, 
-        location: locationVal 
+        location: locationVal,
+        dob: dobVal,          
+        place: placeVal,      
+        address: addressVal,  
+        password: passwordVal 
     }).then(res => {
         showLoader(false);
         if(res.error) {
             Swal.fire('പിഴവ്', res.error, 'error');
         } else {
+            // ഫോൺ നമ്പറോ പാസ്‌വേഡോ മാറ്റിയിട്ടുണ്ടെങ്കിൽ ബ്രൗസറിൽ അത് അപ്ഡേറ്റ് ചെയ്യുന്നു (അടുത്ത ലോഗിന് വേണ്ടി)
+            if(phoneVal) localStorage.setItem('muaawina_phone', phoneVal);
+            if(passwordVal) localStorage.setItem('muaawina_mid', passwordVal);
+            
             Swal.fire('വിജയിച്ചു!', 'പ്രൊഫൈൽ വിജയകരമായി അപ്ഡേറ്റ് ചെയ്തു.', 'success').then(() => {
-                // സേവ് ചെയ്ത ശേഷം ഡാറ്റ റീഫ്രഷ് ചെയ്യാൻ
-                fetchMemberDetails(true); 
+                fetchMemberDetails(true); // വിവരങ്ങൾ റീലോഡ് ചെയ്യുന്നു
             });
         }
     }).catch(err => {
@@ -2594,41 +2890,105 @@ function saveProfile() {
         Swal.fire('പിഴവ്', 'നെറ്റ്‌വർക്ക് പ്രശ്നം! ഒന്നുകൂടി ശ്രമിക്കുക.', 'error');
     });
 }
-      // പ്രൊഫൈൽ ഫോട്ടോ ഗൂഗിൾ ഡ്രൈവിലേക്ക് അപ്‌ലോഡ് ചെയ്യാൻ
-        function uploadProfilePhoto(event) {
-            const file = event.target.files[0];
-            if(!file || !currentMember) return;
+
+// ക്രോപ്പർ ഉപയോഗിക്കാനുള്ള വേരിയബിൾ
+let cropper = null;
+
+// ഫോട്ടോ സെലക്ട് ചെയ്യുമ്പോൾ ക്രോപ്പർ ഓപ്പൺ ആകാൻ
+function uploadProfilePhoto(event) {
+    const file = event.target.files[0];
+    if (!file || !currentMember) return;
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const cropModal = document.getElementById('cropModal');
+        const cropImage = document.getElementById('cropImage');
+        
+        // Modal HTML ഇല്ലെങ്കിൽ അലർട്ട് കാണിക്കാൻ
+        if (!cropModal || !cropImage) {
+            alert("ക്രോപ്പർ ഡിസൈൻ (HTML) കണ്ടെത്തിയില്ല!");
+            return;
+        }
+        
+        // തിരഞ്ഞെടുത്ത ഫോട്ടോ ക്രോപ്പറിൽ കാണിക്കുന്നു
+        cropImage.src = e.target.result;
+        cropModal.classList.remove('hidden');
+
+        // പഴയ ക്രോപ്പർ ഉണ്ടെങ്കിൽ അത് കളയുന്നു
+        if (cropper) { cropper.destroy(); }
+
+        // പുതിയ ക്രോപ്പർ സെറ്റ് ചെയ്യുന്നു (പ്രൊഫൈൽ ഫോട്ടോ ആയതിനാൽ 1:1 അനുപാതത്തിൽ)
+        cropper = new Cropper(cropImage, {
+            aspectRatio: 1, 
+            viewMode: 1,
+            autoCropArea: 1,
+            background: false
+        });
+    };
+    reader.readAsDataURL(file);
+    
+    // ഒരേ ഫോട്ടോ വീണ്ടും സെലക്ട് ചെയ്യാൻ വേണ്ടി ഇൻപുട്ട് റീസെറ്റ് ചെയ്യുന്നു
+    event.target.value = ''; 
+}
+
+
+// ക്രോപ്പർ ക്ലോസ് ചെയ്യാൻ
+function closeCropper() {
+    document.getElementById('cropModal').classList.add('hidden');
+    if (cropper) { 
+        cropper.destroy(); 
+        cropper = null; 
+    }
+}
+
+// ക്രോപ്പ് ചെയ്ത ഫോട്ടോ അപ്‌ലോഡ് ചെയ്യാൻ
+function confirmCrop() {
+    if (!cropper) return;
+    
+    showLoader(true);
+
+    // 1. ക്രോപ്പർ ക്ലോസ് ചെയ്യുന്നതിന് മുൻപ് ഫോട്ടോ (Canvas) എടുക്കുന്നു
+    const canvas = cropper.getCroppedCanvas({
+        width: 400, // പ്രൊഫൈൽ ഫോട്ടോയ്ക്ക് ഈ വലിപ്പം മതിയാകും
+        height: 400
+    });
+    
+    // 2. ക്യാൻവാസ് ബേസ്64 (Base64) രൂപത്തിലാക്കുന്നു
+    const base64Data = canvas.toDataURL('image/jpeg', 0.9);
+
+    // 3. ഫോട്ടോ എടുത്തതിന് ശേഷം മാത്രം ക്രോപ്പർ ഹൈഡ് ചെയ്യുന്നു
+    closeCropper(); 
+
+    // 4. API വഴി ഗൂഗിൾ ഡ്രൈവിലേക്ക് അയക്കുന്നു
+    callAPI('uploadProfilePhoto', {
+        id: currentMember.id,
+        base64: base64Data,
+        mimeType: 'image/jpeg',
+        fileName: currentMember.name + "_MUAAWINA.jpg"
+    }).then(res => {
+        showLoader(false);
+        if(res.error) {
+            Swal.fire('പിഴവ്', res.error, 'error');
+        } else {
+            // പ്രൊഫൈൽ പേജിലെ ഫോട്ടോ അപ്ഡേറ്റ് ചെയ്യുന്നു
+            document.getElementById('profImgDisplay').src = res.url;
+            document.getElementById('profImgDisplay').classList.remove('hidden');
+            document.getElementById('profIconDisplay').classList.add('hidden');
             
-            showLoader(true);
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const base64Data = e.target.result;
-                
-                callAPI('uploadProfilePhoto', {
-                    id: currentMember.id,
-                    base64: base64Data,
-                    mimeType: file.type,
-                    fileName: currentMember.name + "_MUAAWINA.jpg"
-                }).then(res => {
-                    showLoader(false);
-                    if(res.error) {
-                        Swal.fire('Error', res.error, 'error');
-                    } else {
-                        // ഫോട്ടോ അപ്ഡേറ്റ് ചെയ്യുന്നു
-                        document.getElementById('profImgDisplay').src = res.url;
-                        document.getElementById('profImgDisplay').classList.remove('hidden');
-                        document.getElementById('profIconDisplay').classList.add('hidden');
-                        
-                        document.getElementById('homeProfileImg').src = res.url;
-                        document.getElementById('homeProfileImg').classList.remove('hidden');
-                        document.getElementById('homeProfileIcon').classList.add('hidden');
-                        
-                        Swal.fire('വിജയിച്ചു!', 'പ്രൊഫൈൽ ഫോട്ടോ അപ്‌ഡേറ്റ് ചെയ്തു.', 'success');
-                    }
-                });
-            };
-            reader.readAsDataURL(file);
-        }  
+            // ഹോം പേജിലെ ഫോട്ടോ അപ്ഡേറ്റ് ചെയ്യുന്നു
+            if(document.getElementById('homeProfileImg')) {
+                document.getElementById('homeProfileImg').src = res.url;
+                document.getElementById('homeProfileImg').classList.remove('hidden');
+                document.getElementById('homeProfileIcon').classList.add('hidden');
+            }
+            
+            Swal.fire('വിജയിച്ചു!', 'പ്രൊഫൈൽ ഫോട്ടോ അപ്‌ഡേറ്റ് ചെയ്തു.', 'success');
+        }
+    }).catch(err => {
+        showLoader(false);
+        Swal.fire('പിഴവ്', 'നെറ്റ്‌വർക്ക് പ്രശ്നം! ഒന്നുകൂടി ശ്രമിക്കുക.', 'error');
+    });
+}
     </script>
     <div id="pdfTemplateContainer" class="fixed -left-[9999px] top-0 pointer-events-none z-[-1]">
     <div id="pdfCard" class="bg-white relative" style="width: 800px; height: 1131px; font-family: 'Manjari', sans-serif; padding: 60px;">
@@ -2693,5 +3053,6 @@ function saveProfile() {
         </div>
     </div>
 </div>
+
 </body>
 </html>
