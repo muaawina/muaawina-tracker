@@ -2047,7 +2047,7 @@ function showMemberDetails(d) {
             let msg = dueAmount > 0 ? 
                 `السلام عليكم \n${m.name},\nനിങ്ങളുടെ MUAAWINA വരിസംഖ്യയിൽ ₹${dueAmount} കുടിശ്ശികയുണ്ട്.\nമാസങ്ങൾ: ${dueMonthsList.join(', ')}` : 
                 `السلام عليكم \n${m.name},\nനിങ്ങളുടെ MUAAWINA വരിസംഖ്യ കൃത്യമാണ്.`;
-            window.open(`https://wa.me/91${m.phone.replace(/\D/g,'')}?text=${encodeURIComponent(msg)}`, '_blank');
+            window.open(`https://wa.me/{m.phone.replace(/\D/g,'')}?text=${encodeURIComponent(msg)}`, '_blank');
         };
     }
     // ==========================================
