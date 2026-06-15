@@ -2125,25 +2125,7 @@
             let filtered = (batch === 'all' || batch === 'All') ? adminMembers : adminMembers.filter(m => m.batch === batch);
 
             let collected = filtered.reduce((sum, m) => sum + m.totalPaid, 0);
-
-            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-            let pending = filtered.reduce((sum, m) => {
-                let count = 0;
-                if (m.pendingList) {
-                    m.pendingList.forEach(pStr => {
-                        let parts = pStr.split(" ");
-                        if (parts.length === 2) {
-                            let mIdx = monthNames.indexOf(parts[0]);
-                            let mYear = parseInt(parts[1]);
-                            // ഗൂഗിൾ ഷീറ്റിലെ Current Date വരെയുള്ള പെൻഡിങ് മാത്രം കൂട്ടുന്നു
-                            if (mYear < globalAppYear || (mYear === globalAppYear && mIdx <= globalAppMonth)) {
-                                count++;
-                            }
-                        }
-                    });
-                }
-                return sum + (count * 50);
-            }, 0);
+            let pending = filtered.reduce((sum, m) => sum + (m.balance || 0), 0);
 
             const totalEl = document.getElementById('admTotal');
             const pendingEl = document.getElementById('admPending');
@@ -2642,39 +2624,10 @@
                 return;
             }
 
-            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
             l.innerHTML = mbs.map(m => {
-                let currentFee = m.fee || 50;
-                let dueCountUpToNow = 0;
-
-                // 1. കറന്റ് ഡേറ്റ് വരെയുള്ള മാസങ്ങളിൽ എത്ര എണ്ണം അടയ്ക്കാൻ ബാക്കിയുണ്ടെന്ന് നോക്കുന്നു
-                if (m.pendingList) {
-                    m.pendingList.forEach(pStr => {
-                        let parts = pStr.split(" ");
-                        if (parts.length === 2) {
-                            let mIdx = monthNames.indexOf(parts[0]);
-                            let mYear = parseInt(parts[1]);
-                            // ഗൂഗിൾ ഷീറ്റിലെ Current Date-ന് ഉള്ളിലാണോ എന്ന് നോക്കുന്നു
-                            if (mYear < globalAppYear || (mYear === globalAppYear && mIdx <= globalAppMonth)) {
-                                dueCountUpToNow++;
-                            }
-                        }
-                    });
-                }
-
-                let dueAmount = dueCountUpToNow * currentFee;
-
-                // 2. അഡ്വാൻസ് കണക്കാക്കുന്ന പുതിയ രീതി (Calculation)
-                // (ഇതുവരെ അടയ്ക്കേണ്ട മാസം - ബാക്കിയുള്ള മാസം) * ഫീ = ഇതുവരെ അടച്ച തുക
-                // (ആകെ അടച്ച തുക) - (ഇതുവരെ അടച്ച തുക) = അഡ്വാൻസ്
-                let totalMonthsUpToNow = globalAppMonth + 1; // ഉദാഹരണത്തിന് ഏപ്രിൽ ആണെങ്കിൽ 4
-                let expectedToPayUntilNow = totalMonthsUpToNow * currentFee;
-                let paidUntilNow = expectedToPayUntilNow - dueAmount;
-                let advanceAmount = m.totalPaid - paidUntilNow;
-
-                // 0-ൽ താഴെ വരാതിരിക്കാൻ
-                if (advanceAmount < 0) advanceAmount = 0;
+                let dueAmount = m.balance || 0;
+                let dueCountUpToNow = m.pendingList ? m.pendingList.length : 0;
+                let advanceAmount = m.advance || 0;
 
                 // ഡിസ്‌പ്ലേ സെറ്റിംഗ്സ്
                 let displayAmount = "";
@@ -2727,44 +2680,12 @@
             const m = JSON.parse(decodeURIComponent(d));
             currentMember = m;
 
-            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-            let dueCountUpToNow = 0;
-            let dueMonthsList = [];
+            let dueAmount = m.balance || 0;
+            let dueMonthsList = m.pendingList || [];
+            let advanceAmount = m.advance || 0;
+            let expectedToPayUntilNow = m.totalPaid - advanceAmount + dueAmount;
 
             let currentFee = m.fee || 50;
-
-            // 1. ഗൂഗിൾ ഷീറ്റിലെ തീയതി (Current Date) വരെയുള്ള കുടിശ്ശിക മാസങ്ങൾ മാത്രം കണ്ടെത്തുന്നു
-            if (m.pendingList) {
-                m.pendingList.forEach(pStr => {
-                    let parts = pStr.split(" ");
-                    if (parts.length === 2) {
-                        let mIdx = monthNames.indexOf(parts[0]);
-                        let mYear = parseInt(parts[1]);
-
-                        // Current Date-ന് ഉള്ളിലാണോ എന്ന് പരിശോധിക്കുന്നു
-                        if (mYear < globalAppYear || (mYear === globalAppYear && mIdx <= globalAppMonth)) {
-                            dueCountUpToNow++;
-                            dueMonthsList.push(pStr);
-                        }
-                    }
-                });
-            }
-
-            // 2. തുക കണക്കാക്കുന്നു
-            let dueAmount = dueCountUpToNow * currentFee;
-
-            // 3. ആകെ അടയ്ക്കേണ്ടിയിരുന്ന തുക (Total Expected) = അടച്ച തുക + ബാക്കി തുക
-            // (Advance അടച്ചവർക്ക് കുടിശ്ശിക പൂജ്യമായതുകൊണ്ട് ഈ കണക്ക് കൃത്യമായി വരും)
-            let expectedToPayUntilNow = m.totalPaid + dueAmount;
-
-            // 4. അഡ്വാൻസ് തുക കണക്കാക്കുന്നു
-            // ആകെ അടച്ച തുകയിൽ നിന്ന് ഈ മാസം വരെ അടയ്ക്കേണ്ട തുക കുറയ്ക്കുന്നു
-            let advanceAmount = m.totalPaid > expectedToPayUntilNow ? m.totalPaid - expectedToPayUntilNow : 0;
-
-            // അഡ്വാൻസ് ഉള്ളവർക്ക് expectedToPayUntilNow എന്നത് m.totalPaid - advanceAmount ആയിരിക്കും
-            if (m.totalPaid > expectedToPayUntilNow) {
-                expectedToPayUntilNow = m.totalPaid - advanceAmount;
-            }
 
             // UI എലമെന്റുകളിലേക്ക് വിവരങ്ങൾ നൽകുന്നു
             document.getElementById('detName').innerText = m.name;
@@ -3082,7 +3003,6 @@
                 return Swal.fire('ശ്രദ്ധിക്കുക', 'കോപ്പി ചെയ്യാൻ ആളുകളില്ല!', 'warning');
             }
 
-            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
             let textToCopy = "🧾 *MUAAWINA കുടിശ്ശിക റിപ്പോർട്ട്*\n━━━━━━━━━━━━━━━━━━━━\n";
             let totalOverallDue = 0;
 
@@ -3099,30 +3019,8 @@
                 textToCopy += `\n📁 *[ ${batch} ]*\n`;
 
                 groupedByBatch[batch].forEach((m, index) => {
-                    let dueCount = 0;
-                    let currentFee = m.fee || 50;
-
-                    // 1. Current Date വരെയുള്ള മാസങ്ങൾ മാത്രം കുടിശ്ശികയായി കണക്കാക്കുന്നു
-                    if (m.pendingList) {
-                        m.pendingList.forEach(pStr => {
-                            let parts = pStr.split(" ");
-                            if (parts.length === 2) {
-                                let mIdx = monthNames.indexOf(parts[0]);
-                                let mYear = parseInt(parts[1]);
-                                if (mYear < globalAppYear || (mYear === globalAppYear && mIdx <= globalAppMonth)) {
-                                    dueCount++;
-                                }
-                            }
-                        });
-                    }
-
-                    let dueAmount = dueCount * currentFee;
-
-                    // 2. അഡ്വാൻസ് തുക കണക്കാക്കുന്നു
-                    let expectedToPayUntilNow = (globalAppMonth + 1) * currentFee;
-                    let paidUntilNow = expectedToPayUntilNow - dueAmount;
-                    let advanceAmount = m.totalPaid - paidUntilNow;
-                    if (advanceAmount < 0) advanceAmount = 0;
+                    let dueAmount = m.balance || 0;
+                    let advanceAmount = m.advance || 0;
 
                     // റിപ്പോർട്ടിൽ ചേർക്കുന്നു
                     if (dueAmount > 0) {
@@ -3150,7 +3048,7 @@
             el.select();
             try {
                 document.execCommand('copy');
-                Swal.fire('വിജയിച്ചു', 'വിവരങ്ങൾ കൃത്യമായി കോപ്പി ചെയ്തു!', 'success');
+                Swal.fire('വിജയിച്ചു', `ബാച്ച് തിരിച്ച് ${currentFilteredMembers.length} കുടിശ്ശിക വിവരങ്ങൾ കോപ്പി ചെയ്തു!`, 'success');
             } catch (err) {
                 Swal.fire('തെറ്റ്', 'കോപ്പി ചെയ്യാൻ കഴിഞ്ഞില്ല.', 'error');
             }
