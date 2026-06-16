@@ -1696,6 +1696,7 @@
                     const highlightArea = document.getElementById('homeHighlightsArea');
 
                     if (highlightArea) {
+                        highlightArea.innerHTML = '';
 
 
                         if (d.highlights && d.highlights.length > 0) {
@@ -2087,6 +2088,7 @@
 
                 document.getElementById('loginPage')?.classList.add('hidden');
                 document.getElementById('adminPage')?.classList.remove('hidden');
+                toggleScroll(false);
 
                 adminMembers = d.members || [];
 
