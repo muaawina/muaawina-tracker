@@ -472,11 +472,6 @@
                         <i class="fas fa-download"></i> ആപ്പ് ഇൻസ്റ്റാൾ ചെയ്യുക
                     </button>
 
-                    <button onclick="enableCustomNotifications()"
-                        class="w-full py-3 bg-slate-50 text-slate-600 border border-slate-100 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-sm active:scale-95 transition-all flex items-center justify-center gap-2">
-                        <i class="fas fa-bell text-amber-500"></i> നോട്ടിഫിക്കേഷൻ ഓൺ ചെയ്യുക
-                    </button>
-
                     <button onclick="showAdminModal()"
                         class="text-slate-400 text-[11px] font-black hover:text-blue-700 uppercase transition-colors mx-auto mt-2 p-2 flex items-center justify-center gap-2">
                         <span class="relative">
@@ -649,7 +644,7 @@
                 <div class="relative mb-3">
                     <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-blue-400"></i>
                     <input type="text" id="dirSearchInput" onkeyup="filterDirectory()"
-                        placeholder="പേരോ സ്ഥലമോ തിരയുക..."
+                        placeholder="പേര്, സ്ഥലം അല്ലെങ്കിൽ Member ID..."
                         class="w-full pl-10 pr-4 py-3 bg-slate-50/50 border-2 border-slate-100 rounded-xl text-xs font-black text-slate-700 outline-none focus:border-blue-400 transition-all shadow-inner">
                 </div>
 
@@ -876,31 +871,57 @@
             </div>
 
             <div class="flex justify-between mb-6 border-b border-slate-100 bg-white/50 rounded-2xl p-1 shadow-sm">
-                <div class="admin-tab active w-1/4 text-center" id="tabOverview" onclick="switchAdminTab('overview')">
+                <div class="admin-tab active w-1/5 text-center" id="tabOverview" onclick="switchAdminTab('overview')">
                     റിപ്പോർട്ട്</div>
-                <div class="admin-tab w-1/4 text-center relative" id="tabApprovals"
+                <div class="admin-tab w-1/5 text-center relative" id="tabApprovals"
                     onclick="switchAdminTab('approvals')">അപ്രൂവൽ <span id="appBadge"
                         class="hidden w-2.5 h-2.5 bg-red-500 rounded-full inline-block ml-1 border-2 border-white animate-pulse"></span>
                 </div>
-                <div class="admin-tab w-1/4 text-center" id="tabMembers" onclick="switchAdminTab('members')">അംഗങ്ങൾ
+                <div class="admin-tab w-1/5 text-center" id="tabMembers" onclick="switchAdminTab('members')">അംഗങ്ങൾ
                 </div>
-                <div class="admin-tab w-1/4 text-center" id="tabLogins" onclick="switchAdminTab('logins')">ലോഗിൻസ്</div>
+                <div class="admin-tab w-1/5 text-center" id="tabLogins" onclick="switchAdminTab('logins')">ലോഗിൻസ്</div>
+                <div class="admin-tab w-1/5 text-center" id="tabPosters" onclick="switchAdminTab('posters')">പോസ്റ്റർ</div>
             </div>
 
             <div id="sectionOverview" class="space-y-6">
-                <div class="glass-card p-4 mb-6 border-t-4 border-blue-600 shadow-md">
-                    <p class="text-[10px] font-black text-slate-400 uppercase mb-3">എല്ലാവർക്കും അറിയിപ്പ് അയക്കുക</p>
-                    <div class="flex gap-2">
-                        <input type="text" id="pushMsg" placeholder="സന്ദേശം ടൈപ്പ് ചെയ്യുക..."
-                            class="flex-1 p-3 rounded-xl border border-slate-100 text-xs font-bold outline-none focus:border-blue-400">
-                        <button onclick="broadcastPush()"
-                            class="bg-blue-600 text-white px-4 py-3 rounded-xl font-black text-[10px] uppercase shadow-md active:scale-95">Send
-                            🚀</button>
+                <!-- റിപ്പോർട്ട് സെലക്ഷനും പ്രിന്റും -->
+                <div class="flex gap-2 items-center">
+                    <select id="batchReportFilter" onchange="updateAdminStats(this.value)"
+                        class="custom-select flex-1 p-4 rounded-2xl border-2 border-blue-50 bg-white font-black text-slate-700 text-sm outline-none focus:border-blue-500 shadow-sm transition-all"></select>
+                    <button onclick="printReport()"
+                        class="bg-blue-600 text-white px-5 py-4 rounded-2xl font-black text-xs shadow-md active:scale-95 transition-all flex flex-col items-center justify-center gap-1">
+                        <i class="fas fa-print text-lg"></i> <span
+                            class="uppercase tracking-widest text-[9px]">Print</span>
+                    </button>
+                </div>
+
+                <!-- ലഭിച്ചതും ബാക്കിയുള്ളതുമായ തുകകളുടെ കാർഡുകൾ -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="glass-card p-5 border-t-4 border-emerald-500 shadow-md text-center">
+                        <p class="text-[10px] text-slate-400 font-black uppercase mb-1">ലഭിച്ചത്</p>
+                        <p id="admTotal" class="text-xl font-black text-emerald-600">₹0</p>
+                    </div>
+                    <div class="glass-card p-5 border-t-4 border-rose-500 shadow-md text-center">
+                        <p class="text-[10px] text-slate-400 font-black uppercase mb-1 text-rose-300">ബാക്കി</p>
+                        <p id="admPending" class="text-xl font-black text-rose-600">₹0</p>
                     </div>
                 </div>
 
+                <!-- ചാർട്ട് കാണിക്കുന്ന ഭാഗം (Center text overlay ഉൾപ്പെടുത്തി) -->
+                <div class="glass-card p-6 border-2 border-slate-50 shadow-lg text-center shadow-slate-100/50">
+                    <div class="relative flex items-center justify-center" style="height: 190px; width: 100%;">
+                        <canvas id="analyticsChart"></canvas>
+                        <!-- Center Text Overlay -->
+                        <div class="absolute flex flex-col items-center justify-center pointer-events-none" style="top: 50%; left: 50%; transform: translate(-50%, -52%);">
+                            <p id="chartCenterPercent" class="text-xl font-black text-slate-800 leading-none">0%</p>
+                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">ശേഖരിച്ചു</p>
+                        </div>
+                    </div>
+                </div>
+
+
                 <!-- പുതിയ മീഡിയ ബ്രോഡ്കാസ്റ്റ് സെക്ഷൻ -->
-                <div class="glass-card p-4 mb-6 border-t-4 border-emerald-600 shadow-md">
+                <div class="glass-card p-4 border-t-4 border-emerald-600 shadow-md">
                     <p class="text-[10px] font-black text-slate-400 uppercase mb-3">ബാച്ചുകൾ തിരഞ്ഞെടുക്കുക</p>
 
                     <div id="batchContainer" class="grid grid-cols-4 gap-2 mb-4">
@@ -937,34 +958,7 @@
                             });
                         }
                     });
-
-                    // താങ്കളുടെ ബാക്കി എല്ലാ script-കളും ഇവിടെ തന്നെ തുടരട്ടെ...
                 </script>
-                <div class="flex gap-2 items-center">
-                    <select id="batchReportFilter" onchange="updateAdminStats(this.value)"
-                        class="custom-select flex-1 p-4 rounded-2xl border-2 border-blue-50 bg-white font-black text-slate-700 text-sm outline-none focus:border-blue-500 shadow-sm transition-all"></select>
-                    <button onclick="printReport()"
-                        class="bg-blue-600 text-white px-5 py-4 rounded-2xl font-black text-xs shadow-md active:scale-95 transition-all flex flex-col items-center justify-center gap-1">
-                        <i class="fas fa-print text-lg"></i> <span
-                            class="uppercase tracking-widest text-[9px]">Print</span>
-                    </button>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="glass-card p-5 border-t-4 border-emerald-500 shadow-md text-center">
-                        <p class="text-[10px] text-slate-400 font-black uppercase mb-1">ലഭിച്ചത്</p>
-                        <p id="admTotal" class="text-xl font-black text-emerald-600">₹0</p>
-                    </div>
-                    <div class="glass-card p-5 border-t-4 border-rose-500 shadow-md text-center">
-                        <p class="text-[10px] text-slate-400 font-black uppercase mb-1 text-rose-300">ബാക്കി</p>
-                        <p id="admPending" class="text-xl font-black text-rose-600">₹0</p>
-                    </div>
-                </div>
-                <div class="glass-card p-6 border-2 border-slate-50 shadow-lg text-center shadow-slate-100/50">
-                    <div style="height: 180px; width: 100%;">
-                        <canvas id="analyticsChart"></canvas>
-                    </div>
-                </div>
 
                 <!-- ആപ്പ് അപ്രൂവൽ റിപ്പോർട്ട് സെക്ഷൻ -->
                 <div class="glass-card p-5 border-t-4 border-indigo-600 shadow-md">
@@ -1010,7 +1004,7 @@
 
             <div id="sectionMembers" class="hidden space-y-4">
                 <div class="glass-card p-4 space-y-3 shadow-lg border border-slate-100">
-                    <input type="text" id="searchInput" onkeyup="filterMembers()" placeholder="പേരോ നമ്പറോ തിരയുക..."
+                    <input type="text" id="searchInput" onkeyup="filterMembers()" placeholder="പേര്, ഫോൺ അല്ലെങ്കിൽ Member ID..."
                         class="w-full p-3.5 rounded-xl border-2 border-slate-100 outline-none focus:border-blue-400 transition-all text-xs font-bold bg-white shadow-inner">
 
                     <div class="grid grid-cols-2 gap-2">
@@ -1054,7 +1048,7 @@
 
             <div id="sectionLogins" class="hidden space-y-4">
                 <div class="glass-card p-4 space-y-3 shadow-lg border border-slate-100">
-                    <input type="text" id="searchLoginInput" onkeyup="filterLogins()" placeholder="പേര് തിരയുക..."
+                    <input type="text" id="searchLoginInput" onkeyup="filterLogins()" placeholder="പേര്, ഫോൺ അല്ലെങ്കിൽ Member ID..."
                         class="w-full p-3.5 rounded-xl border-2 border-slate-100 outline-none focus:border-blue-400 transition-all text-xs font-bold bg-white shadow-inner">
                     <select id="loginStatusFilter" onchange="filterLogins()"
                         class="custom-select w-full p-3.5 rounded-xl border-2 border-slate-100 bg-white font-black text-slate-700 text-[10px] outline-none shadow-sm text-center">
@@ -1084,6 +1078,51 @@
                 <div class="glass-card overflow-hidden shadow-xl border border-slate-100">
                     <div id="adminLoginList"
                         class="divide-y divide-slate-100 max-h-[65vh] overflow-y-auto no-scrollbar bg-white shadow-inner shadow-slate-50">
+                    </div>
+                </div>
+            </div>
+
+            <!-- പോസ്റ്ററുകൾ അഡ്മിൻ സെക്ഷൻ -->
+            <div id="sectionPosters" class="hidden space-y-6">
+                <!-- പുതിയ പോസ്റ്റർ ചേർക്കുക -->
+                <div class="glass-card p-4 mb-6 border-t-4 border-indigo-600 shadow-md space-y-4">
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">പുതിയ പോസ്റ്റർ ചേർക്കുക</p>
+                    
+                    <div class="space-y-3">
+                        <div>
+                            <p class="text-[9px] font-black text-slate-400 uppercase mb-1.5 ml-1">പോസ്റ്റർ ഫോട്ടോ (Image File)</p>
+                            <input type="file" id="posterFile" accept="image/*" class="hidden">
+                            <label for="posterFile" id="posterFileLabel"
+                                class="cursor-pointer w-full p-3.5 bg-slate-50 text-indigo-700 rounded-xl font-black text-[10px] uppercase tracking-widest border-2 border-dashed border-slate-200 flex items-center justify-center gap-2 hover:bg-slate-100/50 transition-all">
+                                <i class="fas fa-image text-sm"></i> ഫോട്ടോ തിരഞ്ഞെടുക്കുക
+                            </label>
+                            <p id="posterFileNameDisplay" class="text-[8px] text-slate-400 font-bold mt-1.5 text-center uppercase">ഫോട്ടോ തിരഞ്ഞെടുത്തിട്ടില്ല</p>
+                        </div>
+                        
+                        <div>
+                            <p class="text-[9px] font-black text-slate-400 uppercase mb-1.5 ml-1">പോസ്റ്റർ ഹെഡിംഗ് (Heading - Optional)</p>
+                            <input type="text" id="posterHeading" placeholder="ഹെഡിംഗ് നൽകുക..."
+                                class="w-full p-3 rounded-xl border border-slate-100 text-xs font-bold outline-none focus:border-indigo-400">
+                        </div>
+                        
+                        <div>
+                            <p class="text-[9px] font-black text-slate-400 uppercase mb-1.5 ml-1">പോസ്റ്റർ വിവരണം (Description - Optional)</p>
+                            <textarea id="posterDesc" placeholder="വിവരണം നൽകുക..." rows="2"
+                                class="w-full p-3 rounded-xl border border-slate-100 text-xs font-bold outline-none focus:border-indigo-400 resize-none"></textarea>
+                        </div>
+                        
+                        <button onclick="addNewPoster()"
+                            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3.5 rounded-xl font-black text-[10px] uppercase shadow-md active:scale-95 transition-all tracking-wider flex justify-center items-center gap-2">
+                            <i class="fas fa-plus-circle text-xs"></i> പോസ്റ്റർ അപ്‌ലോഡ് ചെയ്യുക
+                        </button>
+                    </div>
+                </div>
+
+                <!-- നിലവിലുള്ള പോസ്റ്ററുകൾ കാണിക്കുക -->
+                <div class="glass-card p-4 shadow-md space-y-4">
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">നിലവിലുള്ള പോസ്റ്ററുകൾ (Active Posters)</p>
+                    <div id="adminPostersList" class="space-y-4 max-h-[50vh] overflow-y-auto pr-1 no-scrollbar">
+                        <!-- Dynamic list of posters with Delete button -->
                     </div>
                 </div>
             </div>
@@ -1146,8 +1185,12 @@
                         class="font-black text-2xl text-slate-900 uppercase tracking-tight mt-1 leading-none">...</h3>
                     <p id="detPhone" class="text-slate-400 text-[11px] font-bold tracking-widest mt-2 leading-none">...
                     </p>
-                    <span id="detBatch"
-                        class="px-4 py-1.5 bg-blue-50 text-blue-600 rounded-full text-[9px] font-black uppercase inline-block mt-4 border border-blue-100 tracking-[0.1em] shadow-sm shadow-blue-50">...</span>
+                    <div class="flex justify-center items-center gap-2 mt-4">
+                        <span id="detBatch"
+                            class="px-4 py-1.5 bg-blue-50 text-blue-600 rounded-full text-[9px] font-black uppercase border border-blue-100 tracking-[0.1em] shadow-sm shadow-blue-50">...</span>
+                        <span id="detMemberId"
+                            class="px-4 py-1.5 bg-slate-50 text-slate-600 rounded-full text-[9px] font-black uppercase border border-slate-200 tracking-[0.1em] shadow-sm shadow-slate-50">...</span>
+                    </div>
                 </div>
                 <div class="overflow-y-auto no-scrollbar pb-4 space-y-6">
                     <div id="detPendingBox"
@@ -1172,7 +1215,7 @@
                     </div>
                     <div
                         class="text-center bg-slate-50 py-3 rounded-2xl border-2 border-dashed border-slate-200 shadow-sm">
-                        <p class="text-[10px] font-black text-slate-400 uppercase mb-1 tracking-widest text-center">
+                        <p id="detBalLabel" class="text-[10px] font-black text-slate-400 uppercase mb-1 tracking-widest text-center">
                             ബാക്കി തുക (Balance)</p>
                         <p id="detDue" class="text-2xl font-black text-rose-600 leading-none text-center italic">₹0</p>
                     </div>
@@ -1184,6 +1227,43 @@
                         class="w-full py-5 bg-[#0f9d58] text-white rounded-2xl font-black flex justify-center items-center gap-3 shadow-lg active:scale-95 transition-all mt-4 shadow-emerald-200">
                         <i class="fab fa-whatsapp text-2xl"></i> വാട്സ്ആപ്പ് റിമൈൻഡർ
                     </button>
+
+                    <!-- ഓഫ്‌ലൈൻ പേയ്‌മെന്റ് സെക്ഷൻ -->
+                    <div id="offlinePaySection" class="hidden border-t border-slate-100 pt-6 space-y-4">
+                        <div class="bg-gradient-to-br from-blue-50/60 to-indigo-50/40 p-5 rounded-3xl border border-blue-100/70 shadow-sm space-y-3.5">
+                            <div class="flex justify-between items-center">
+                                <span class="text-[10px] font-black text-blue-800 uppercase tracking-widest">ഓഫ്‌ലൈൻ പേയ്‌മെന്റ് (MID: <span id="offlineMemberId">N/A</span>)</span>
+                                <span class="text-[9px] font-black text-slate-400 bg-slate-100 px-2 py-0.5 rounded border">വരിസംഖ്യ: ₹<span id="offlineFeeRate">0</span>/മാസം</span>
+                            </div>
+                            
+                            <!-- തുക നൽകാനുള്ള ഇൻപുട്ട് -->
+                            <div class="relative mt-2">
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-lg font-black text-slate-400">₹</span>
+                                <input type="number" id="offlineAmountInput" placeholder="തുക നൽകുക (Amount Paid)"
+                                    class="w-full pl-8 pr-4 py-3.5 border-2 border-slate-100 rounded-2xl font-black text-lg outline-none focus:border-blue-500 bg-white shadow-inner transition-all">
+                            </div>
+
+                            <!-- ക്വിക്ക് പ്രീസെറ്റ് ബട്ടണുകൾ -->
+                            <div id="offlinePresets" class="flex gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                                <!-- Preset buttons will be generated dynamically -->
+                            </div>
+                            
+                            <div class="flex justify-between items-center pt-2.5 border-t border-blue-100/50">
+                                <span class="text-xs font-black text-blue-900 uppercase tracking-wider">തിരഞ്ഞെടുത്ത തുക:</span>
+                                <span id="offlineTotalDisplay" class="text-xl font-black text-blue-700">₹0</span>
+                            </div>
+                        </div>
+                        
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">തിരഞ്ഞെടുത്ത മാസങ്ങൾ:</p>
+                        <div id="offlineMonthsList" class="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto no-scrollbar pr-1">
+                            <!-- Checkboxes will be inserted here dynamically -->
+                        </div>
+                        
+                        <button id="offlinePayBtn"
+                            class="w-full py-5 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black flex justify-center items-center gap-2.5 shadow-lg active:scale-95 transition-all uppercase tracking-widest text-sm shadow-blue-200">
+                            <i class="fas fa-check-circle text-base"></i> അടച്ചതായി രേഖപ്പെടുത്തുക
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1380,11 +1460,12 @@
         let globalAppYear = new Date().getFullYear();
         let globalAppMonth = new Date().getMonth();
 
-        let fullHistory = [], currentMember = null, pendingMonthsList = [], upcomingMonthsList = [], timerInterval, currentPaymentType = 'single', currentTargetData = null, adminMembers = [], pendingApprovalsList = [], permanentApprovals = [], sessionApprovals = [], adminChart = null;
+        let fullHistory = [], currentMember = null, pendingMonthsList = [], upcomingMonthsList = [], timerInterval, currentPaymentType = 'single', currentTargetData = null, adminMembers = [], pendingApprovalsList = [], permanentApprovals = [], sessionApprovals = [], adminChart = null, adminPosters = [];
         let directoryMembers = [];
         let currentDirBatch = 'all';
         let currentFilteredMembers = [];
         let lastMonthDataGlobal = null;
+        let currentPosterIndex = 0;
 
         // --- പുതിയ API സിസ്റ്റം ---
         const API_URL = "https://script.google.com/macros/s/AKfycbzcGJYQAI7Ir0TVoxxEUYsZIpPSHbwl-7PKWNejIU2ferMXxHNl4WewfKeOHrM8M2cT/exec";
@@ -1692,29 +1773,52 @@
                     if (pBar) pBar.style.width = pct + '%';
                     if (pText) pText.innerText = pct;
 
-                    // === ഡാഷ്‌ബോർഡിൽ പോസ്റ്ററുകൾ കാണിക്കുന്നു ===
+                    // === ഡാഷ്‌ബോർഡിൽ പോസ്റ്ററുകൾ കാണിക്കുന്നു (സ്ലൈഡർ രൂപത്തിൽ) ===
                     const highlightArea = document.getElementById('homeHighlightsArea');
 
                     if (highlightArea) {
                         highlightArea.innerHTML = '';
 
-
                         if (d.highlights && d.highlights.length > 0) {
-                            d.highlights.forEach(h => {
-                                highlightArea.innerHTML += `
-                                    <div class="mb-8">
-                                        ${h.heading ? `<h4 class="text-[10px] font-black text-blue-900 uppercase tracking-[0.2em] mb-3 ml-1">${h.heading}</h4>` : ''}
-                                        
-                                        <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden transition-all active:scale-[0.99]">
-                                            <img src="${h.url}" class="w-full h-auto block" alt="Poster">
-                                            
-                                            ${h.desc ? `<div class="p-4 border-t border-slate-50 bg-slate-50/30"><p class="text-[11px] font-bold text-slate-600 leading-relaxed">${h.desc}</p></div>` : ''}
+                            highlightArea.innerHTML = `
+                                <div class="relative w-full group mb-6">
+                                    <div id="posterSliderWrapper" class="relative w-full overflow-hidden" style="transition: height 0.4s cubic-bezier(0.25, 1, 0.5, 1); min-height: 100px; perspective: 1200px; transform-style: preserve-3d;">
+                                        <div id="posterSliderContainer" class="flex transition-transform duration-500 cubic-bezier(0.25, 1, 0.5, 1) w-full items-start" style="transform-style: preserve-3d;">
+                                            <!-- Slides will go here dynamically -->
                                         </div>
                                     </div>
+                                    <button id="sliderPrevBtn" class="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 backdrop-blur-sm text-slate-700 w-8 h-8 rounded-full flex items-center justify-center shadow-md active:scale-90 transition-all opacity-0 group-hover:opacity-100 duration-300 z-20">
+                                        <i class="fas fa-chevron-left text-xs"></i>
+                                    </button>
+                                    <button id="sliderNextBtn" class="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 backdrop-blur-sm text-slate-700 w-8 h-8 rounded-full flex items-center justify-center shadow-md active:scale-90 transition-all opacity-0 group-hover:opacity-100 duration-300 z-20">
+                                        <i class="fas fa-chevron-right text-xs"></i>
+                                    </button>
+                                    <div id="sliderDots" class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-20">
+                                        <!-- Dots will go here dynamically -->
+                                    </div>
+                                </div>
+                            `;
+
+                            const container = document.getElementById('posterSliderContainer');
+                            d.highlights.forEach(h => {
+                                const hasMeta = h.heading || h.desc;
+                                const slideHtml = `
+                                    <div class="poster-slide w-full flex-shrink-0 bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden flex flex-col justify-start" style="opacity: 0.4; transform: scale(0.95); transition: opacity 0.5s ease-out, transform 0.5s ease-out; transform-style: preserve-3d;">
+                                        <img src="${h.url}" class="w-full h-auto block" alt="Poster" onload="adjustSliderHeight()">
+                                        ${hasMeta ? `
+                                            <div class="slide-meta p-5 border-t border-slate-50 bg-slate-50/30" style="transform: translateY(15px); opacity: 0; transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);">
+                                                ${h.heading ? `<h4 class="text-xs font-black text-slate-800 uppercase tracking-wider mb-1">${h.heading}</h4>` : ''}
+                                                ${h.desc ? `<p class="text-[10px] font-bold text-slate-500 leading-relaxed">${h.desc}</p>` : ''}
+                                            </div>
+                                        ` : ''}
+                                    </div>
                                 `;
+                                container.innerHTML += slideHtml;
                             });
+
+                            initPosterSlider();
                         } else {
-                            highlightArea.innerHTML += '<div class="bg-amber-50 p-5 rounded-2xl border border-amber-100 text-center"><p class="text-[10px] font-bold text-amber-600">പുതിയ അപ്ഡേറ്റുകൾ ഉടൻ വരുന്നു...</p></div>';
+                            highlightArea.innerHTML = '<div class="bg-amber-50 p-5 rounded-2xl border border-amber-100 text-center"><p class="text-[10px] font-bold text-amber-600">പുതിയ അപ്ഡേറ്റുകൾ ഉടൻ വരുന്നു...</p></div>';
                         }
                     }
 
@@ -2091,11 +2195,13 @@
                 toggleScroll(false);
 
                 adminMembers = d.members || [];
+                adminPosters = d.highlights || [];
+                renderAdminPosters(adminPosters);
 
                 // Approval_Queue-ൽ നിന്ന് അപ്രൂവ് ചെയ്തവയും പെൻഡിംഗ് ഉള്ളവയും വേർതിരിക്കുന്നു
                 let allApprovals = d.approvals || [];
                 pendingApprovalsList = allApprovals.filter(a => !a.status || a.status === '' || a.status === 'Pending' || a.status === 'Processing');
-                permanentApprovals = allApprovals.filter(a => a.status === 'Approved');
+                permanentApprovals = allApprovals.filter(a => a.status === 'Approved' || a.status === 'Approved (Offline)');
                 populateBroadcastBatch();
                 renderBatchDropdowns();
                 populateMonthFilter();
@@ -2107,7 +2213,7 @@
         function switchAdminTab(t) {
             document.querySelectorAll('.admin-tab').forEach(el => el.classList.remove('active'));
 
-            const sections = ['Overview', 'Approvals', 'Members', 'Logins'];
+            const sections = ['Overview', 'Approvals', 'Members', 'Logins', 'Posters'];
             sections.forEach(s => {
                 const el = document.getElementById('section' + s);
                 if (el) el.classList.add('hidden');
@@ -2189,10 +2295,11 @@
             const totalEl = document.getElementById('appReportTotal');
             if (!listEl) return;
 
-            // സെഷൻ അപ്രൂവലുകളും ഷീറ്റിൽ നിന്നുള്ള ഹിസ്റ്ററിയും യോജിപ്പിക്കുന്നു
-            let combined = [...sessionApprovals];
+            // സെഷൻ അപ്രൂവലുകളും ഷീറ്റിൽ നിന്നുള്ള ഹിസ്റ്ററിയും യോജിപ്പിക്കുന്നു (പുതിയത് മുകളിൽ വരുന്ന രീതിയിൽ)
+            let combined = [...sessionApprovals].reverse();
+            let reversedPermanent = [...permanentApprovals].reverse();
 
-            permanentApprovals.forEach(pa => {
+            reversedPermanent.forEach(pa => {
                 // ഡ്യൂപ്ലിക്കേറ്റ് ഒഴിവാക്കാൻ (സെഷനിൽ ഉള്ളത് വീണ്ടും ചേർക്കണ്ട)
                 let exists = combined.some(s => s.id === pa.memberId && s.month === pa.month && s.year === pa.year);
                 if (!exists) {
@@ -2209,6 +2316,7 @@
                         year: pa.year,
                         amount: totalAmt,
                         isBulk: pa.isBulk,
+                        isOffline: pa.status === 'Approved (Offline)' || pa.isOffline,
                         reqTime: pa.date || 'N/A', // ഷീറ്റിൽ നിന്നുള്ള റിക്വസ്റ്റ് ടൈം
                         approveTime: 'Existing' // നേരത്തെ അപ്രൂവ് ചെയ്തവ
                     });
@@ -2226,13 +2334,30 @@
             if (countEl) countEl.innerText = combined.length;
             if (totalEl) totalEl.innerText = '₹' + totalAmt;
 
-            listEl.innerHTML = combined.map((a, i) => `
+            listEl.innerHTML = combined.map((a, i) => {
+                let isFuturePayment = false;
+                try {
+                    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                    let mIdx = monthNames.indexOf(a.month);
+                    let mYear = parseInt(a.year);
+                    if (mIdx !== -1 && !isNaN(mYear)) {
+                        isFuturePayment = mYear > globalAppYear || (mYear === globalAppYear && mIdx > globalAppMonth);
+                    }
+                } catch (e) {}
+
+                let offlineTime = (a.approveTime && a.approveTime !== 'Existing') ? a.approveTime : (a.reqTime && a.reqTime !== 'ഓഫ്‌ലൈൻ' ? a.reqTime : '');
+
+                return `
                 <div class="bg-slate-50/80 p-3.5 rounded-2xl border border-slate-100 mb-2">
                     <div class="flex justify-between items-start mb-2">
                         <div class="flex items-center gap-2">
                             <span class="w-6 h-6 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-[10px] font-black">${i + 1}</span>
                             <div>
-                                <p class="font-black text-slate-800 leading-none mb-1">${a.name}</p>
+                                <p class="font-black text-slate-800 leading-none mb-1">
+                                    ${a.name}
+                                    ${a.isOffline ? ' <span class="bg-amber-50 text-amber-600 text-[8px] font-black px-1.5 py-0.5 rounded border border-amber-100 ml-1">ഓഫ്‌ലൈൻ</span>' : ''}
+                                    ${isFuturePayment ? ' <span class="bg-emerald-50 text-emerald-600 text-[8px] font-black px-1.5 py-0.5 rounded border border-emerald-100 ml-1">അഡ്വാന്‍സ് (Adv)</span>' : ''}
+                                </p>
                                 <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">${a.month} ${a.year}</p>
                             </div>
                         </div>
@@ -2240,14 +2365,15 @@
                     </div>
                     <div class="flex justify-between border-t border-slate-100 pt-2">
                         <div class="text-[7px] text-slate-400 uppercase font-black">
-                            Req: <span class="text-slate-500">${a.reqTime || 'N/A'}</span>
+                            Req: <span class="text-slate-500">${a.isOffline ? 'ഓഫ്‌ലൈൻ' : (a.reqTime || 'N/A')}</span>
                         </div>
                         <div class="text-[7px] text-slate-400 uppercase font-black text-right">
-                            Appr: <span class="text-indigo-500">${a.approveTime || 'N/A'}</span>
+                            Appr: <span class="text-indigo-500">${a.isOffline ? ('അഡ്മിൻ' + (offlineTime ? ` (${offlineTime})` : '')) : (a.approveTime || 'N/A')}</span>
                         </div>
                     </div>
                 </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         // റിപ്പോർട്ട് പ്രിന്റ് ചെയ്യുന്നു / PDF ആയി സേവ് ചെയ്യുന്നു (Most Reliable Method)
@@ -2256,9 +2382,10 @@
                 return Swal.fire('ശ്രദ്ധിക്കുക', 'പ്രിന്റ് ചെയ്യാൻ അപ്രൂവലുകൾ ഒന്നുമില്ല!', 'warning');
             }
 
-            // റിപ്പോർട്ട് ഡാറ്റ തയ്യാറാക്കുന്നു
-            let combined = [...sessionApprovals];
-            permanentApprovals.forEach(pa => {
+            // റിപ്പോർട്ട് ഡാറ്റ തയ്യാറാക്കുന്നു (പുതിയത് മുകളിൽ വരുന്ന രീതിയിൽ)
+            let combined = [...sessionApprovals].reverse();
+            let reversedPermanent = [...permanentApprovals].reverse();
+            reversedPermanent.forEach(pa => {
                 let exists = combined.some(s => s.id === pa.memberId && s.month === pa.month && s.year === pa.year);
                 if (!exists) {
                     let mem = adminMembers.find(x => String(x.id) === String(pa.memberId));
@@ -2266,6 +2393,7 @@
                     let rowCount = pa.isBulk ? pa.rows.length : 1;
                     combined.push({
                         name: pa.name, id: pa.memberId, month: pa.month, year: pa.year, amount: rowCount * fee,
+                        isOffline: pa.status === 'Approved (Offline)' || pa.isOffline,
                         reqTime: pa.date || 'N/A', approveTime: 'മുൻപ് ചെയ്തവ'
                     });
                 }
@@ -2329,7 +2457,23 @@
                             </tr>
                         </thead>
                         <tbody>
-                            ${combined.map((a, i) => '<tr><td>' + (i + 1) + '</td><td><b>' + a.name + '</b></td><td>' + a.month + ' ' + a.year + '</td><td style="text-align:right; color:#10b981; font-weight:bold;">₹' + a.amount + '</td><td>' + a.reqTime + '</td><td>' + a.approveTime + '</td></tr>').join('')}
+                            ${combined.map((a, i) => {
+                                let nameDisplay = a.name + (a.isOffline ? ' (Offline)' : '');
+                                let isFuturePayment = false;
+                                try {
+                                    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                                    let mIdx = monthNames.indexOf(a.month);
+                                    let mYear = parseInt(a.year);
+                                    if (mIdx !== -1 && !isNaN(mYear)) {
+                                        isFuturePayment = mYear > globalAppYear || (mYear === globalAppYear && mIdx > globalAppMonth);
+                                    }
+                                } catch (e) {}
+                                let periodDisplay = a.month + ' ' + a.year + (isFuturePayment ? ' (Adv)' : '');
+                                let offlineTime = (a.approveTime && a.approveTime !== 'Existing' && a.approveTime !== 'മുൻപ് ചെയ്തവ') ? a.approveTime : (a.reqTime && a.reqTime !== 'ഓഫ്‌ലൈൻ' && a.reqTime !== 'Offline' ? a.reqTime : '');
+                                let reqDisplay = a.isOffline ? 'Offline' : a.reqTime;
+                                let apprDisplay = a.isOffline ? ('Admin' + (offlineTime ? ` (${offlineTime})` : '')) : a.approveTime;
+                                return '<tr><td>' + (i + 1) + '</td><td><b>' + nameDisplay + '</b></td><td>' + periodDisplay + '</td><td style="text-align:right; color:#10b981; font-weight:bold;">₹' + a.amount + '</td><td>' + reqDisplay + '</td><td>' + apprDisplay + '</td></tr>';
+                            }).join('')}
                         </tbody>
                     </table>
                     <div class="footer">
@@ -2375,7 +2519,7 @@
             const currentMonthStr = `${monthNames[globalAppMonth]} ${globalAppYear}`;
 
             let filtered = adminMembers.filter(m => {
-                const matchSearch = m.name.toLowerCase().includes(q) || m.phone.includes(q);
+                const matchSearch = m.name.toLowerCase().includes(q) || m.phone.includes(q) || String(m.id || '').toLowerCase().includes(q);
                 const matchBatch = (b === 'all' || b === 'All') || m.batch === b;
 
                 let matchStatus = true;
@@ -2408,7 +2552,7 @@
             const sStatus = statusFilter ? statusFilter.value : 'all';
 
             let filtered = adminMembers.filter(m => {
-                const matchSearch = m.name.toLowerCase().includes(q) || m.phone.includes(q);
+                const matchSearch = m.name.toLowerCase().includes(q) || m.phone.includes(q) || String(m.id || '').toLowerCase().includes(q);
 
                 // പ്രൊഫൈൽ പൂർണ്ണമാണോ എന്ന് നോക്കുന്നു
                 let chk = (val) => val && String(val).trim() !== "";
@@ -2531,6 +2675,14 @@
                 const ctx = canvasEl.getContext('2d');
                 if (adminChart) adminChart.destroy();
 
+                // Center percentage text calculate and update
+                const total = d.totalCollected + d.totalPending;
+                const percent = total > 0 ? Math.round((d.totalCollected / total) * 100) : 0;
+                const centerPercentEl = document.getElementById('chartCenterPercent');
+                if (centerPercentEl) {
+                    centerPercentEl.innerText = percent + '%';
+                }
+
                 adminChart = new Chart(ctx, {
                     type: 'doughnut',
                     data: {
@@ -2538,14 +2690,16 @@
                         datasets: [{
                             data: [d.totalCollected, d.totalPending],
                             backgroundColor: ['#10b981', '#f43f5e'],
-                            borderWidth: 0,
-                            hoverOffset: 15
+                            borderWidth: 4,
+                            borderColor: '#ffffff',
+                            borderRadius: 5,
+                            hoverOffset: 8
                         }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        cutout: '75%',
+                        cutout: '78%',
                         plugins: {
                             legend: {
                                 position: 'bottom',
@@ -2554,13 +2708,13 @@
                             // ശതമാനം കാണിക്കാനുള്ള സെറ്റിംഗ്സ്
                             datalabels: {
                                 color: '#ffffff',
-                                font: { weight: 'bold', size: 14 },
+                                font: { weight: 'bold', size: 10, family: 'Manjari' },
                                 formatter: (value, ctx) => {
                                     let sum = 0;
                                     let dataArr = ctx.chart.data.datasets[0].data;
                                     dataArr.map(data => { sum += data; });
                                     if (sum === 0 || value === 0) return '';
-                                    let percentage = (value * 100 / sum).toFixed(1) + "%";
+                                    let percentage = (value * 100 / sum).toFixed(0) + "%";
                                     return percentage;
                                 }
                             }
@@ -2737,6 +2891,11 @@
             document.getElementById('detPhone').innerText = m.phone;
             document.getElementById('detBatch').innerText = m.batch || 'UNASSIGNED';
             document.getElementById('detPaid').innerText = '₹' + m.totalPaid;
+            
+            const detMemberId = document.getElementById('detMemberId');
+            if (detMemberId) {
+                detMemberId.innerText = 'MID: ' + (m.id || 'N/A');
+            }
 
             // 'ആകെ' എന്നതിൽ ഈ മാസം വരെ അടയ്ക്കേണ്ട തുക കാണിക്കുന്നു
             const totalExpEl = document.getElementById('detTotalExpected');
@@ -2745,20 +2904,24 @@
             const dueEl = document.getElementById('detDue');
             const pBox = document.getElementById('detPendingBox');
             const monthsEl = document.getElementById('detMonths');
+            const balLabelEl = document.getElementById('detBalLabel');
 
             // തുകയ്ക്ക് അനുസരിച്ച് നിറവും ലേബലും മാറ്റുന്നു
             if (dueAmount > 0) {
                 dueEl.innerText = '₹' + dueAmount;
                 dueEl.className = "text-2xl font-black text-rose-600 leading-none text-center italic";
+                if (balLabelEl) balLabelEl.innerText = "ബാക്കി തുക (Balance)";
                 if (pBox) pBox.classList.remove('hidden');
                 if (monthsEl) monthsEl.innerText = dueMonthsList.join(', ');
             } else if (advanceAmount > 0) {
                 dueEl.innerText = '₹' + advanceAmount;
                 dueEl.className = "text-2xl font-black text-emerald-600 leading-none text-center italic";
+                if (balLabelEl) balLabelEl.innerText = "അഡ്വാൻസ് തുക (Advance)";
                 if (pBox) pBox.classList.add('hidden');
             } else {
                 dueEl.innerText = '₹0';
                 dueEl.className = "text-2xl font-black text-slate-400 leading-none text-center italic";
+                if (balLabelEl) balLabelEl.innerText = "ബാക്കി തുക (Balance)";
                 if (pBox) pBox.classList.add('hidden');
             }
 
@@ -2871,6 +3034,322 @@
                         });
                     }, 500);
                 };
+            }
+
+            // ഓഫ്‌ലൈൻ പേയ്‌മെന്റ് സെക്ഷൻ കൈകാര്യം ചെയ്യുന്നു
+            const offlinePaySection = document.getElementById('offlinePaySection');
+            const offlineMonthsList = document.getElementById('offlineMonthsList');
+            const offlineTotalDisplay = document.getElementById('offlineTotalDisplay');
+            const offlinePayBtn = document.getElementById('offlinePayBtn');
+            const offlineAmountInput = document.getElementById('offlineAmountInput');
+            const offlinePresets = document.getElementById('offlinePresets');
+            const offlineFeeRate = document.getElementById('offlineFeeRate');
+            const offlineMemberId = document.getElementById('offlineMemberId');
+            if (offlinePaySection) {
+                let upcomingMonths = [...(m.upcomingList || [])];
+                
+                // Generate additional future months to ensure there are always at least 12 options
+                try {
+                    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                    let latestDate = new Date(globalAppYear, globalAppMonth, 1);
+                    
+                    const checkAndUpdateLatest = (mStr) => {
+                        const parts = mStr.split(' ');
+                        if (parts.length === 2) {
+                            const mIdx = monthNames.indexOf(parts[0]);
+                            const yVal = parseInt(parts[1]);
+                            if (mIdx !== -1 && !isNaN(yVal)) {
+                                const d = new Date(yVal, mIdx, 1);
+                                if (d > latestDate) latestDate = d;
+                            }
+                        }
+                    };
+                    
+                    (dueMonthsList || []).forEach(checkAndUpdateLatest);
+                    upcomingMonths.forEach(checkAndUpdateLatest);
+                    
+                    let genDate = new Date(latestDate.getFullYear(), latestDate.getMonth() + 1, 1);
+                    while (upcomingMonths.length < 12) {
+                        const mStr = `${monthNames[genDate.getMonth()]} ${genDate.getFullYear()}`;
+                        if (!upcomingMonths.includes(mStr) && !(dueMonthsList || []).includes(mStr)) {
+                            upcomingMonths.push(mStr);
+                        }
+                        genDate.setMonth(genDate.getMonth() + 1);
+                    }
+                } catch (e) {
+                    console.error("Error generating upcoming months:", e);
+                }
+
+                if (dueMonthsList.length > 0 || upcomingMonths.length > 0) {
+                    offlinePaySection.classList.remove('hidden');
+                    offlineMonthsList.innerHTML = '';
+                    offlineTotalDisplay.innerText = '₹0';
+                    if (offlineFeeRate) offlineFeeRate.innerText = currentFee;
+                    if (offlineMemberId) offlineMemberId.innerText = m.id || 'N/A';
+                    if (offlineAmountInput) offlineAmountInput.value = '';
+
+                    // 1. കുടിശ്ശിക മാസങ്ങൾ ചെക്ക്ബോക്സ് ലിസ്റ്റ് നിർമ്മിക്കുന്നു
+                    dueMonthsList.forEach((mStr) => {
+                        const label = document.createElement('label');
+                        label.className = "relative flex items-center justify-between p-3.5 bg-slate-50 border-2 border-slate-100 rounded-2xl cursor-pointer hover:bg-slate-100/50 hover:border-slate-200 transition-all select-none";
+                        label.innerHTML = `
+                            <div class="flex items-center gap-2.5">
+                                <input type="checkbox" name="offlineMonthCheckbox" value="${mStr}" class="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 border-slate-300 transition-all cursor-pointer accent-blue-600">
+                                <span class="text-xs font-black text-slate-700">${mStr}</span>
+                            </div>
+                            <span class="text-[9px] font-black text-slate-400 bg-slate-200/50 px-2 py-0.5 rounded border border-slate-200">₹${currentFee}</span>
+                        `;
+                        offlineMonthsList.appendChild(label);
+                    });
+
+                    // 2. അഡ്വാൻസ് മാസങ്ങൾ ചെക്ക്ബോക്സ് ലിസ്റ്റ് നിർമ്മിക്കുന്നു
+                    upcomingMonths.forEach((mStr) => {
+                        const label = document.createElement('label');
+                        label.className = "relative flex items-center justify-between p-3.5 bg-emerald-50/20 border-2 border-emerald-100/50 rounded-2xl cursor-pointer hover:bg-emerald-50/40 hover:border-emerald-200 transition-all select-none";
+                        label.innerHTML = `
+                            <div class="flex items-center gap-2.5">
+                                <input type="checkbox" name="offlineMonthCheckbox" value="${mStr}" data-upcoming="true" class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 border-slate-300 transition-all cursor-pointer accent-emerald-600">
+                                <span class="text-xs font-black text-emerald-800">${mStr} <span class="text-[8px] bg-emerald-100 text-emerald-700 px-1 py-0.5 rounded font-bold ml-1">Adv</span></span>
+                            </div>
+                            <span class="text-[9px] font-black text-emerald-600 bg-emerald-100/50 px-2 py-0.5 rounded border border-emerald-200">₹${currentFee}</span>
+                        `;
+                        offlineMonthsList.appendChild(label);
+                    });
+
+                    const checkboxes = document.getElementsByName('offlineMonthCheckbox');
+
+                    // കളർ അപ്ഡേറ്റ് ലോജിക് (അഡ്വാൻസിന് പച്ചനിറം നൽകുന്നു)
+                    const updateCheckboxColors = () => {
+                        checkboxes.forEach(cb => {
+                            const lbl = cb.closest('label');
+                            const isUpcoming = cb.getAttribute('data-upcoming') === 'true';
+                            if (cb.checked) {
+                                if (isUpcoming) {
+                                    lbl.className = "relative flex items-center justify-between p-3.5 bg-emerald-50 border-2 border-emerald-500 rounded-2xl cursor-pointer transition-all select-none shadow-sm shadow-emerald-50/70";
+                                } else {
+                                    lbl.className = "relative flex items-center justify-between p-3.5 bg-blue-50/50 border-2 border-blue-500 rounded-2xl cursor-pointer transition-all select-none shadow-sm shadow-blue-50/70";
+                                }
+                            } else {
+                                if (isUpcoming) {
+                                    lbl.className = "relative flex items-center justify-between p-3.5 bg-emerald-50/20 border-2 border-emerald-100/50 rounded-2xl cursor-pointer hover:bg-emerald-50/40 hover:border-emerald-200 transition-all select-none";
+                                } else {
+                                    lbl.className = "relative flex items-center justify-between p-3.5 bg-slate-50 border-2 border-slate-100 rounded-2xl cursor-pointer hover:bg-slate-100/50 hover:border-slate-200 transition-all select-none";
+                                }
+                            }
+                        });
+                    };
+
+                    // ചെക്ക്ബോക്സ് ഇവന്റ് ലിസണറുകൾ (രണ്ടു വഴിയുള്ള ബൈൻഡിങ് - Checkbox to Input)
+                    const updateOfflineTotalFromCheckboxes = () => {
+                        let selectedCount = 0;
+                        checkboxes.forEach(cb => {
+                            if (cb.checked) selectedCount++;
+                        });
+                        const total = selectedCount * currentFee;
+                        offlineTotalDisplay.innerText = '₹' + total;
+                        if (offlineAmountInput) {
+                            offlineAmountInput.value = total > 0 ? total : '';
+                        }
+                        updateCheckboxColors();
+                    };
+
+                    checkboxes.forEach(cb => {
+                        cb.onchange = updateOfflineTotalFromCheckboxes;
+                    });
+
+                    // തുക ഇൻപുട്ട് ചെയ്യുമ്പോൾ ഉള്ള ലോജിക് (രണ്ടു വഴിയുള്ള ബൈൻഡിങ് - Input to Checkbox)
+                    if (offlineAmountInput) {
+                        offlineAmountInput.oninput = () => {
+                            let val = parseInt(offlineAmountInput.value) || 0;
+                            let countToCheck = Math.min(Math.floor(val / currentFee), checkboxes.length);
+
+                            checkboxes.forEach((cb, idx) => {
+                                cb.checked = idx < countToCheck;
+                            });
+
+                            offlineTotalDisplay.innerText = '₹' + (countToCheck * currentFee);
+                            updateCheckboxColors();
+                        };
+                    }
+
+                    // ഡൈനാമിക് ക്വിക്ക് പ്രീസെറ്റ് ബട്ടണുകൾ നിർമ്മിക്കുന്നു
+                    if (offlinePresets) {
+                        offlinePresets.innerHTML = '';
+                        const presets = [];
+                        const totalAvailable = dueMonthsList.length + upcomingMonths.length;
+                        if (totalAvailable >= 1) presets.push({ text: '1 മാസം', months: 1 });
+                        if (totalAvailable >= 2) presets.push({ text: '2 മാസം', months: 2 });
+                        if (totalAvailable >= 3) presets.push({ text: '3 മാസം', months: 3 });
+                        if (totalAvailable > 3) presets.push({ text: 'എല്ലാം', months: totalAvailable });
+
+                        presets.forEach(p => {
+                            const btn = document.createElement('button');
+                            btn.className = "bg-white text-blue-700 px-3 py-1.5 rounded-xl border border-blue-100 font-black text-[10px] active:scale-95 transition-all shadow-sm shrink-0 hover:bg-blue-50/50";
+                            btn.innerText = `${p.text} (₹${p.months * currentFee})`;
+                            btn.onclick = (e) => {
+                                e.preventDefault();
+                                if (offlineAmountInput) {
+                                    offlineAmountInput.value = p.months * currentFee;
+                                    offlineAmountInput.oninput();
+                                }
+                            };
+                            offlinePresets.appendChild(btn);
+                        });
+                    }
+
+                    // അടച്ചതായി രേഖപ്പെടുത്താനുള്ള ബട്ടൺ
+                    if (offlinePayBtn) {
+                        offlinePayBtn.onclick = async () => {
+                            const selectedMonths = [];
+                            checkboxes.forEach(cb => {
+                                if (cb.checked) {
+                                    const parts = cb.value.split(' ');
+                                    selectedMonths.push({
+                                        month: parts[0],
+                                        year: parts[1]
+                                    });
+                                }
+                            });
+
+                            if (selectedMonths.length === 0) {
+                                Swal.fire('ശ്രദ്ധിക്കുക', 'ദയവായി കുറഞ്ഞത് ഒരു മാസമെങ്കിലും തിരഞ്ഞെടുക്കുക!', 'warning');
+                                return;
+                            }
+
+                            const result = await Swal.fire({
+                                title: 'ഉറപ്പാണോ?',
+                                text: `തിരഞ്ഞെടുത്ത ${selectedMonths.length} മാസത്തെ പേയ്‌മെന്റ് ഓഫ്‌ലൈനായി അടച്ചതായി രേഖപ്പെടുത്താൻ ആഗ്രഹിക്കുന്നുണ്ടോ?`,
+                                icon: 'question',
+                                showCancelButton: true,
+                                confirmButtonColor: '#2563eb',
+                                cancelButtonColor: '#64748b',
+                                confirmButtonText: 'അതെ, രേഖപ്പെടുത്തുക',
+                                cancelButtonText: 'Cancel'
+                            });
+
+                            if (result.isConfirmed) {
+                                showLoader(true);
+                                try {
+                                    const res = await callAPI('recordOfflinePayment', {
+                                        id: m.id,
+                                        name: m.name,
+                                        phone: m.phone,
+                                        payments: selectedMonths
+                                    });
+
+                                    if (res && res.success) {
+                                        Swal.fire({
+                                            title: 'വിജയിച്ചു!',
+                                            text: 'പേയ്‌മെന്റ് വിജയകരമായി രേഖപ്പെടുത്തി.',
+                                            icon: 'success',
+                                            timer: 1500,
+                                            showConfirmButton: false
+                                        });
+
+                                        // സെഷൻ അപ്രൂവലിലേക്ക് ആഡ് ചെയ്യുന്നു
+                                        let mNames = selectedMonths.map(mObj => mObj.month).join(', ');
+                                        let yNames = [...new Set(selectedMonths.map(mObj => mObj.year))].join('/');
+                                        let isBulk = selectedMonths.length > 1;
+                                        sessionApprovals.push({
+                                            name: m.name,
+                                            id: m.id,
+                                            month: mNames,
+                                            year: yNames,
+                                            amount: selectedMonths.length * currentFee,
+                                            isBulk: isBulk,
+                                            isOffline: true,
+                                            reqTime: 'ഓഫ്‌ലൈൻ',
+                                            approveTime: new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }),
+                                            date: new Date().toLocaleDateString('en-IN')
+                                        });
+
+                                        document.getElementById('memberDetailsModal').classList.add('hidden');
+
+                                        if (m.phone && String(m.phone).trim() !== "") {
+                                            Swal.fire({
+                                                title: 'വിജയിച്ചു!',
+                                                text: 'പേയ്‌മെന്റ് രേഖപ്പെടുത്തി. വാട്സ്ആപ്പിൽ മെസ്സേജ് അയക്കണമെന്നുണ്ടോ?',
+                                                icon: 'question',
+                                                showCancelButton: true,
+                                                confirmButtonColor: '#10b981',
+                                                cancelButtonColor: '#94a3b8',
+                                                confirmButtonText: 'അതെ, അയക്കുക',
+                                                cancelButtonText: 'വേണ്ട'
+                                            }).then((msgResult) => {
+                                                if (msgResult.isConfirmed) {
+                                                    showLoader(true);
+
+                                                    // ബാക്കി തുക കണക്കാക്കുന്നു (Google Sheet റിമൈൻഡർ പോലെ തന്നെ)
+                                                    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                                                    let dueMonthsPaid = selectedMonths.filter(mObj => {
+                                                        let mIdx = monthNames.indexOf(mObj.month);
+                                                        let mYear = parseInt(mObj.year);
+                                                        return mYear < globalAppYear || (mYear === globalAppYear && mIdx <= globalAppMonth);
+                                                    }).length;
+                                                    let newBalance = Math.max(0, (m.balance || 0) - (dueMonthsPaid * currentFee));
+                                                    let paidAmount = selectedMonths.length * currentFee;
+
+                                                    let finalPhone = "91" + String(m.phone).replace(/\D/g, '').slice(-10);
+                                                    let msgText = `السلام عليكم \n${m.name} (MID: ${m.id}),\nനിങ്ങളുടെ MUAAWINA ഓഫ്‌ലൈൻ പേയ്‌മെന്റ് വിജയകരമായി രേഖപ്പെടുത്തിയിരിക്കുന്നു. ✅\n\nഅടച്ച തുക: ₹${paidAmount}\nമാസങ്ങൾ: ${mNames} ${yNames}\nഇനി അടയ്ക്കാനുള്ള തുക: ₹${newBalance}\n\nMUAAWINA - വരിസംഖ്യ ട്രാക്കർ`;
+
+                                                    fetch(BOT_BASE_URL + "/send-message", {
+                                                        method: "POST",
+                                                        headers: { "Content-Type": "application/json" },
+                                                        body: JSON.stringify({
+                                                            phone: finalPhone,
+                                                            message: msgText,
+                                                            isGroup: false
+                                                        })
+                                                     }).then(() => {
+                                                         showLoader(false);
+                                                         Swal.fire({
+                                                             title: 'അയച്ചു!',
+                                                             text: 'വാട്സ്ആപ്പ് സന്ദേശം വിജയകരമായി അയച്ചു.',
+                                                             icon: 'success',
+                                                             timer: 1500,
+                                                             showConfirmButton: false
+                                                         }).then(() => {
+                                                             if (typeof adminLogin === 'function') adminLogin();
+                                                             else location.reload();
+                                                         });
+                                                     }).catch(err => {
+                                                         showLoader(false);
+                                                         Swal.fire('Error', 'ബോട്ടുമായി ബന്ധപ്പെടാൻ കഴിഞ്ഞില്ല, സന്ദേശം അയച്ചില്ല.', 'error').then(() => {
+                                                             if (typeof adminLogin === 'function') adminLogin();
+                                                             else location.reload();
+                                                         });
+                                                     });
+                                                 } else {
+                                                     if (typeof adminLogin === 'function') adminLogin();
+                                                     else location.reload();
+                                                 }
+                                             });
+                                         } else {
+                                             Swal.fire('വിജയിച്ചു!', 'പേയ്‌മെന്റ് രേഖപ്പെടുത്തി. ഫോൺ നമ്പർ ഇല്ലാത്തതിനാൽ സന്ദേശം അയക്കാൻ കഴിയില്ല.', 'info').then(() => {
+                                                 if (typeof adminLogin === 'function') adminLogin();
+                                                 else location.reload();
+                                             });
+                                         }
+                                         return;
+                                        if (typeof adminLogin === 'function') {
+                                            adminLogin();
+                                        } else {
+                                            location.reload();
+                                        }
+                                    } else {
+                                        Swal.fire('Error', res.error || 'പിഴവ് സംഭവിച്ചു.', 'error');
+                                    }
+                                } catch (err) {
+                                    Swal.fire('Error', err.message || 'ബന്ധപ്പെടാൻ കഴിഞ്ഞില്ല.', 'error');
+                                } finally {
+                                    showLoader(false);
+                                }
+                            }
+                        };
+                    }
+                } else {
+                    offlinePaySection.classList.add('hidden');
+                }
             }
         }
 
@@ -3289,7 +3768,19 @@
                             processedList.forEach(a => {
                                 let mem = adminMembers.find(x => String(x.id) === String(a.memberId));
                                 let fee = (mem && mem.fee) ? mem.fee : 50;
-                                sessionApprovals.push({ name: a.name, id: a.memberId, month: a.month, year: a.year, amount: fee, date: new Date().toLocaleString() });
+                                let rowCount = a.isBulk ? a.rows.length : 1;
+                                let totalAmt = rowCount * fee;
+                                sessionApprovals.push({ 
+                                    name: a.name, 
+                                    id: a.memberId, 
+                                    month: a.month, 
+                                    year: a.year, 
+                                    amount: totalAmt, 
+                                    isBulk: a.isBulk,
+                                    reqTime: a.date,
+                                    approveTime: new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }),
+                                    date: new Date().toLocaleString() 
+                                });
                             });
                         }
 
@@ -3408,7 +3899,7 @@
             const q = document.getElementById('dirSearchInput') ? document.getElementById('dirSearchInput').value.toLowerCase() : '';
 
             let filtered = directoryMembers.filter(m => {
-                const matchSearch = m.name.toLowerCase().includes(q) || m.place.toLowerCase().includes(q) || m.phone.includes(q) || m.id.toLowerCase().includes(q);
+                const matchSearch = m.name.toLowerCase().includes(q) || m.place.toLowerCase().includes(q) || m.phone.includes(q) || String(m.id || '').toLowerCase().includes(q);
                 const matchBatch = (currentDirBatch === 'all') || (m.batch === currentDirBatch);
                 return matchSearch && matchBatch;
             });
@@ -3598,7 +4089,13 @@
                 let index = 1;
 
                 sortedBatches.forEach(batch => {
-                    html += `<div class="bg-amber-100 text-amber-800 font-black text-[10px] uppercase tracking-widest px-3 py-1.5 rounded-lg mb-2 mt-4 inline-block shadow-sm border border-amber-200">📁 ${batch}</div>`;
+                    html += `
+                    <div class="flex justify-between items-center mb-2 mt-4">
+                        <div class="bg-amber-100 text-amber-800 font-black text-[10px] uppercase tracking-widest px-3 py-1.5 rounded-lg shadow-sm border border-amber-200">📁 ${batch}</div>
+                        <button onclick="sendBatchReminders('${batch}')" class="px-2.5 py-1.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 active:scale-95 border border-emerald-100 font-black text-[9px] uppercase tracking-wider rounded-xl shadow-sm transition-all flex items-center gap-1">
+                            <i class="fab fa-whatsapp text-xs text-emerald-500"></i> റിമൈൻഡർ അയക്കുക
+                        </button>
+                    </div>`;
                     html += `<div class="space-y-2">`;
 
                     grouped[batch].forEach(m => {
@@ -3623,6 +4120,89 @@
                 container.innerHTML = html;
             }
             document.getElementById('reminderModal').classList.remove('hidden');
+        }
+
+        async function sendBatchReminders(batchName) {
+            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            const currentMonthStr = `${monthNames[globalAppMonth]} ${globalAppYear}`;
+
+            let defaulters = adminMembers.filter(m => 
+                m.batch === batchName && 
+                m.pendingList && 
+                m.pendingList.includes(currentMonthStr)
+            );
+
+            if (defaulters.length === 0) {
+                return Swal.fire('വിവരം', 'ഈ ബാച്ചിൽ കുടിശ്ശികക്കാർ ആരുമില്ല!', 'info');
+            }
+
+            const confirmResult = await Swal.fire({
+                title: 'ഉറപ്പാണോ?',
+                text: `${batchName} ബാച്ചിലെ ${defaulters.length} പേർക്ക് വാട്സ്ആപ്പ് ബോട്ട് വഴി റിമൈൻഡർ അയക്കണമെന്നുണ്ടോ? (സുരക്ഷിതമായി അയക്കാൻ ഓരോ മെസ്സേജിനും ഇടയിൽ 5 സെക്കൻഡ് ഇടവേള ഉണ്ടാകും)`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#10b981',
+                cancelButtonColor: '#94a3b8',
+                confirmButtonText: 'അതെ, അയക്കുക',
+                cancelButtonText: 'വേണ്ട'
+            });
+
+            if (confirmResult.isConfirmed) {
+                document.getElementById('reminderModal').classList.add('hidden');
+                
+                Swal.fire({
+                    title: 'റിമൈൻഡറുകൾ അയക്കുന്നു...',
+                    html: `മെസ്സേജ് അയക്കുന്നു: <b>0/${defaulters.length}</b> ആളുകൾക്ക്.`,
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                let successCount = 0;
+
+                for (let i = 0; i < defaulters.length; i++) {
+                    let m = defaulters[i];
+                    if (m.phone) {
+                        const countSpan = Swal.getHtmlContainer().querySelector('b');
+                        if (countSpan) {
+                            countSpan.textContent = `${i + 1}/${defaulters.length} (പേര്: ${m.name})`;
+                        }
+
+                        try {
+                            let finalPhone = "91" + String(m.phone).replace(/\D/g, '').slice(-10);
+                            let msgText = `السلام عليكم \n${m.name} (MID: ${m.id}),\nനിങ്ങളുടെ MUAAWINA വരിസംഖ്യയിൽ ${currentMonthStr} നിലവിലെ മാസത്തെ തുക അടച്ചിട്ടില്ല. ദയവായി അടക്കുക.\nhttps://muaawina.github.io/muaawina.com/`;
+
+                            await fetch(BOT_BASE_URL + "/send-message", {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({
+                                    phone: finalPhone,
+                                    message: msgText,
+                                    isGroup: false
+                                })
+                            });
+                            successCount++;
+                        } catch (err) {
+                            console.error(`Failed to send reminder to ${m.name}:`, err);
+                        }
+
+                        if (i < defaulters.length - 1) {
+                            await new Promise(resolve => setTimeout(resolve, 5000));
+                        }
+                    }
+                }
+
+                Swal.close();
+
+                Swal.fire({
+                    title: 'പൂർത്തിയായി!',
+                    text: `${successCount} പേർക്ക് വിജയകരമായി റിമൈൻഡർ അയച്ചു.`,
+                    icon: 'success'
+                }).then(() => {
+                    openReminderModal();
+                });
+            }
         }
 
         // അഡ്മിൻ പാനലിൽ നിന്ന് നോട്ടിഫിക്കേഷൻ അയക്കാനുള്ള ഫംഗ്ഷൻ (Error കാണിക്കാൻ)
@@ -4186,6 +4766,378 @@
         } else {
             initCustomDropdowns();
         }
+
+        // ================= പോസ്റ്റർ സ്ലൈഡർ ലോജിക് =================
+        let sliderInterval = null;
+
+        function adjustSliderHeight() {
+            const container = document.getElementById('posterSliderContainer');
+            const wrapper = document.getElementById('posterSliderWrapper');
+            if (!container || !wrapper) return;
+            const slides = container.children;
+            if (slides.length === 0) return;
+            const activeSlide = slides[currentPosterIndex];
+            if (activeSlide) {
+                wrapper.style.height = activeSlide.offsetHeight + 'px';
+            }
+        }
+
+        // Handle window resizing to keep the slider height correct
+        window.addEventListener('resize', () => {
+            adjustSliderHeight();
+        });
+
+        function initPosterSlider() {
+            const container = document.getElementById('posterSliderContainer');
+            const wrapper = document.getElementById('posterSliderWrapper');
+            const dotsContainer = document.getElementById('sliderDots');
+            const nextBtn = document.getElementById('sliderNextBtn');
+            const prevBtn = document.getElementById('sliderPrevBtn');
+            if (!container) return;
+
+            const slides = container.children;
+            const totalSlides = slides.length;
+            
+            // Reset to 0 when initializing
+            currentPosterIndex = 0;
+
+            if (totalSlides <= 1) {
+                if (nextBtn) nextBtn.style.display = 'none';
+                if (prevBtn) prevBtn.style.display = 'none';
+                if (dotsContainer) dotsContainer.style.display = 'none';
+                if (slides[0]) {
+                    slides[0].classList.add('active-slide');
+                    slides[0].style.opacity = '1';
+                    slides[0].style.transform = 'scale(1)';
+                }
+                setTimeout(adjustSliderHeight, 150);
+                return;
+            }
+
+            if (nextBtn) nextBtn.style.display = 'flex';
+            if (prevBtn) prevBtn.style.display = 'flex';
+            if (dotsContainer) dotsContainer.style.display = 'flex';
+
+            // Dots ജനറേഷൻ
+            if (dotsContainer) {
+                dotsContainer.innerHTML = '';
+                for (let i = 0; i < totalSlides; i++) {
+                    const dot = document.createElement('div');
+                    dot.className = `w-2 h-2 rounded-full bg-white/50 border border-slate-200 transition-all duration-300 cursor-pointer ${i === 0 ? 'bg-blue-600 w-4' : ''}`;
+                    dot.onclick = () => {
+                        clearInterval(sliderInterval);
+                        scrollToSlide(i);
+                        startAutoSlide();
+                    };
+                    dotsContainer.appendChild(dot);
+                }
+            }
+
+            const updateDots = (index) => {
+                if (!dotsContainer) return;
+                const dots = dotsContainer.children;
+                for (let i = 0; i < dots.length; i++) {
+                    if (i === index) {
+                        dots[i].className = 'w-2 h-2 rounded-full bg-blue-600 w-4 border border-blue-600 transition-all duration-300 cursor-pointer';
+                    } else {
+                        dots[i].className = 'w-2 h-2 rounded-full bg-white/50 border border-slate-200 transition-all duration-300 cursor-pointer';
+                    }
+                }
+            };
+
+            const scrollToSlide = (index) => {
+                if (index < 0) index = totalSlides - 1;
+                if (index >= totalSlides) index = 0;
+                
+                currentPosterIndex = index;
+                
+                // Slide translation
+                container.style.transform = `translateX(-${index * 100}%)`;
+                
+                // Adjust 3D transforms, scale, z-index and opacity of slides
+                for (let i = 0; i < totalSlides; i++) {
+                    const slide = slides[i];
+                    const diff = i - index;
+                    
+                    slide.style.transition = 'all 0.6s cubic-bezier(0.25, 1, 0.5, 1)';
+                    
+                    if (diff === 0) {
+                        // Active slide: centered, flat, fully opaque
+                        slide.classList.add('active-slide');
+                        slide.style.opacity = '1';
+                        slide.style.transform = 'scale(1) rotateY(0deg) translate3d(0, 0, 0)';
+                        slide.style.zIndex = '10';
+                    } else if (diff === 1 || (index === totalSlides - 1 && i === 0)) {
+                        // Right adjacent slide: tilted inwards, scaled down, offset back in depth
+                        slide.classList.remove('active-slide');
+                        slide.style.opacity = '0.4';
+                        slide.style.transform = 'scale(0.92) rotateY(-12deg) translate3d(-15px, 0, -80px)';
+                        slide.style.zIndex = '5';
+                    } else if (diff === -1 || (index === 0 && i === totalSlides - 1)) {
+                        // Left adjacent slide: tilted inwards, scaled down, offset back in depth
+                        slide.classList.remove('active-slide');
+                        slide.style.opacity = '0.4';
+                        slide.style.transform = 'scale(0.92) rotateY(12deg) translate3d(15px, 0, -80px)';
+                        slide.style.zIndex = '5';
+                    } else {
+                        // Out of view slides: fully hidden or faded out far in background
+                        slide.classList.remove('active-slide');
+                        slide.style.opacity = '0';
+                        slide.style.transform = 'scale(0.85) translate3d(0, 0, -150px)';
+                        slide.style.zIndex = '1';
+                    }
+
+                    // Staggered slide metadata slide-up and fade-in animation
+                    const meta = slide.querySelector('.slide-meta');
+                    if (meta) {
+                        meta.style.transition = 'all 0.5s cubic-bezier(0.25, 1, 0.5, 1) 0.1s';
+                        if (diff === 0) {
+                            meta.style.transform = 'translateY(0)';
+                            meta.style.opacity = '1';
+                        } else {
+                            meta.style.transform = 'translateY(15px)';
+                            meta.style.opacity = '0';
+                        }
+                    }
+                }
+                
+                adjustSliderHeight();
+                updateDots(index);
+            };
+
+            if (nextBtn) {
+                nextBtn.onclick = () => {
+                    clearInterval(sliderInterval);
+                    scrollToSlide(currentPosterIndex + 1);
+                    startAutoSlide();
+                };
+            }
+            if (prevBtn) {
+                prevBtn.onclick = () => {
+                    clearInterval(sliderInterval);
+                    scrollToSlide(currentPosterIndex - 1);
+                    startAutoSlide();
+                };
+            }
+
+            // മൊബൈൽ ടച്ച് സ്വൈപ്പ് സപ്പോർട്ട് (Touch Swipe Support)
+            let startX = 0;
+            let currentX = 0;
+            let isDragging = false;
+            
+            container.addEventListener('touchstart', (e) => {
+                clearInterval(sliderInterval);
+                startX = e.touches[0].clientX;
+                currentX = startX;
+                isDragging = true;
+            }, { passive: true });
+            
+            container.addEventListener('touchmove', (e) => {
+                if (!isDragging) return;
+                currentX = e.touches[0].clientX;
+            }, { passive: true });
+            
+            container.addEventListener('touchend', () => {
+                if (!isDragging) return;
+                isDragging = false;
+                const diffX = startX - currentX;
+                if (Math.abs(diffX) > 50) { // 50px threshold
+                    if (diffX > 0) {
+                        scrollToSlide(currentPosterIndex + 1);
+                    } else {
+                        scrollToSlide(currentPosterIndex - 1);
+                    }
+                }
+                startAutoSlide();
+            });
+
+            const startAutoSlide = () => {
+                clearInterval(sliderInterval);
+                sliderInterval = setInterval(() => {
+                    scrollToSlide(currentPosterIndex + 1);
+                }, 4500);
+            };
+
+            // ആദ്യ സ്ലൈഡ് കാണിക്കുന്നു
+            scrollToSlide(0);
+            startAutoSlide();
+            
+            // Adjust height after rendering to ensure the first slide is sized correctly
+            setTimeout(adjustSliderHeight, 150);
+            setTimeout(adjustSliderHeight, 600); // Back-up adjustment after animations settle
+        }
+
+        // അഡ്മിൻ പാനലിൽ നിലവിലുള്ള പോസ്റ്ററുകൾ ലിസ്റ്റ് ചെയ്യാൻ
+        function renderAdminPosters(highlightsList) {
+            const listEl = document.getElementById('adminPostersList');
+            if (!listEl) return;
+            
+            if (!highlightsList || highlightsList.length === 0) {
+                listEl.innerHTML = '<p class="text-center text-slate-400 font-bold py-6 text-xs uppercase tracking-widest">പോസ്റ്ററുകൾ ഒന്നും ചേർത്തിട്ടില്ല.</p>';
+                return;
+            }
+            
+            listEl.innerHTML = highlightsList.map((h, i) => `
+                <div class="bg-slate-50/80 p-3 rounded-2xl border border-slate-100 flex gap-3 relative group">
+                    <div class="w-16 h-16 rounded-xl overflow-hidden bg-slate-200 border shadow-inner shrink-0">
+                        <img src="${h.url}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flex-1 min-w-0 flex flex-col justify-between py-0.5">
+                        <div>
+                            <h4 class="font-black text-xs text-slate-800 truncate mb-0.5">${h.heading || 'No Heading'}</h4>
+                            <p class="text-[10px] font-bold text-slate-400 line-clamp-2 leading-relaxed">${h.desc || 'No description'}</p>
+                        </div>
+                        <button onclick="deletePoster(${h.index})" 
+                            class="self-start text-[8px] font-black text-rose-600 bg-rose-50 border border-rose-100 px-2.5 py-1 rounded-lg uppercase tracking-wider active:scale-95 transition-all hover:bg-rose-100 flex items-center gap-1">
+                            <i class="fas fa-trash-alt text-[7px]"></i> Delete
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // പുതിയ പോസ്റ്റർ ചേർക്കാൻ
+        async function addNewPoster() {
+            const fileInput = document.getElementById('posterFile');
+            const headingInput = document.getElementById('posterHeading');
+            const descInput = document.getElementById('posterDesc');
+            
+            if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+                return Swal.fire('ശ്രദ്ധിക്കുക', 'ദയവായി ഒരു ഫോട്ടോ തിരഞ്ഞെടുക്കുക!', 'warning');
+            }
+            
+            const file = fileInput.files[0];
+            const heading = headingInput ? headingInput.value.trim() : '';
+            const desc = descInput ? descInput.value.trim() : '';
+            
+            showLoader(true);
+            try {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = async () => {
+                    const base64 = reader.result;
+                    
+                    // 1. ഫോട്ടോ ഗൂഗിൾ ഡ്രൈവിലേക്ക് അപ്‌ലോഡ് ചെയ്യുന്നു
+                    const uploadRes = await callAPI('uploadPosterPhoto', {
+                        base64: base64,
+                        mimeType: file.type,
+                        fileName: file.name
+                    });
+                    
+                    if (!uploadRes || uploadRes.error || !uploadRes.url) {
+                        showLoader(false);
+                        return Swal.fire('Error', uploadRes.error || 'ഫോട്ടോ അപ്‌ലോഡ് ചെയ്യാൻ കഴിഞ്ഞില്ല.', 'error');
+                    }
+                    
+                    const photoUrl = uploadRes.url;
+                    
+                    // 2. പോസ്റ്റർ വിവരങ്ങൾ ഷീറ്റിലേക്ക് ചേർക്കുന്നു
+                    const addRes = await callAPI('addHighlight', {
+                        heading: heading,
+                        url: photoUrl,
+                        desc: desc
+                    });
+                    
+                    showLoader(false);
+                    if (addRes && addRes.success) {
+                        Swal.fire({
+                            title: 'വിജയിച്ചു!',
+                            text: 'പോസ്റ്റർ വിജയകരമായി ചേർത്തു.',
+                            icon: 'success',
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                        
+                        // ഫോം റീസെറ്റ് ചെയ്യുന്നു
+                        fileInput.value = '';
+                        if (headingInput) headingInput.value = '';
+                        if (descInput) descInput.value = '';
+                        
+                        const display = document.getElementById('posterFileNameDisplay');
+                        if (display) display.innerText = "ഫോട്ടോ തിരഞ്ഞെടുത്തിട്ടില്ല";
+                        const label = document.getElementById('posterFileLabel');
+                        if (label) {
+                            label.className = "cursor-pointer w-full p-3.5 bg-slate-50 text-indigo-700 rounded-xl font-black text-[10px] uppercase tracking-widest border-2 border-dashed border-slate-200 flex items-center justify-center gap-2 hover:bg-slate-100/50 transition-all";
+                            label.innerHTML = '<i class="fas fa-image text-sm"></i> ഫോട്ടോ തിരഞ്ഞെടുക്കുക';
+                        }
+                        
+                        // ലിസ്റ്റ് പുതുക്കുന്നു
+                        if (addRes.highlights) {
+                            adminPosters = addRes.highlights;
+                            renderAdminPosters(adminPosters);
+                        }
+                    } else {
+                        Swal.fire('Error', addRes.error || 'പോസ്റ്റർ വിവരങ്ങൾ ചേർക്കാൻ കഴിഞ്ഞില്ല.', 'error');
+                    }
+                };
+                reader.onerror = () => {
+                    showLoader(false);
+                    Swal.fire('Error', 'ഫയൽ വായിക്കാൻ കഴിഞ്ഞില്ല.', 'error');
+                };
+            } catch (err) {
+                showLoader(false);
+                Swal.fire('Error', err.message || 'ബന്ധപ്പെടാൻ കഴിഞ്ഞില്ല.', 'error');
+            }
+        }
+
+        // പോസ്റ്റർ ഡിലീറ്റ് ചെയ്യാൻ
+        async function deletePoster(index) {
+            const result = await Swal.fire({
+                title: 'ഉറപ്പാണോ?',
+                text: 'ഈ പോസ്റ്റർ നീക്കം ചെയ്യാൻ ആഗ്രഹിക്കുന്നുണ്ടോ?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'അതെ, നീക്കം ചെയ്യുക',
+                cancelButtonText: 'Cancel'
+            });
+            
+            if (result.isConfirmed) {
+                showLoader(true);
+                try {
+                    const res = await callAPI('deleteHighlight', { index: index });
+                    showLoader(false);
+                    if (res && res.success) {
+                        Swal.fire({
+                            title: 'നീക്കം ചെയ്തു!',
+                            text: 'പോസ്റ്റർ വിജയകരമായി നീക്കം ചെയ്തു.',
+                            icon: 'success',
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                        
+                        if (res.highlights) {
+                            adminPosters = res.highlights;
+                            renderAdminPosters(adminPosters);
+                        }
+                    } else {
+                        Swal.fire('Error', res.error || 'പോസ്റ്റർ നീക്കം ചെയ്യാൻ കഴിഞ്ഞില്ല.', 'error');
+                    }
+                } catch (err) {
+                    showLoader(false);
+                    Swal.fire('Error', err.message || 'ബന്ധപ്പെടാൻ കഴിഞ്ഞില്ല.', 'error');
+                }
+            }
+        }
+
+        // പോസ്റ്റർ ഫയൽ ഇൻപുട്ട് ഇവന്റ് ലിസണർ
+        document.addEventListener('DOMContentLoaded', () => {
+            const posterFileInput = document.getElementById('posterFile');
+            if (posterFileInput) {
+                posterFileInput.addEventListener('change', function(e) {
+                    const fileName = e.target.files[0] ? e.target.files[0].name : "ഫോട്ടോ തിരഞ്ഞെടുത്തിട്ടില്ല";
+                    const display = document.getElementById('posterFileNameDisplay');
+                    if (display) display.innerText = fileName;
+                    
+                    const label = document.getElementById('posterFileLabel');
+                    if (label) {
+                        label.className = "cursor-pointer w-full p-3.5 bg-emerald-50 text-emerald-700 rounded-xl font-black text-[10px] uppercase tracking-widest border-2 border-emerald-300 flex items-center justify-center gap-2 transition-all";
+                        label.innerHTML = '<i class="fas fa-check-circle text-sm"></i> ഫോട്ടോ തിരഞ്ഞെടുത്തു';
+                    }
+                });
+            }
+        });
     </script>
     <div id="pdfTemplateContainer" class="fixed -left-[9999px] top-0 pointer-events-none z-[-1]">
         <div id="pdfCard" class="bg-white relative"
