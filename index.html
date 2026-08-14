@@ -38,7 +38,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Manjari:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Manjari:wght@400;700&family=Montserrat:wght@400;600;700;800;900&display=swap');
 
         body {
             font-family: 'Manjari', sans-serif;
@@ -91,6 +91,67 @@
         .no-scrollbar {
             -ms-overflow-style: none;
             scrollbar-width: none;
+        }
+
+        /* Pinterest Masonry Grid Styles */
+        .pinterest-grid {
+            column-count: 2;
+            column-gap: 12px;
+            width: 100%;
+        }
+
+        .pinterest-item {
+            break-inside: avoid;
+            margin-bottom: 12px;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f1f5f9;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .pinterest-item:active {
+            transform: scale(0.98);
+        }
+
+        .pinterest-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .pinterest-meta {
+            padding: 12px;
+        }
+
+        .pinterest-title {
+            font-size: 11px;
+            font-weight: 800;
+            color: #1e293b;
+            line-height: 1.3;
+            margin-bottom: 4px;
+        }
+
+        .pinterest-desc {
+            font-size: 9px;
+            font-weight: 600;
+            color: #64748b;
+            line-height: 1.3;
+        }
+
+        .truncate-2-lines {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .animate-slide-up {
+            animation: slideUp 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
         }
 
         .fade-in {
@@ -464,7 +525,12 @@
                 <div id="loginError" class="hidden error-box mb-4"></div>
 
                 <button onclick="fetchMemberDetails()"
-                    class="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-black shadow-lg mb-6 active:scale-95 transition-all uppercase tracking-widest text-base">തുടരുക</button>
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-black shadow-lg mb-4 active:scale-95 transition-all uppercase tracking-widest text-base">തുടരുക</button>
+
+                <button onclick="toggleCampaignModal(true)"
+                    class="w-full bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white py-4 rounded-2xl font-black shadow-lg mb-6 active:scale-95 transition-all uppercase tracking-widest text-[11px] flex items-center justify-center gap-2">
+                    <i class="fas fa-user-plus text-sm animate-pulse"></i> മെമ്പർഷിപ്പ് ക്യാമ്പയിൻ (Join Campaign)
+                </button>
 
                 <div class="flex flex-col gap-3">
                     <button id="appInstallCard" onclick="installPWA()"
@@ -629,7 +695,51 @@
                         ...</p>
                 </div>
             </div>
+
+            <!-- Dashboard Membership Campaign Card -->
+            <div id="homeCampaignCard"
+                class="bg-gradient-to-br from-rose-500 via-pink-500 to-purple-600 rounded-[28px] p-6 text-white shadow-xl mb-6 relative overflow-hidden hidden">
+                <!-- Background decorative shapes -->
+                <div
+                    class="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none">
+                </div>
+                <div
+                    class="absolute -left-10 -top-10 w-32 h-32 bg-purple-500/20 rounded-full blur-xl pointer-events-none">
+                </div>
+
+                <div class="relative z-10 flex flex-col justify-start">
+                    <span
+                        class="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-[8px] font-black uppercase tracking-widest self-start mb-3 border border-white/20">
+                        Campaign 2026
+                    </span>
+                    <h4 class="text-base font-black uppercase tracking-wide leading-tight mb-1 flex items-center gap-2">
+                        <i class="fas fa-bullhorn text-rose-200 animate-bounce"></i> മെമ്പർഷിപ്പ് ക്യാമ്പയിൻ
+                    </h4>
+                    <p id="homeCampaignStatusText" class="text-[10px] font-bold text-rose-100 leading-relaxed mb-4">
+                        ക്യാമ്പയിനിൽ നിങ്ങളുടെ വിവരങ്ങൾ ഇതുവരെ ചേർത്തിട്ടില്ല. ദയവായി താഴെയുള്ള ഫോം പൂരിപ്പിച്ച്
+                        വിവരങ്ങൾ സമർപ്പിക്കുക.
+                    </p>
+
+                    <div id="homeCampaignActions" class="flex gap-3">
+                        <button onclick="toggleCampaignModal(true)"
+                            class="flex-1 bg-white text-rose-600 py-3.5 px-5 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-md active:scale-95 transition-all text-center flex items-center justify-center gap-2">
+                            <i class="fas fa-wpforms"></i> വിവരങ്ങൾ സമർപ്പിക്കുക
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <div id="homeHighlightsArea" class="mt-4"></div>
+
+            <!-- Pinterest Style Section (Explore More) -->
+            <div id="pinterestSection" class="mt-8 mb-6 hidden">
+                <h3 class="text-xs font-black text-slate-500 uppercase tracking-widest mb-4 flex items-center gap-2">
+                    <i class="fas fa-compass text-rose-500 animate-pulse"></i> Explore posters
+                </h3>
+                <div id="pinterestGrid" class="pinterest-grid">
+                    <!-- Dynamic Pinterest Items will go here -->
+                </div>
+            </div>
         </div>
 
 
@@ -880,7 +990,8 @@
                 <div class="admin-tab w-1/5 text-center" id="tabMembers" onclick="switchAdminTab('members')">അംഗങ്ങൾ
                 </div>
                 <div class="admin-tab w-1/5 text-center" id="tabLogins" onclick="switchAdminTab('logins')">ലോഗിൻസ്</div>
-                <div class="admin-tab w-1/5 text-center" id="tabPosters" onclick="switchAdminTab('posters')">പോസ്റ്റർ</div>
+                <div class="admin-tab w-1/5 text-center" id="tabPosters" onclick="switchAdminTab('posters')">പോസ്റ്റർ
+                </div>
             </div>
 
             <div id="sectionOverview" class="space-y-6">
@@ -912,7 +1023,8 @@
                     <div class="relative flex items-center justify-center" style="height: 190px; width: 100%;">
                         <canvas id="analyticsChart"></canvas>
                         <!-- Center Text Overlay -->
-                        <div class="absolute flex flex-col items-center justify-center pointer-events-none" style="top: 50%; left: 50%; transform: translate(-50%, -52%);">
+                        <div class="absolute flex flex-col items-center justify-center pointer-events-none"
+                            style="top: 50%; left: 50%; transform: translate(-50%, -52%);">
                             <p id="chartCenterPercent" class="text-xl font-black text-slate-800 leading-none">0%</p>
                             <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">ശേഖരിച്ചു</p>
                         </div>
@@ -1004,7 +1116,8 @@
 
             <div id="sectionMembers" class="hidden space-y-4">
                 <div class="glass-card p-4 space-y-3 shadow-lg border border-slate-100">
-                    <input type="text" id="searchInput" onkeyup="filterMembers()" placeholder="പേര്, ഫോൺ അല്ലെങ്കിൽ Member ID..."
+                    <input type="text" id="searchInput" onkeyup="filterMembers()"
+                        placeholder="പേര്, ഫോൺ അല്ലെങ്കിൽ Member ID..."
                         class="w-full p-3.5 rounded-xl border-2 border-slate-100 outline-none focus:border-blue-400 transition-all text-xs font-bold bg-white shadow-inner">
 
                     <div class="grid grid-cols-2 gap-2">
@@ -1048,7 +1161,8 @@
 
             <div id="sectionLogins" class="hidden space-y-4">
                 <div class="glass-card p-4 space-y-3 shadow-lg border border-slate-100">
-                    <input type="text" id="searchLoginInput" onkeyup="filterLogins()" placeholder="പേര്, ഫോൺ അല്ലെങ്കിൽ Member ID..."
+                    <input type="text" id="searchLoginInput" onkeyup="filterLogins()"
+                        placeholder="പേര്, ഫോൺ അല്ലെങ്കിൽ Member ID..."
                         class="w-full p-3.5 rounded-xl border-2 border-slate-100 outline-none focus:border-blue-400 transition-all text-xs font-bold bg-white shadow-inner">
                     <select id="loginStatusFilter" onchange="filterLogins()"
                         class="custom-select w-full p-3.5 rounded-xl border-2 border-slate-100 bg-white font-black text-slate-700 text-[10px] outline-none shadow-sm text-center">
@@ -1086,31 +1200,37 @@
             <div id="sectionPosters" class="hidden space-y-6">
                 <!-- പുതിയ പോസ്റ്റർ ചേർക്കുക -->
                 <div class="glass-card p-4 mb-6 border-t-4 border-indigo-600 shadow-md space-y-4">
-                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">പുതിയ പോസ്റ്റർ ചേർക്കുക</p>
-                    
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">പുതിയ പോസ്റ്റർ ചേർക്കുക
+                    </p>
+
                     <div class="space-y-3">
                         <div>
-                            <p class="text-[9px] font-black text-slate-400 uppercase mb-1.5 ml-1">പോസ്റ്റർ ഫോട്ടോ (Image File)</p>
+                            <p class="text-[9px] font-black text-slate-400 uppercase mb-1.5 ml-1">പോസ്റ്റർ ഫോട്ടോ (Image
+                                File)</p>
                             <input type="file" id="posterFile" accept="image/*" class="hidden">
                             <label for="posterFile" id="posterFileLabel"
                                 class="cursor-pointer w-full p-3.5 bg-slate-50 text-indigo-700 rounded-xl font-black text-[10px] uppercase tracking-widest border-2 border-dashed border-slate-200 flex items-center justify-center gap-2 hover:bg-slate-100/50 transition-all">
                                 <i class="fas fa-image text-sm"></i> ഫോട്ടോ തിരഞ്ഞെടുക്കുക
                             </label>
-                            <p id="posterFileNameDisplay" class="text-[8px] text-slate-400 font-bold mt-1.5 text-center uppercase">ഫോട്ടോ തിരഞ്ഞെടുത്തിട്ടില്ല</p>
+                            <p id="posterFileNameDisplay"
+                                class="text-[8px] text-slate-400 font-bold mt-1.5 text-center uppercase">ഫോട്ടോ
+                                തിരഞ്ഞെടുത്തിട്ടില്ല</p>
                         </div>
-                        
+
                         <div>
-                            <p class="text-[9px] font-black text-slate-400 uppercase mb-1.5 ml-1">പോസ്റ്റർ ഹെഡിംഗ് (Heading - Optional)</p>
+                            <p class="text-[9px] font-black text-slate-400 uppercase mb-1.5 ml-1">പോസ്റ്റർ ഹെഡിംഗ്
+                                (Heading - Optional)</p>
                             <input type="text" id="posterHeading" placeholder="ഹെഡിംഗ് നൽകുക..."
                                 class="w-full p-3 rounded-xl border border-slate-100 text-xs font-bold outline-none focus:border-indigo-400">
                         </div>
-                        
+
                         <div>
-                            <p class="text-[9px] font-black text-slate-400 uppercase mb-1.5 ml-1">പോസ്റ്റർ വിവരണം (Description - Optional)</p>
+                            <p class="text-[9px] font-black text-slate-400 uppercase mb-1.5 ml-1">പോസ്റ്റർ വിവരണം
+                                (Description - Optional)</p>
                             <textarea id="posterDesc" placeholder="വിവരണം നൽകുക..." rows="2"
                                 class="w-full p-3 rounded-xl border border-slate-100 text-xs font-bold outline-none focus:border-indigo-400 resize-none"></textarea>
                         </div>
-                        
+
                         <button onclick="addNewPoster()"
                             class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3.5 rounded-xl font-black text-[10px] uppercase shadow-md active:scale-95 transition-all tracking-wider flex justify-center items-center gap-2">
                             <i class="fas fa-plus-circle text-xs"></i> പോസ്റ്റർ അപ്‌ലോഡ് ചെയ്യുക
@@ -1120,7 +1240,8 @@
 
                 <!-- നിലവിലുള്ള പോസ്റ്ററുകൾ കാണിക്കുക -->
                 <div class="glass-card p-4 shadow-md space-y-4">
-                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">നിലവിലുള്ള പോസ്റ്ററുകൾ (Active Posters)</p>
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">നിലവിലുള്ള പോസ്റ്ററുകൾ
+                        (Active Posters)</p>
                     <div id="adminPostersList" class="space-y-4 max-h-[50vh] overflow-y-auto pr-1 no-scrollbar">
                         <!-- Dynamic list of posters with Delete button -->
                     </div>
@@ -1215,7 +1336,8 @@
                     </div>
                     <div
                         class="text-center bg-slate-50 py-3 rounded-2xl border-2 border-dashed border-slate-200 shadow-sm">
-                        <p id="detBalLabel" class="text-[10px] font-black text-slate-400 uppercase mb-1 tracking-widest text-center">
+                        <p id="detBalLabel"
+                            class="text-[10px] font-black text-slate-400 uppercase mb-1 tracking-widest text-center">
                             ബാക്കി തുക (Balance)</p>
                         <p id="detDue" class="text-2xl font-black text-rose-600 leading-none text-center italic">₹0</p>
                     </div>
@@ -1230,15 +1352,20 @@
 
                     <!-- ഓഫ്‌ലൈൻ പേയ്‌മെന്റ് സെക്ഷൻ -->
                     <div id="offlinePaySection" class="hidden border-t border-slate-100 pt-6 space-y-4">
-                        <div class="bg-gradient-to-br from-blue-50/60 to-indigo-50/40 p-5 rounded-3xl border border-blue-100/70 shadow-sm space-y-3.5">
+                        <div
+                            class="bg-gradient-to-br from-blue-50/60 to-indigo-50/40 p-5 rounded-3xl border border-blue-100/70 shadow-sm space-y-3.5">
                             <div class="flex justify-between items-center">
-                                <span class="text-[10px] font-black text-blue-800 uppercase tracking-widest">ഓഫ്‌ലൈൻ പേയ്‌മെന്റ് (MID: <span id="offlineMemberId">N/A</span>)</span>
-                                <span class="text-[9px] font-black text-slate-400 bg-slate-100 px-2 py-0.5 rounded border">വരിസംഖ്യ: ₹<span id="offlineFeeRate">0</span>/മാസം</span>
+                                <span class="text-[10px] font-black text-blue-800 uppercase tracking-widest">ഓഫ്‌ലൈൻ
+                                    പേയ്‌മെന്റ് (MID: <span id="offlineMemberId">N/A</span>)</span>
+                                <span
+                                    class="text-[9px] font-black text-slate-400 bg-slate-100 px-2 py-0.5 rounded border">വരിസംഖ്യ:
+                                    ₹<span id="offlineFeeRate">0</span>/മാസം</span>
                             </div>
-                            
+
                             <!-- തുക നൽകാനുള്ള ഇൻപുട്ട് -->
                             <div class="relative mt-2">
-                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-lg font-black text-slate-400">₹</span>
+                                <span
+                                    class="absolute left-4 top-1/2 -translate-y-1/2 text-lg font-black text-slate-400">₹</span>
                                 <input type="number" id="offlineAmountInput" placeholder="തുക നൽകുക (Amount Paid)"
                                     class="w-full pl-8 pr-4 py-3.5 border-2 border-slate-100 rounded-2xl font-black text-lg outline-none focus:border-blue-500 bg-white shadow-inner transition-all">
                             </div>
@@ -1247,18 +1374,21 @@
                             <div id="offlinePresets" class="flex gap-1.5 overflow-x-auto no-scrollbar py-0.5">
                                 <!-- Preset buttons will be generated dynamically -->
                             </div>
-                            
+
                             <div class="flex justify-between items-center pt-2.5 border-t border-blue-100/50">
-                                <span class="text-xs font-black text-blue-900 uppercase tracking-wider">തിരഞ്ഞെടുത്ത തുക:</span>
+                                <span class="text-xs font-black text-blue-900 uppercase tracking-wider">തിരഞ്ഞെടുത്ത
+                                    തുക:</span>
                                 <span id="offlineTotalDisplay" class="text-xl font-black text-blue-700">₹0</span>
                             </div>
                         </div>
-                        
-                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">തിരഞ്ഞെടുത്ത മാസങ്ങൾ:</p>
-                        <div id="offlineMonthsList" class="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto no-scrollbar pr-1">
+
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">തിരഞ്ഞെടുത്ത മാസങ്ങൾ:
+                        </p>
+                        <div id="offlineMonthsList"
+                            class="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto no-scrollbar pr-1">
                             <!-- Checkboxes will be inserted here dynamically -->
                         </div>
-                        
+
                         <button id="offlinePayBtn"
                             class="w-full py-5 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black flex justify-center items-center gap-2.5 shadow-lg active:scale-95 transition-all uppercase tracking-widest text-sm shadow-blue-200">
                             <i class="fas fa-check-circle text-base"></i> അടച്ചതായി രേഖപ്പെടുത്തുക
@@ -1420,7 +1550,7 @@
     </div>
     <!-- Image Cropper Modal -->
     <div id="cropModal"
-        class="hidden fixed inset-0 bg-slate-900/95 flex flex-col items-center justify-center p-4 z-[20000]">
+        class="hidden fixed inset-0 bg-slate-900/95 flex flex-col items-center justify-center p-4 z-[40000]">
         <div class="bg-white w-full max-w-md rounded-3xl p-5 shadow-2xl flex flex-col h-[70vh]">
             <h3 class="font-black text-lg text-slate-800 uppercase tracking-tight mb-4 text-center">ഫോട്ടോ ക്രോപ്പ്
                 ചെയ്യുക</h3>
@@ -1438,6 +1568,520 @@
                 <button onclick="confirmCrop()"
                     class="flex-1 bg-blue-600 text-white py-4 rounded-2xl font-black shadow-lg shadow-blue-200 active:scale-95 transition-all uppercase tracking-widest text-[11px]">Crop
                     & Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pinterest Detail Modal -->
+    <div id="pinterestDetailModal"
+        class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[10000] flex flex-col justify-end sm:justify-center items-center animate-fade-in">
+        <div
+            class="bg-white w-full max-w-md h-[95vh] sm:h-[80vh] rounded-t-[32px] sm:rounded-[32px] shadow-2xl flex flex-col overflow-hidden animate-slide-up relative">
+            <!-- Header Actions -->
+            <div
+                class="flex justify-between items-center p-4 absolute top-0 left-0 right-0 bg-gradient-to-b from-black/60 via-black/30 to-transparent z-10">
+                <button onclick="closePinterestDetail()"
+                    class="w-10 h-10 bg-white/95 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md active:scale-90 transition-all text-slate-800">
+                    <i class="fas fa-chevron-left text-sm"></i>
+                </button>
+                <div class="flex gap-2">
+                    <button id="pinLikeBtn" onclick="togglePinLike()"
+                        class="w-10 h-10 bg-white/95 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md active:scale-90 transition-all text-slate-800">
+                        <i class="far fa-heart text-sm"></i>
+                    </button>
+                    <button onclick="sharePin()"
+                        class="w-10 h-10 bg-white/95 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md active:scale-90 transition-all text-slate-800">
+                        <i class="fas fa-share-alt text-sm"></i>
+                    </button>
+                    <button onclick="savePin()"
+                        class="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-black text-xs uppercase tracking-wider rounded-full shadow-md active:scale-95 transition-all">
+                        Save
+                    </button>
+                </div>
+            </div>
+
+            <!-- Scrollable content -->
+            <div class="overflow-y-auto no-scrollbar flex-1 pb-10">
+                <img id="pinDetailImage" src="" class="w-full h-auto object-cover" alt="Detail Image">
+                <div class="p-6">
+                    <!-- Creator profile -->
+                    <div class="flex items-center gap-3 mb-6">
+                        <div
+                            class="w-10 h-10 rounded-full bg-slate-100 border border-slate-100 flex items-center justify-center overflow-hidden shrink-0 shadow-sm">
+                            <img src="https://muaawina.github.io/muaawina.com/logo.png" class="w-7 h-7 object-contain"
+                                alt="MUAAWINA">
+                        </div>
+                        <div>
+                            <p class="font-black text-xs text-slate-800 leading-none mb-1">MUAAWINA Digital</p>
+                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Official Channel
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Text metadata -->
+                    <h3 id="pinDetailTitle" class="text-xl font-black text-slate-800 leading-tight mb-2"></h3>
+                    <p id="pinDetailDesc" class="text-xs font-bold text-slate-500 leading-relaxed"></p>
+
+                    <!-- More to explore -->
+                    <div class="mt-10 pt-6 border-t border-slate-100">
+                        <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">More to explore
+                        </h4>
+                        <div id="pinExploreGrid" class="pinterest-grid"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Membership Campaign Form Modal -->
+    <div id="campaignModal"
+        class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[30000] flex flex-col justify-end sm:justify-center p-0 sm:p-4 overflow-y-auto">
+        <div
+            class="bg-slate-50 w-full max-w-md h-[95vh] sm:h-[85vh] rounded-t-[32px] sm:rounded-[32px] shadow-2xl flex flex-col overflow-hidden animate-slide-up relative">
+
+            <!-- Google Form style Top Banner -->
+            <div class="h-28 bg-gradient-to-r from-rose-500 via-pink-600 to-purple-600 relative shrink-0">
+                <div class="absolute top-4 left-4">
+                    <button onclick="toggleCampaignModal(false)"
+                        class="w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md active:scale-90 transition-all text-slate-800">
+                        <i class="fas fa-arrow-left text-xs"></i>
+                    </button>
+                </div>
+                <div class="absolute bottom-4 left-6 right-6 text-white">
+                    <h3 class="text-lg font-black uppercase tracking-wider">MUAAWINA</h3>
+                    <p class="text-[9px] font-bold opacity-80 uppercase tracking-widest">Membership Campaign 2026</p>
+                </div>
+            </div>
+
+            <!-- Form Content -->
+            <div class="flex-1 overflow-y-auto p-5 space-y-4 no-scrollbar">
+                <!-- Title Card -->
+                <div class="bg-white rounded-2xl p-5 border-t-4 border-rose-500 shadow-sm space-y-2">
+                    <h4 class="text-base font-black text-slate-800">മെമ്പർഷിപ്പ് ക്യാമ്പയിൻ രജിസ്ട്രേഷൻ</h4>
+                    <p class="text-[10px] font-bold text-slate-500 leading-relaxed">
+                        ക്യാമ്പയിനിൽ പങ്കാളിയാകാൻ നിങ്ങളുടെ കൃത്യമായ വിവരങ്ങൾ താഴെ നൽകുക. സബ്മിറ്റ് ചെയ്ത ശേഷം അഡ്മിൻ
+                        പാനലിൽ ഇത് രേഖപ്പെടുത്തുന്നതാണ്.
+                    </p>
+                    <p class="text-[9px] text-rose-500 font-bold">* Required fields</p>
+                </div>
+
+                <!-- Input Cards Form -->
+                <form id="campaignEntryForm" onsubmit="event.preventDefault(); submitCampaignForm();" class="space-y-4">
+
+                    <!-- A. വ്യക്തിഗത വിവരങ്ങൾ (Personal Details) -->
+                    <div class="bg-slate-200/50 p-3 rounded-2xl">
+                        <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-2 px-1">A. വ്യക്തിഗത
+                            വിവരങ്ങൾ (Personal Details)</p>
+
+                        <div class="space-y-4">
+                            <!-- 1. Full Name -->
+                            <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+                                <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-2">
+                                    മുഴുവൻ പേര് (Full Name) <span class="text-rose-500">*</span>
+                                </label>
+                                <input type="text" id="campName" required placeholder="പേര് ടൈപ്പ് ചെയ്യുക"
+                                    class="w-full px-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl text-xs font-bold text-slate-700 outline-none focus:border-rose-400 focus:bg-white transition-all">
+                            </div>
+
+                            <!-- Muaawina ID -->
+                            <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+                                <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-2">
+                                    Muaawina ID Number
+                                </label>
+                                <input type="text" id="campMuaawinaId" placeholder="eg: M100"
+                                    class="w-full px-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl text-xs font-bold text-slate-700 outline-none focus:border-rose-400 focus:bg-white transition-all">
+                            </div>
+
+                            <!-- Blood Group -->
+                            <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+                                <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-2">
+                                    രക്ത ഗ്രൂപ്പ് (Blood Group)
+                                </label>
+                                <select id="campBloodGroup"
+                                    class="w-full px-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl text-xs font-bold text-slate-700 outline-none focus:border-rose-400 focus:bg-white transition-all appearance-none">
+                                    <option value="" disabled selected>രക്ത ഗ്രൂപ്പ് തിരഞ്ഞെടുക്കുക</option>
+                                    <option value="A+">A+</option>
+                                    <option value="A-">A-</option>
+                                    <option value="B+">B+</option>
+                                    <option value="B-">B-</option>
+                                    <option value="O+">O+</option>
+                                    <option value="O-">O-</option>
+                                    <option value="AB+">AB+</option>
+                                    <option value="AB-">AB-</option>
+                                </select>
+                            </div>
+
+                            <!-- 2. Date of Birth -->
+                            <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+                                <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-2">
+                                    ജനന തീയതി (Date of Birth)
+                                </label>
+                                <input type="date" id="campDob"
+                                    class="w-full px-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl text-xs font-bold text-slate-700 outline-none focus:border-rose-400 focus:bg-white transition-all">
+                            </div>
+
+                            <!-- 3. Photo -->
+                            <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+                                <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1">
+                                    ഫോട്ടോ (Passport Photo/Headshot) <span class="text-rose-500">*</span>
+                                </label>
+                                <p class="text-[8px] font-bold text-slate-400 mb-3 uppercase tracking-wide">ഡിജിറ്റൽ ഐഡി
+                                    കാർഡിലേക്ക് ആവശ്യമായത്</p>
+                                <div class="flex items-center gap-4">
+                                    <div
+                                        class="w-16 h-16 rounded-xl bg-slate-50 border-2 border-dashed border-slate-200 flex items-center justify-center overflow-hidden shrink-0 relative shadow-inner">
+                                        <img id="campPhotoPreview" src="" class="hidden w-full h-full object-cover">
+                                        <i id="campPhotoIcon" class="fas fa-camera text-slate-400 text-lg"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <input type="file" id="campPhotoFile" accept="image/*" class="hidden"
+                                            onchange="handleCampaignFileSelect(this, 'campPhotoPreview', 'campPhotoIcon')">
+                                        <label for="campPhotoFile"
+                                            class="inline-block px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-black uppercase tracking-wider rounded-xl cursor-pointer active:scale-95 transition-all border border-slate-200">
+                                            ഫോട്ടോ തിരഞ്ഞെടുക്കുക
+                                        </label>
+                                        <p id="campPhotoName"
+                                            class="text-[8px] font-bold text-slate-400 mt-1 uppercase truncate max-w-[150px]">
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 4. House Name -->
+                            <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+                                <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-2">
+                                    വീട്ടുപേര് (House Name) <span class="text-rose-500">*</span>
+                                </label>
+                                <input type="text" id="campHouseName" required placeholder="വീട്ടുപേര് ടൈപ്പ് ചെയ്യുക"
+                                    class="w-full px-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl text-xs font-bold text-slate-700 outline-none focus:border-rose-400 focus:bg-white transition-all">
+                            </div>
+
+                            <!-- 5. Address -->
+                            <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+                                <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-2">
+                                    വിലാസം (Address) <span class="text-rose-500">*</span>
+                                </label>
+                                <textarea id="campAddress" required rows="2" placeholder="വിലാസം ടൈപ്പ് ചെയ്യുക"
+                                    class="w-full px-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl text-xs font-bold text-slate-700 outline-none focus:border-rose-400 focus:bg-white transition-all"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- B. പഠന വിവരങ്ങൾ (Academic Details) -->
+                    <div class="bg-slate-200/50 p-3 rounded-2xl">
+                        <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-2 px-1">B. പഠന
+                            വിവരങ്ങൾ (Academic Details)</p>
+
+                        <div class="space-y-4">
+                            <!-- 1. Course -->
+                            <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+                                <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-2">
+                                    പഠിച്ച കോഴ്സ് / ഡിപ്പാർട്ട്മെന്റ് (Course / Department) <span
+                                        class="text-rose-500">*</span>
+                                </label>
+                                <input type="text" id="campCourse" required
+                                    placeholder="ഉദാ: B.A Arabic, B.Sc Chemistry"
+                                    class="w-full px-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl text-xs font-bold text-slate-700 outline-none focus:border-rose-400 focus:bg-white transition-all">
+                            </div>
+
+                            <!-- 2. Batch -->
+                            <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+                                <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-2">
+                                    ബാച്ച് (Batch) <span class="text-rose-500">*</span>
+                                </label>
+                                <select id="campBatch" required
+                                    class="w-full px-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl text-xs font-bold text-slate-700 outline-none focus:border-rose-400 focus:bg-white transition-all appearance-none">
+                                    <option value="" disabled selected>ബാച്ച് തിരഞ്ഞെടുക്കുക (Select Batch)</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- C. നിലവിലെ ജോലി & പ്രൊഫഷണൽ വിവരങ്ങൾ (Professional Details) -->
+                    <div class="bg-slate-200/50 p-3 rounded-2xl">
+                        <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-2 px-1">C. നിലവിലെ
+                            ജോലി & പ്രൊഫഷണൽ വിവരങ്ങൾ</p>
+
+                        <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+                            <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-2">
+                                നിലവിലെ തൊഴിൽ മേഖല (Current Occupation / Industry) <span class="text-rose-500">*</span>
+                            </label>
+                            <select id="campOccupation" required onchange="toggleOtherOccupation()"
+                                class="w-full px-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl text-xs font-bold text-slate-700 outline-none focus:border-rose-400 focus:bg-white transition-all appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2394a3b8%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-[right_1rem_center] bg-no-repeat">
+                                <option value="">തൊഴിൽ മേഖല തിരഞ്ഞെടുക്കുക</option>
+                                <option value="IT">IT / Software</option>
+                                <option value="Teaching">Teaching / Education</option>
+                                <option value="Business">Business / Entrepreneur</option>
+                                <option value="Healthcare">Healthcare / Medical</option>
+                                <option value="Govt Service">Govt Service</option>
+                                <option value="Student">Student (ഉപരിപഠനം)</option>
+                                <option value="Other">Others (മറ്റുള്ളവ)</option>
+                            </select>
+                            <input type="text" id="campOccupationOther"
+                                placeholder="നിങ്ങളുടെ തൊഴിൽ മേഖല ടൈപ്പ് ചെയ്യുക"
+                                class="w-full mt-3 px-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl text-xs font-bold text-slate-700 outline-none focus:border-rose-400 focus:bg-white transition-all hidden">
+                        </div>
+                    </div>
+
+                    <!-- D. ഫോൺ & സോഷ്യൽ കണക്റ്റിവിറ്റി (Contact Details) -->
+                    <div class="bg-slate-200/50 p-3 rounded-2xl">
+                        <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-2 px-1">D. ഫോൺ &
+                            സോഷ്യൽ കണക്റ്റിവിറ്റി (Contact Details)</p>
+
+                        <div class="space-y-4">
+                            <!-- 1. WhatsApp Number -->
+                            <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+                                <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-2">
+                                    വാട്ട്സ്ആപ്പ് നമ്പർ (WhatsApp Number) <span class="text-rose-500">*</span>
+                                </label>
+                                <input type="tel" id="campPhone" required placeholder="കൺട്രി കോഡ് സഹിതം നമ്പർ നൽകുക"
+                                    class="w-full px-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl text-xs font-bold text-slate-700 outline-none focus:border-rose-400 focus:bg-white transition-all">
+                            </div>
+
+                            <!-- 2. Email Address -->
+                            <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+                                <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-2">
+                                    ഇമെയിൽ വിലാസം (Email Address)
+                                </label>
+                                <input type="email" id="campEmail" placeholder="ഇമെയിൽ വിലാസം നൽകുക"
+                                    class="w-full px-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl text-xs font-bold text-slate-700 outline-none focus:border-rose-400 focus:bg-white transition-all">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- E. സംഘടനയുമായി ബന്ധപ്പെട്ട പങ്കാളിത്തം (Engagement Questions) -->
+                    <div class="bg-slate-200/50 p-3 rounded-2xl">
+                        <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-2 px-1">E.
+                            സംഘടനയുമായി ബന്ധപ്പെട്ട പങ്കാളിത്തം</p>
+
+                        <div class="space-y-4">
+                            <!-- 1. Mentorship -->
+                            <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+                                <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-2">
+                                    വിദ്യാർത്ഥികൾക്ക് മെന്റർഷിപ്പ് / ഗൈഡൻസ് നൽകാൻ താല്പര്യമുണ്ടോ? <span
+                                        class="text-rose-500">*</span>
+                                </label>
+                                <div class="flex gap-6 mt-1">
+                                    <label
+                                        class="flex items-center gap-2 text-xs font-bold text-slate-600 cursor-pointer">
+                                        <input type="radio" name="campMentorship" value="Yes" class="accent-rose-500">
+                                        Yes
+                                    </label>
+                                    <label
+                                        class="flex items-center gap-2 text-xs font-bold text-slate-600 cursor-pointer">
+                                        <input type="radio" name="campMentorship" value="No" checked
+                                            class="accent-rose-500"> No
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- 2. Placements -->
+                            <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+                                <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-2">
+                                    ക്യാമ്പസ് പ്ലേസ്മെന്റുകൾക്കോ ഇന്റേൺഷിപ്പുകൾക്കോ സഹായിക്കാൻ സാധിക്കുമോ? <span
+                                        class="text-rose-500">*</span>
+                                </label>
+                                <div class="flex gap-6 mt-1">
+                                    <label
+                                        class="flex items-center gap-2 text-xs font-bold text-slate-600 cursor-pointer">
+                                        <input type="radio" name="campPlacement" value="Yes" class="accent-rose-500">
+                                        Yes
+                                    </label>
+                                    <label
+                                        class="flex items-center gap-2 text-xs font-bold text-slate-600 cursor-pointer">
+                                        <input type="radio" name="campPlacement" value="No" checked
+                                            class="accent-rose-500"> No
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- 3. Sub Wings -->
+                            <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+                                <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-2">
+                                    ഉപ വിങ്ങുകളുമായി കൂടുതൽ സഹകരിക്കാൻ താല്പര്യം ഉണ്ടോ? <span
+                                        class="text-rose-500">*</span>
+                                </label>
+
+                                <div class="mt-4 flex items-center justify-between">
+                                    <span class="text-xs font-bold text-slate-600">Edu Wing</span>
+                                    <div class="flex gap-4">
+                                        <label
+                                            class="flex items-center gap-2 text-xs font-bold text-slate-600 cursor-pointer">
+                                            <input type="radio" name="campEduWing" value="Yes" class="accent-rose-500">
+                                            Yes
+                                        </label>
+                                        <label
+                                            class="flex items-center gap-2 text-xs font-bold text-slate-600 cursor-pointer">
+                                            <input type="radio" name="campEduWing" value="No" checked
+                                                class="accent-rose-500"> No
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="h-px bg-slate-100 my-3"></div>
+
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-bold text-slate-600">Da'wa wing</span>
+                                    <div class="flex gap-4">
+                                        <label
+                                            class="flex items-center gap-2 text-xs font-bold text-slate-600 cursor-pointer">
+                                            <input type="radio" name="campDawaWing" value="Yes" class="accent-rose-500">
+                                            Yes
+                                        </label>
+                                        <label
+                                            class="flex items-center gap-2 text-xs font-bold text-slate-600 cursor-pointer">
+                                            <input type="radio" name="campDawaWing" value="No" checked
+                                                class="accent-rose-500"> No
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="h-px bg-slate-100 my-3"></div>
+
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-bold text-slate-600">Relief cell</span>
+                                    <div class="flex gap-4">
+                                        <label
+                                            class="flex items-center gap-2 text-xs font-bold text-slate-600 cursor-pointer">
+                                            <input type="radio" name="campReliefCell" value="Yes"
+                                                class="accent-rose-500"> Yes
+                                        </label>
+                                        <label
+                                            class="flex items-center gap-2 text-xs font-bold text-slate-600 cursor-pointer">
+                                            <input type="radio" name="campReliefCell" value="No" checked
+                                                class="accent-rose-500"> No
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="h-px bg-slate-100 my-3"></div>
+
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-bold text-slate-600">Media Wing</span>
+                                    <div class="flex gap-4">
+                                        <label
+                                            class="flex items-center gap-2 text-xs font-bold text-slate-600 cursor-pointer">
+                                            <input type="radio" name="campMediaWing" value="Yes"
+                                                class="accent-rose-500"> Yes
+                                        </label>
+                                        <label
+                                            class="flex items-center gap-2 text-xs font-bold text-slate-600 cursor-pointer">
+                                            <input type="radio" name="campMediaWing" value="No" checked
+                                                class="accent-rose-500"> No
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- F. പേയ്മെന്റ് സെക്ഷൻ (Payment Details) -->
+                    <div class="bg-blue-50/50 p-3 rounded-2xl border border-blue-100">
+                        <p class="text-[9px] font-black text-blue-500 uppercase tracking-widest mb-2 px-1">F. പേയ്മെന്റ്
+                            സെക്ഷൻ (Payment Details)</p>
+
+                        <div class="space-y-4">
+                            <!-- Fee Tier Option -->
+                            <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm space-y-3">
+                                <label
+                                    class="flex items-start gap-3 p-3 bg-slate-50 border border-slate-100 rounded-xl cursor-pointer">
+                                    <input type="radio" name="campPaymentType" value="Standard" checked
+                                        onchange="updateCampPaymentDetails(50)" class="accent-blue-500 mt-0.5">
+                                    <div>
+                                        <p class="text-xs font-black text-slate-800">സാധാരണ രജിസ്ട്രേഷൻ — ₹50</p>
+                                        <p class="text-[9px] font-bold text-slate-400">സാധാരണ വരിസംഖ്യ അടച്ചു രജിസ്റ്റർ
+                                            ചെയ്യാം.</p>
+                                    </div>
+                                </label>
+
+                                <label
+                                    class="flex items-start gap-3 p-3 bg-slate-50 border border-slate-100 rounded-xl cursor-pointer">
+                                    <input type="radio" name="campPaymentType" value="Instagram Offer"
+                                        onchange="updateCampPaymentDetails(30)" class="accent-blue-500 mt-0.5">
+                                    <div>
+                                        <p class="text-xs font-black text-slate-800">Instagram 10 Followers ഓഫർ — ₹30
+                                        </p>
+                                        <p class="text-[9px] font-bold text-slate-400">MUAAWINA Instagram ഫോളോ
+                                            ചെയ്യുകയും 10 ഫോളോവേഴ്സിനെ നൽകുകയും ചെയ്യുക.</p>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <!-- Instagram Link Banner (Conditional) -->
+                            <div id="campInstaDiv"
+                                class="hidden p-4 bg-gradient-to-r from-purple-50 to-rose-50 border border-rose-100 rounded-2xl flex flex-col gap-2">
+                                <p class="text-[10px] font-bold text-purple-950">1. താഴെയുള്ള ബട്ടണിൽ ക്ലിക്ക് ചെയ്ത്
+                                    ഞങ്ങളുടെ ഇൻസ്റ്റാഗ്രാം അക്കൗണ്ട് ഫോളോ ചെയ്യുക:</p>
+                                <a href="https://www.instagram.com/muaawina.com_/" target="_blank"
+                                    class="inline-flex items-center justify-center gap-2 w-full py-3 bg-gradient-to-r from-purple-600 to-rose-500 text-white text-[10px] font-black uppercase tracking-wider rounded-xl shadow-md active:scale-95 transition-all">
+                                    <i class="fab fa-instagram text-sm"></i> Instagram സന്ദർശിക്കുക
+                                </a>
+                            </div>
+
+                            <!-- QR and Pay Button -->
+                            <div
+                                class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex flex-col items-center justify-center text-center space-y-4">
+                                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">scan QR code
+                                    to pay</p>
+                                <div
+                                    class="w-36 h-36 bg-white border-2 border-slate-100 rounded-2xl flex items-center justify-center p-2 shadow-inner">
+                                    <img id="campQrCode" src="" class="w-full h-full object-contain">
+                                </div>
+                                <p id="campUpiDetailsText" class="text-[10px] font-black text-slate-500"></p>
+
+                                <!-- Pay Button link -->
+                                <button type="button" id="campPayBtn" onclick="payCampUpi()"
+                                    class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest active:scale-95 transition-all shadow-lg flex items-center justify-center gap-2">
+                                    <i class="fas fa-mobile-alt text-sm"></i> Pay ₹50 via UPI App
+                                </button>
+                            </div>
+
+                            <!-- Payment Screenshot Upload -->
+                            <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+                                <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-2">
+                                    പേയ്മെന്റ് സ്ക്രീൻഷോട്ട് (Payment Screenshot) <span class="text-rose-500">*</span>
+                                </label>
+                                <div class="flex items-center gap-4">
+                                    <div
+                                        class="w-16 h-16 rounded-xl bg-slate-50 border-2 border-dashed border-slate-200 flex items-center justify-center overflow-hidden shrink-0 relative shadow-inner">
+                                        <img id="campScreenshotPreview" src=""
+                                            class="hidden w-full h-full object-cover">
+                                        <i id="campScreenshotIcon" class="fas fa-receipt text-slate-400 text-lg"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <input type="file" id="campScreenshotFile" accept="image/*" class="hidden"
+                                            onchange="handleCampaignFileSelect(this, 'campScreenshotPreview', 'campScreenshotIcon')">
+                                        <label for="campScreenshotFile"
+                                            class="inline-block px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-black uppercase tracking-wider rounded-xl cursor-pointer active:scale-95 transition-all border border-slate-200">
+                                            സ്ക്രീൻഷോട്ട് തിരഞ്ഞെടുക്കുക
+                                        </label>
+                                        <p id="campScreenshotName"
+                                            class="text-[8px] font-bold text-slate-400 mt-1 uppercase truncate max-w-[150px]">
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="pt-4 pb-6">
+                        <button type="submit"
+                            class="w-full bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white py-4 rounded-2xl font-black shadow-lg shadow-rose-100 active:scale-95 transition-all uppercase tracking-widest text-xs">
+                            വിവരങ്ങൾ സമർപ്പിക്കുക (Submit)
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -1819,6 +2463,65 @@
                             initPosterSlider();
                         } else {
                             highlightArea.innerHTML = '<div class="bg-amber-50 p-5 rounded-2xl border border-amber-100 text-center"><p class="text-[10px] font-bold text-amber-600">പുതിയ അപ്ഡേറ്റുകൾ ഉടൻ വരുന്നു...</p></div>';
+                        }
+                    }
+
+                    // === Pinterest Grid rendering ===
+                    const pinterestGrid = document.getElementById('pinterestGrid');
+                    const pinterestSection = document.getElementById('pinterestSection');
+                    if (pinterestGrid && pinterestSection) {
+                        pinterestGrid.innerHTML = '';
+                        if (d.highlights && d.highlights.length > 0) {
+                            pinterestSection.classList.remove('hidden');
+                            d.highlights.forEach((h, index) => {
+                                const itemHtml = `
+                                    <div class="pinterest-item" onclick="openPinterestDetail(${index})">
+                                        <img src="${h.url}" alt="${h.heading || 'Poster'}">
+                                        ${(h.heading || h.desc) ? `
+                                            <div class="pinterest-meta">
+                                                ${h.heading ? `<h4 class="pinterest-title">${h.heading}</h4>` : ''}
+                                                ${h.desc ? `<p class="pinterest-desc truncate-2-lines">${h.desc}</p>` : ''}
+                                            </div>
+                                        ` : ''}
+                                    </div>
+                                `;
+                                pinterestGrid.innerHTML += itemHtml;
+                            });
+                        } else {
+                            pinterestSection.classList.add('hidden');
+                        }
+                    }
+
+                    // === Campaign Home Card rendering ===
+                    const homeCampaignCard = document.getElementById('homeCampaignCard');
+                    if (homeCampaignCard) {
+                        homeCampaignCard.classList.remove('hidden'); // Show card to logged in members
+                        const statusText = document.getElementById('homeCampaignStatusText');
+                        const actionsDiv = document.getElementById('homeCampaignActions');
+                        const badgeSpan = homeCampaignCard.querySelector('span');
+
+                        if (d.campaignSubmitted) {
+                            // Update badge to green Submitted
+                            badgeSpan.className = "px-3 py-1 bg-emerald-500/20 text-emerald-200 backdrop-blur-md rounded-full text-[8px] font-black uppercase tracking-widest self-start mb-3 border border-emerald-500/30";
+                            badgeSpan.innerText = "Submitted (സമർപ്പിച്ചു)";
+                            statusText.innerText = "നിങ്ങളുടെ ക്യാമ്പയിൻ വിവരങ്ങൾ വിജയകരമായി ലഭിച്ചിട്ടുണ്ട്! എന്തെങ്കിലും മാറ്റങ്ങൾ വരുത്തണമെങ്കിൽ താഴെയുള്ള 'തിരുത്തുക' ബട്ടൺ ക്ലിക്ക് ചെയ്യുക.";
+                            actionsDiv.innerHTML = `
+                                <button onclick="openCampaignEditForm()" 
+                                    class="flex-1 bg-white text-rose-600 py-3.5 px-5 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-md active:scale-95 transition-all text-center flex items-center justify-center gap-2">
+                                    <i class="fas fa-edit"></i> വിവരങ്ങൾ തിരുത്തുക (Edit)
+                                </button>
+                            `;
+                        } else {
+                            // Reset badge to default
+                            badgeSpan.className = "px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-[8px] font-black uppercase tracking-widest self-start mb-3 border border-white/20";
+                            badgeSpan.innerText = "Campaign 2026";
+                            statusText.innerText = "ക്യാമ്പയിനിൽ നിങ്ങളുടെ വിവരങ്ങൾ ഇതുവരെ ചേർത്തിട്ടില്ല. ദയവായി താഴെയുള്ള ഫോം പൂരിപ്പിച്ച് വിവരങ്ങൾ സമർപ്പിക്കുക.";
+                            actionsDiv.innerHTML = `
+                                <button onclick="toggleCampaignModal(true)" 
+                                    class="flex-1 bg-white text-rose-600 py-3.5 px-5 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-md active:scale-95 transition-all text-center flex items-center justify-center gap-2">
+                                    <i class="fas fa-wpforms"></i> വിവരങ്ങൾ സമർപ്പിക്കുക
+                                </button>
+                            `;
                         }
                     }
 
@@ -2343,7 +3046,7 @@
                     if (mIdx !== -1 && !isNaN(mYear)) {
                         isFuturePayment = mYear > globalAppYear || (mYear === globalAppYear && mIdx > globalAppMonth);
                     }
-                } catch (e) {}
+                } catch (e) { }
 
                 let offlineTime = (a.approveTime && a.approveTime !== 'Existing') ? a.approveTime : (a.reqTime && a.reqTime !== 'ഓഫ്‌ലൈൻ' ? a.reqTime : '');
 
@@ -2458,22 +3161,22 @@
                         </thead>
                         <tbody>
                             ${combined.map((a, i) => {
-                                let nameDisplay = a.name + (a.isOffline ? ' (Offline)' : '');
-                                let isFuturePayment = false;
-                                try {
-                                    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-                                    let mIdx = monthNames.indexOf(a.month);
-                                    let mYear = parseInt(a.year);
-                                    if (mIdx !== -1 && !isNaN(mYear)) {
-                                        isFuturePayment = mYear > globalAppYear || (mYear === globalAppYear && mIdx > globalAppMonth);
-                                    }
-                                } catch (e) {}
-                                let periodDisplay = a.month + ' ' + a.year + (isFuturePayment ? ' (Adv)' : '');
-                                let offlineTime = (a.approveTime && a.approveTime !== 'Existing' && a.approveTime !== 'മുൻപ് ചെയ്തവ') ? a.approveTime : (a.reqTime && a.reqTime !== 'ഓഫ്‌ലൈൻ' && a.reqTime !== 'Offline' ? a.reqTime : '');
-                                let reqDisplay = a.isOffline ? 'Offline' : a.reqTime;
-                                let apprDisplay = a.isOffline ? ('Admin' + (offlineTime ? ` (${offlineTime})` : '')) : a.approveTime;
-                                return '<tr><td>' + (i + 1) + '</td><td><b>' + nameDisplay + '</b></td><td>' + periodDisplay + '</td><td style="text-align:right; color:#10b981; font-weight:bold;">₹' + a.amount + '</td><td>' + reqDisplay + '</td><td>' + apprDisplay + '</td></tr>';
-                            }).join('')}
+                let nameDisplay = a.name + (a.isOffline ? ' (Offline)' : '');
+                let isFuturePayment = false;
+                try {
+                    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                    let mIdx = monthNames.indexOf(a.month);
+                    let mYear = parseInt(a.year);
+                    if (mIdx !== -1 && !isNaN(mYear)) {
+                        isFuturePayment = mYear > globalAppYear || (mYear === globalAppYear && mIdx > globalAppMonth);
+                    }
+                } catch (e) { }
+                let periodDisplay = a.month + ' ' + a.year + (isFuturePayment ? ' (Adv)' : '');
+                let offlineTime = (a.approveTime && a.approveTime !== 'Existing' && a.approveTime !== 'മുൻപ് ചെയ്തവ') ? a.approveTime : (a.reqTime && a.reqTime !== 'ഓഫ്‌ലൈൻ' && a.reqTime !== 'Offline' ? a.reqTime : '');
+                let reqDisplay = a.isOffline ? 'Offline' : a.reqTime;
+                let apprDisplay = a.isOffline ? ('Admin' + (offlineTime ? ` (${offlineTime})` : '')) : a.approveTime;
+                return '<tr><td>' + (i + 1) + '</td><td><b>' + nameDisplay + '</b></td><td>' + periodDisplay + '</td><td style="text-align:right; color:#10b981; font-weight:bold;">₹' + a.amount + '</td><td>' + reqDisplay + '</td><td>' + apprDisplay + '</td></tr>';
+            }).join('')}
                         </tbody>
                     </table>
                     <div class="footer">
@@ -2891,7 +3594,7 @@
             document.getElementById('detPhone').innerText = m.phone;
             document.getElementById('detBatch').innerText = m.batch || 'UNASSIGNED';
             document.getElementById('detPaid').innerText = '₹' + m.totalPaid;
-            
+
             const detMemberId = document.getElementById('detMemberId');
             if (detMemberId) {
                 detMemberId.innerText = 'MID: ' + (m.id || 'N/A');
@@ -3047,12 +3750,12 @@
             const offlineMemberId = document.getElementById('offlineMemberId');
             if (offlinePaySection) {
                 let upcomingMonths = [...(m.upcomingList || [])];
-                
+
                 // Generate additional future months to ensure there are always at least 12 options
                 try {
                     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
                     let latestDate = new Date(globalAppYear, globalAppMonth, 1);
-                    
+
                     const checkAndUpdateLatest = (mStr) => {
                         const parts = mStr.split(' ');
                         if (parts.length === 2) {
@@ -3064,10 +3767,10 @@
                             }
                         }
                     };
-                    
+
                     (dueMonthsList || []).forEach(checkAndUpdateLatest);
                     upcomingMonths.forEach(checkAndUpdateLatest);
-                    
+
                     let genDate = new Date(latestDate.getFullYear(), latestDate.getMonth() + 1, 1);
                     while (upcomingMonths.length < 12) {
                         const mStr = `${monthNames[genDate.getMonth()]} ${genDate.getFullYear()}`;
@@ -3300,37 +4003,37 @@
                                                             message: msgText,
                                                             isGroup: false
                                                         })
-                                                     }).then(() => {
-                                                         showLoader(false);
-                                                         Swal.fire({
-                                                             title: 'അയച്ചു!',
-                                                             text: 'വാട്സ്ആപ്പ് സന്ദേശം വിജയകരമായി അയച്ചു.',
-                                                             icon: 'success',
-                                                             timer: 1500,
-                                                             showConfirmButton: false
-                                                         }).then(() => {
-                                                             if (typeof adminLogin === 'function') adminLogin();
-                                                             else location.reload();
-                                                         });
-                                                     }).catch(err => {
-                                                         showLoader(false);
-                                                         Swal.fire('Error', 'ബോട്ടുമായി ബന്ധപ്പെടാൻ കഴിഞ്ഞില്ല, സന്ദേശം അയച്ചില്ല.', 'error').then(() => {
-                                                             if (typeof adminLogin === 'function') adminLogin();
-                                                             else location.reload();
-                                                         });
-                                                     });
-                                                 } else {
-                                                     if (typeof adminLogin === 'function') adminLogin();
-                                                     else location.reload();
-                                                 }
-                                             });
-                                         } else {
-                                             Swal.fire('വിജയിച്ചു!', 'പേയ്‌മെന്റ് രേഖപ്പെടുത്തി. ഫോൺ നമ്പർ ഇല്ലാത്തതിനാൽ സന്ദേശം അയക്കാൻ കഴിയില്ല.', 'info').then(() => {
-                                                 if (typeof adminLogin === 'function') adminLogin();
-                                                 else location.reload();
-                                             });
-                                         }
-                                         return;
+                                                    }).then(() => {
+                                                        showLoader(false);
+                                                        Swal.fire({
+                                                            title: 'അയച്ചു!',
+                                                            text: 'വാട്സ്ആപ്പ് സന്ദേശം വിജയകരമായി അയച്ചു.',
+                                                            icon: 'success',
+                                                            timer: 1500,
+                                                            showConfirmButton: false
+                                                        }).then(() => {
+                                                            if (typeof adminLogin === 'function') adminLogin();
+                                                            else location.reload();
+                                                        });
+                                                    }).catch(err => {
+                                                        showLoader(false);
+                                                        Swal.fire('Error', 'ബോട്ടുമായി ബന്ധപ്പെടാൻ കഴിഞ്ഞില്ല, സന്ദേശം അയച്ചില്ല.', 'error').then(() => {
+                                                            if (typeof adminLogin === 'function') adminLogin();
+                                                            else location.reload();
+                                                        });
+                                                    });
+                                                } else {
+                                                    if (typeof adminLogin === 'function') adminLogin();
+                                                    else location.reload();
+                                                }
+                                            });
+                                        } else {
+                                            Swal.fire('വിജയിച്ചു!', 'പേയ്‌മെന്റ് രേഖപ്പെടുത്തി. ഫോൺ നമ്പർ ഇല്ലാത്തതിനാൽ സന്ദേശം അയക്കാൻ കഴിയില്ല.', 'info').then(() => {
+                                                if (typeof adminLogin === 'function') adminLogin();
+                                                else location.reload();
+                                            });
+                                        }
+                                        return;
                                         if (typeof adminLogin === 'function') {
                                             adminLogin();
                                         } else {
@@ -3770,16 +4473,16 @@
                                 let fee = (mem && mem.fee) ? mem.fee : 50;
                                 let rowCount = a.isBulk ? a.rows.length : 1;
                                 let totalAmt = rowCount * fee;
-                                sessionApprovals.push({ 
-                                    name: a.name, 
-                                    id: a.memberId, 
-                                    month: a.month, 
-                                    year: a.year, 
-                                    amount: totalAmt, 
+                                sessionApprovals.push({
+                                    name: a.name,
+                                    id: a.memberId,
+                                    month: a.month,
+                                    year: a.year,
+                                    amount: totalAmt,
                                     isBulk: a.isBulk,
                                     reqTime: a.date,
                                     approveTime: new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }),
-                                    date: new Date().toLocaleString() 
+                                    date: new Date().toLocaleString()
                                 });
                             });
                         }
@@ -3836,6 +4539,563 @@
 
             openWhatsAppLink(getWALink(rawData, 'السلام عليكم \n'));
         }
+
+        // ================= Pinterest Detail View Functions =================
+        let activePinIndex = 0;
+        function openPinterestDetail(index) {
+            // Get highlights array from member or admin global arrays
+            const items = (currentMember && currentMember.highlights && currentMember.highlights.length > 0)
+                ? currentMember.highlights
+                : (adminPosters.length > 0 ? adminPosters : []);
+            const h = items[index];
+            if (!h) return;
+            activePinIndex = index;
+
+            document.getElementById('pinDetailImage').src = h.url;
+            document.getElementById('pinDetailTitle').innerText = h.heading || 'MUAAWINA Update';
+            document.getElementById('pinDetailDesc').innerText = h.desc || 'നിങ്ങൾക്കായി പുതിയ അപ്ഡേറ്റുകൾ ഇവിടെ കാണാം.';
+
+            // Set liked state of the pin
+            let likedPins = JSON.parse(localStorage.getItem('muaawina_liked_pins') || '[]');
+            const likeBtn = document.getElementById('pinLikeBtn');
+            if (likeBtn) {
+                const icon = likeBtn.querySelector('i');
+                if (likedPins.includes(h.url)) {
+                    icon.className = 'fas fa-heart text-rose-500';
+                } else {
+                    icon.className = 'far fa-heart text-slate-800';
+                }
+            }
+
+            // Populate more to explore grid (excluding the active pin)
+            const exploreGrid = document.getElementById('pinExploreGrid');
+            if (exploreGrid) {
+                exploreGrid.innerHTML = '';
+                items.forEach((item, idx) => {
+                    if (idx !== index) {
+                        const itemHtml = `
+                            <div class="pinterest-item" onclick="openPinterestDetail(${idx})">
+                                <img src="${item.url}" alt="${item.heading || 'Explore'}">
+                                ${(item.heading || item.desc) ? `
+                                    <div class="pinterest-meta">
+                                        ${item.heading ? `<h4 class="pinterest-title">${item.heading}</h4>` : ''}
+                                        ${item.desc ? `<p class="pinterest-desc truncate-2-lines">${item.desc}</p>` : ''}
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `;
+                        exploreGrid.innerHTML += itemHtml;
+                    }
+                });
+            }
+
+            const modal = document.getElementById('pinterestDetailModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                // Scroll the modal content container back to the top
+                const scrollContainer = modal.querySelector('.overflow-y-auto');
+                if (scrollContainer) scrollContainer.scrollTop = 0;
+                document.body.style.overflow = 'hidden'; // prevent background scrolling
+            }
+        }
+
+        function closePinterestDetail() {
+            const modal = document.getElementById('pinterestDetailModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                document.body.style.overflow = ''; // restore background scrolling
+            }
+        }
+
+        function togglePinLike() {
+            const items = (currentMember && currentMember.highlights && currentMember.highlights.length > 0)
+                ? currentMember.highlights
+                : (adminPosters.length > 0 ? adminPosters : []);
+            const h = items[activePinIndex];
+            if (!h) return;
+
+            let likedPins = JSON.parse(localStorage.getItem('muaawina_liked_pins') || '[]');
+            const pinId = h.url;
+            const idx = likedPins.indexOf(pinId);
+
+            const likeBtn = document.getElementById('pinLikeBtn');
+            const icon = likeBtn.querySelector('i');
+
+            if (idx === -1) {
+                likedPins.push(pinId);
+                icon.className = 'fas fa-heart text-rose-500 scale-125 transition-all';
+                setTimeout(() => icon.className = 'fas fa-heart text-rose-500 transition-all', 200);
+            } else {
+                likedPins.splice(idx, 1);
+                icon.className = 'far fa-heart text-slate-800 transition-all';
+            }
+
+            localStorage.setItem('muaawina_liked_pins', JSON.stringify(likedPins));
+        }
+
+        function sharePin() {
+            const items = (currentMember && currentMember.highlights && currentMember.highlights.length > 0)
+                ? currentMember.highlights
+                : (adminPosters.length > 0 ? adminPosters : []);
+            const h = items[activePinIndex];
+            if (!h) return;
+
+            const shareData = {
+                title: h.heading || 'MUAAWINA Update',
+                text: h.desc || 'Check out this poster from MUAAWINA!',
+                url: h.url
+            };
+
+            if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+                navigator.share(shareData)
+                    .catch(err => console.log('Error sharing:', err));
+            } else {
+                // Fallback: Copy URL to clipboard
+                navigator.clipboard.writeText(h.url)
+                    .then(() => {
+                        Swal.fire({
+                            title: 'Copied!',
+                            text: 'Poster link copied to clipboard.',
+                            icon: 'success',
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 2000
+                        });
+                    })
+                    .catch(err => {
+                        Swal.fire('Error', 'Failed to copy link.', 'error');
+                    });
+            }
+        }
+
+        function savePin() {
+            const items = (currentMember && currentMember.highlights && currentMember.highlights.length > 0)
+                ? currentMember.highlights
+                : (adminPosters.length > 0 ? adminPosters : []);
+            const h = items[activePinIndex];
+            if (!h) return;
+
+            // Trigger download of the image
+            const link = document.createElement('a');
+            link.href = h.url;
+            link.download = (h.heading || 'poster') + '.jpg';
+            link.target = '_blank'; // Fallback for cross-origin block
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            Swal.fire({
+                title: 'Saved!',
+                text: 'Opening image to download...',
+                icon: 'success',
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 2000
+            });
+        }
+
+        // ================= Membership Campaign Functions =================
+        let campFileData = {
+            photoBase64: '',
+            photoMimeType: '',
+            screenshotBase64: '',
+            screenshotMimeType: '',
+            existingPhotoUrl: '',
+            existingPaymentScreenshotUrl: ''
+        };
+
+        let currentCampPaymentAmount = 50;
+
+        function toggleCampaignModal(show) {
+            const modal = document.getElementById('campaignModal');
+            if (modal) {
+                if (show) {
+                    modal.classList.remove('hidden');
+                    document.body.style.overflow = 'hidden';
+
+                    // Default pay option ₹50 set cheyyുന്നു
+                    const paymentTypeRadios = document.getElementsByName('campPaymentType');
+                    for (let r of paymentTypeRadios) {
+                        if (r.value === 'Standard') r.checked = true;
+                    }
+                    updateCampPaymentDetails(50);
+                } else {
+                    modal.classList.add('hidden');
+                    document.body.style.overflow = '';
+                    document.getElementById('campaignEntryForm').reset();
+                    document.getElementById('campOccupationOther').classList.add('hidden');
+
+                    // Reset previews & file inputs
+                    document.getElementById('campPhotoPreview').src = "";
+                    document.getElementById('campPhotoPreview').classList.add('hidden');
+                    document.getElementById('campPhotoIcon').classList.remove('hidden');
+                    document.getElementById('campPhotoName').innerText = "";
+
+                    document.getElementById('campScreenshotPreview').src = "";
+                    document.getElementById('campScreenshotPreview').classList.add('hidden');
+                    document.getElementById('campScreenshotIcon').classList.remove('hidden');
+                    document.getElementById('campScreenshotName').innerText = "";
+
+                    campFileData = {
+                        photoBase64: '',
+                        photoMimeType: '',
+                        screenshotBase64: '',
+                        screenshotMimeType: '',
+                        existingPhotoUrl: '',
+                        existingPaymentScreenshotUrl: ''
+                    };
+                }
+            }
+        }
+
+        function handleCampaignFileSelect(input, previewId, iconId) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const nameElementId = input.id === 'campPhotoFile' ? 'campPhotoName' : 'campScreenshotName';
+            document.getElementById(nameElementId).innerText = file.name;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const base64 = e.target.result;
+
+                if (input.id === 'campPhotoFile') {
+                    // Open the cropper modal for the photo
+                    currentCropContext = 'campaignPhoto';
+                    const cropModal = document.getElementById('cropModal');
+                    const cropImage = document.getElementById('cropImage');
+
+                    if (!cropModal || !cropImage) {
+                        alert("ക്രോപ്പർ ഡിസൈൻ (HTML) കണ്ടെത്തിയില്ല!");
+                        return;
+                    }
+
+                    cropImage.src = base64;
+                    cropModal.classList.remove('hidden');
+
+                    if (cropper) { cropper.destroy(); }
+
+                    cropper = new Cropper(cropImage, {
+                        aspectRatio: 1,
+                        viewMode: 1,
+                        autoCropArea: 1,
+                        background: false
+                    });
+
+                    input.value = '';
+                } else {
+                    // Direct preview for the screenshot
+                    const preview = document.getElementById(previewId);
+                    const icon = document.getElementById(iconId);
+
+                    if (preview) {
+                        preview.src = base64;
+                        preview.classList.remove('hidden');
+                    }
+                    if (icon) {
+                        icon.classList.add('hidden');
+                    }
+
+                    campFileData.screenshotBase64 = base64;
+                    campFileData.screenshotMimeType = file.type;
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function updateCampPaymentDetails(amount) {
+            currentCampPaymentAmount = amount;
+
+            const instaDiv = document.getElementById('campInstaDiv');
+            if (instaDiv) {
+                if (amount === 30) {
+                    instaDiv.classList.remove('hidden');
+                } else {
+                    instaDiv.classList.add('hidden');
+                }
+            }
+
+            let upiId = (APP_CONFIG && APP_CONFIG.UPI_ID) ? APP_CONFIG.UPI_ID : "";
+            const qr = document.getElementById('campQrCode');
+            const detailsText = document.getElementById('campUpiDetailsText');
+            const payBtn = document.getElementById('campPayBtn');
+
+            if (qr) {
+                qr.src = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" +
+                    encodeURIComponent(`upi://pay?pa=${upiId}&pn=MUAAWINA&am=${amount}&cu=INR`);
+            }
+            if (detailsText) {
+                detailsText.innerText = `UPI ID: ${upiId} | Amount: ₹${amount}`;
+            }
+            if (payBtn) {
+                payBtn.innerHTML = `<i class="fas fa-mobile-alt text-sm"></i> Pay ₹${amount} via UPI App`;
+            }
+        }
+
+        function payCampUpi() {
+            let upiId = (APP_CONFIG && APP_CONFIG.UPI_ID) ? APP_CONFIG.UPI_ID : "";
+            if (!upiId || upiId === "") {
+                Swal.fire('Error', 'ഷീറ്റിൽ UPI ID കണ്ടെത്തിയില്ല!', 'error');
+                return;
+            }
+            const link = `upi://pay?pa=${upiId}&pn=MUAAWINA&am=${currentCampPaymentAmount}&cu=INR`;
+            openUpiApp(link);
+        }
+
+        function openUpiApp(url) {
+            const tempLink = document.createElement('a');
+            tempLink.href = url;
+            tempLink.target = "_top";
+            document.body.appendChild(tempLink);
+            tempLink.click();
+            document.body.removeChild(tempLink);
+        }
+
+        function openCampaignEditForm() {
+            if (!currentMember || !currentMember.campaignData) return;
+            const data = currentMember.campaignData;
+
+            document.getElementById('campName').value = data.name || '';
+            document.getElementById('campMuaawinaId').value = data.muaawinaId || '';
+            document.getElementById('campBloodGroup').value = data.bloodGroup || '';
+            document.getElementById('campHouseName').value = data.houseName || '';
+            document.getElementById('campAddress').value = data.address || '';
+            document.getElementById('campCourse').value = data.course || '';
+            document.getElementById('campBatch').value = data.batch || '';
+
+            const dataOcc = data.occupation || '';
+            const occupationOptions = ['IT', 'Teaching', 'Business', 'Healthcare', 'Govt Service', 'Student', 'Other'];
+            if (dataOcc) {
+                if (occupationOptions.includes(dataOcc)) {
+                    document.getElementById('campOccupation').value = dataOcc;
+                    document.getElementById('campOccupationOther').classList.add('hidden');
+                } else {
+                    document.getElementById('campOccupation').value = 'Other';
+                    const otherInput = document.getElementById('campOccupationOther');
+                    otherInput.value = dataOcc;
+                    otherInput.classList.remove('hidden');
+                }
+            } else {
+                document.getElementById('campOccupation').value = '';
+                document.getElementById('campOccupationOther').classList.add('hidden');
+            }
+
+            document.getElementById('campPhone').value = data.phone || '';
+            document.getElementById('campEmail').value = data.email || '';
+
+            if (data.dob && data.dob !== "") {
+                let dobDate = new Date(data.dob);
+                if (!isNaN(dobDate.getTime())) {
+                    let yyyy = dobDate.getFullYear();
+                    let mm = String(dobDate.getMonth() + 1).padStart(2, '0');
+                    let dd = String(dobDate.getDate()).padStart(2, '0');
+                    document.getElementById('campDob').value = `${yyyy}-${mm}-${dd}`;
+                }
+            } else {
+                document.getElementById('campDob').value = '';
+            }
+
+            const mentorshipRadios = document.getElementsByName('campMentorship');
+            for (let r of mentorshipRadios) {
+                if (r.value === data.mentorship) r.checked = true;
+            }
+            const placementRadios = document.getElementsByName('campPlacement');
+            for (let r of placementRadios) {
+                if (r.value === data.placement) r.checked = true;
+            }
+            const volunteeringRadios = document.getElementsByName('campVolunteering');
+            for (let r of volunteeringRadios) {
+                if (r.value === data.volunteering) r.checked = true;
+            }
+
+            const paymentTypeRadios = document.getElementsByName('campPaymentType');
+            for (let r of paymentTypeRadios) {
+                if (r.value === data.paymentType) {
+                    r.checked = true;
+                    if (data.paymentType === 'Instagram Offer') {
+                        updateCampPaymentDetails(30);
+                    } else {
+                        updateCampPaymentDetails(50);
+                    }
+                }
+            }
+
+            if (data.photoUrl && data.photoUrl !== "") {
+                const preview = document.getElementById('campPhotoPreview');
+                const icon = document.getElementById('campPhotoIcon');
+                preview.src = data.photoUrl;
+                preview.classList.remove('hidden');
+                icon.classList.add('hidden');
+                document.getElementById('campPhotoName').innerText = "Existing Profile Photo";
+                campFileData.existingPhotoUrl = data.photoUrl;
+            }
+
+            if (data.paymentScreenshotUrl && data.paymentScreenshotUrl !== "") {
+                const preview = document.getElementById('campScreenshotPreview');
+                const icon = document.getElementById('campScreenshotIcon');
+                preview.src = data.paymentScreenshotUrl;
+                preview.classList.remove('hidden');
+                icon.classList.add('hidden');
+                document.getElementById('campScreenshotName').innerText = "Existing Screenshot";
+                campFileData.existingPaymentScreenshotUrl = data.paymentScreenshotUrl;
+            }
+
+            toggleCampaignModal(true);
+        }
+
+        async function refreshMemberDataSilently() {
+            if (!currentMember) return;
+            try {
+                const d = await callAPI('getMemberData', { phone: currentMember.phone, mid: currentMember.id });
+                if (d && !d.error) {
+                    currentMember = d;
+                    const homeCampaignCard = document.getElementById('homeCampaignCard');
+                    if (homeCampaignCard) {
+                        const statusText = document.getElementById('homeCampaignStatusText');
+                        const actionsDiv = document.getElementById('homeCampaignActions');
+                        const badgeSpan = homeCampaignCard.querySelector('span');
+
+                        if (d.campaignSubmitted) {
+                            badgeSpan.className = "px-3 py-1 bg-emerald-500/20 text-emerald-200 backdrop-blur-md rounded-full text-[8px] font-black uppercase tracking-widest self-start mb-3 border border-emerald-500/30";
+                            badgeSpan.innerText = "Submitted (സമർപ്പിച്ചു)";
+                            statusText.innerText = "നിങ്ങളുടെ ക്യാമ്പയിൻ വിവരങ്ങൾ വിജയകരമായി ലഭിച്ചിട്ടുണ്ട്! എന്തെങ്കിലും മാറ്റങ്ങൾ വരുത്തണമെങ്കിൽ താഴെയുള്ള 'തിരുത്തുക' ബട്ടൺ ക്ലിക്ക് ചെയ്യുക.";
+                            actionsDiv.innerHTML = `
+                                <button onclick="openCampaignEditForm()" 
+                                    class="flex-1 bg-white text-rose-600 py-3.5 px-5 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-md active:scale-95 transition-all text-center flex items-center justify-center gap-2">
+                                    <i class="fas fa-edit"></i> വിവരങ്ങൾ തിരുത്തുക (Edit)
+                                </button>
+                            `;
+                        }
+                    }
+                }
+            } catch (e) { }
+        }
+
+        async function submitCampaignForm() {
+            const name = document.getElementById('campName').value.trim();
+            const muaawinaId = document.getElementById('campMuaawinaId').value.trim();
+            const bloodGroup = document.getElementById('campBloodGroup').value || '';
+            const houseName = document.getElementById('campHouseName').value.trim();
+            const dob = document.getElementById('campDob').value;
+            const address = document.getElementById('campAddress').value.trim();
+            const course = document.getElementById('campCourse').value.trim();
+            const batch = document.getElementById('campBatch').value;
+            let occupation = document.getElementById('campOccupation').value;
+            if (occupation === 'Other') {
+                occupation = document.getElementById('campOccupationOther').value.trim();
+                if (!occupation) {
+                    Swal.fire('Error', 'ദയവായി നിങ്ങളുടെ തൊഴിൽ മേഖല ടൈപ്പ് ചെയ്യുക!', 'error');
+                    return;
+                }
+            }
+            const phone = document.getElementById('campPhone').value.trim();
+            const email = document.getElementById('campEmail').value.trim();
+
+            let mentorship = "";
+            const mentorshipRadios = document.getElementsByName('campMentorship');
+            for (let r of mentorshipRadios) {
+                if (r.checked) mentorship = r.value;
+            }
+
+            let placement = "";
+            const placementRadios = document.getElementsByName('campPlacement');
+            for (let r of placementRadios) {
+                if (r.checked) placement = r.value;
+            }
+
+            const getRadioVal = (name) => {
+                const radios = document.getElementsByName(name);
+                for (let r of radios) {
+                    if (r.checked) return r.value;
+                }
+                return "";
+            };
+
+            const eduWing = getRadioVal('campEduWing');
+            const dawaWing = getRadioVal('campDawaWing');
+            const reliefCell = getRadioVal('campReliefCell');
+            const mediaWing = getRadioVal('campMediaWing');
+
+            let paymentType = "";
+            const paymentTypeRadios = document.getElementsByName('campPaymentType');
+            for (let r of paymentTypeRadios) {
+                if (r.checked) paymentType = r.value;
+            }
+
+            if (!name || !address || !course || !batch || !occupation || !phone || !mentorship || !placement || !volunteering || !paymentType) {
+                Swal.fire('Error', 'നിർബന്ധമായ എല്ലാ വിവരങ്ങളും പൂരിപ്പിക്കുക!', 'error');
+                return;
+            }
+
+            if (phone.length !== 10 || isNaN(phone)) {
+                Swal.fire('Error', 'ദയവായി സാധുവായ 10 അക്ക ഫോൺ നമ്പർ നൽകുക!', 'error');
+                return;
+            }
+
+            if (!campFileData.photoBase64 && !campFileData.existingPhotoUrl) {
+                Swal.fire('Error', 'ദയവായി നിങ്ങളുടെ പ്രൊഫൈൽ ഫോട്ടോ അപ്‌ലോഡ് ചെയ്യുക!', 'error');
+                return;
+            }
+
+            if (!campFileData.screenshotBase64 && !campFileData.existingPaymentScreenshotUrl) {
+                Swal.fire('Error', 'ദയവായി പേയ്മെന്റ് സ്ക്രീൻഷോട്ട് അപ്‌ലോഡ് ചെയ്യുക!', 'error');
+                return;
+            }
+
+            showLoader(true);
+            try {
+                const res = await callAPI('submitCampaignEntry', {
+                    name,
+                    muaawinaId,
+                    bloodGroup,
+                    dob,
+                    photoBase64: campFileData.photoBase64,
+                    photoMimeType: campFileData.photoMimeType,
+                    existingPhotoUrl: campFileData.existingPhotoUrl,
+                    houseName,
+                    address,
+                    course,
+                    batch,
+                    occupation,
+                    phone,
+                    email,
+                    mentorship,
+                    placement,
+                    eduWing,
+                    dawaWing,
+                    reliefCell,
+                    mediaWing,
+                    paymentType,
+                    paymentScreenshotBase64: campFileData.screenshotBase64,
+                    paymentScreenshotMimeType: campFileData.screenshotMimeType,
+                    existingPaymentScreenshotUrl: campFileData.existingPaymentScreenshotUrl
+                });
+                showLoader(false);
+
+                if (res.success) {
+                    Swal.fire({
+                        title: 'വിജയകരം!',
+                        text: 'നിങ്ങളുടെ വിവരങ്ങളും പേയ്മെന്റും വിജയകരമായി സമർപ്പിച്ചു. ക്യാമ്പയിനിൽ പങ്കാളിയായതിന് നന്ദി!',
+                        icon: 'success',
+                        confirmButtonText: '...ശരി',
+                        confirmButtonColor: '#f43f5e'
+                    }).then(async () => {
+                        toggleCampaignModal(false);
+                        if (currentMember) {
+                            await refreshMemberDataSilently();
+                        }
+                    });
+                } else {
+                    Swal.fire('Error', res.error || 'സമർപ്പിക്കുന്നതിൽ പരാജയപ്പെട്ടു!', 'error');
+                }
+            } catch (e) {
+                showLoader(false);
+                Swal.fire('Error', 'നെ트워크 തകരാർ: ' + e.message, 'error');
+            }
+        }
+
         let activeHistoryFilter = 'all';
         // ================= ഡയറക്ടറി ഫംഗ്ഷനുകൾ =================
 
@@ -4126,9 +5386,9 @@
             const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
             const currentMonthStr = `${monthNames[globalAppMonth]} ${globalAppYear}`;
 
-            let defaulters = adminMembers.filter(m => 
-                m.batch === batchName && 
-                m.pendingList && 
+            let defaulters = adminMembers.filter(m =>
+                m.batch === batchName &&
+                m.pendingList &&
                 m.pendingList.includes(currentMonthStr)
             );
 
@@ -4149,7 +5409,7 @@
 
             if (confirmResult.isConfirmed) {
                 document.getElementById('reminderModal').classList.add('hidden');
-                
+
                 Swal.fire({
                     title: 'റിമൈൻഡറുകൾ അയക്കുന്നു...',
                     html: `മെസ്സേജ് അയക്കുന്നു: <b>0/${defaulters.length}</b> ആളുകൾക്ക്.`,
@@ -4554,9 +5814,11 @@
 
         // ക്രോപ്പർ ഉപയോഗിക്കാനുള്ള വേരിയബിൾ
         let cropper = null;
+        let currentCropContext = 'profile';
 
         // ഫോട്ടോ സെലക്ട് ചെയ്യുമ്പോൾ ക്രോപ്പർ ഓപ്പൺ ആകാൻ
         function uploadProfilePhoto(event) {
+            currentCropContext = 'profile';
             const file = event.target.files[0];
             if (!file || !currentMember) return;
 
@@ -4602,11 +5864,22 @@
             }
         }
 
+        function toggleOtherOccupation() {
+            const select = document.getElementById('campOccupation');
+            const otherInput = document.getElementById('campOccupationOther');
+            if (select.value === 'Other') {
+                otherInput.classList.remove('hidden');
+                otherInput.required = true;
+            } else {
+                otherInput.classList.add('hidden');
+                otherInput.required = false;
+                otherInput.value = '';
+            }
+        }
+
         // ക്രോപ്പ് ചെയ്ത ഫോട്ടോ അപ്‌ലോഡ് ചെയ്യാൻ
         function confirmCrop() {
             if (!cropper) return;
-
-            showLoader(true);
 
             // 1. ക്രോപ്പർ ക്ലോസ് ചെയ്യുന്നതിന് മുൻപ് ഫോട്ടോ (Canvas) എടുക്കുന്നു
             const canvas = cropper.getCroppedCanvas({
@@ -4619,6 +5892,28 @@
 
             // 3. ഫോട്ടോ എടുത്തതിന് ശേഷം മാത്രം ക്രോപ്പർ ഹൈഡ് ചെയ്യുന്നു
             closeCropper();
+
+            if (currentCropContext === 'campaignPhoto') {
+                const preview = document.getElementById('campPhotoPreview');
+                const icon = document.getElementById('campPhotoIcon');
+
+                if (preview) {
+                    preview.src = base64Data;
+                    preview.classList.remove('hidden');
+                }
+                if (icon) {
+                    icon.classList.add('hidden');
+                }
+
+                campFileData.photoBase64 = base64Data;
+                campFileData.photoMimeType = 'image/jpeg';
+
+                if (typeof drawCard === 'function') drawCard();
+
+                return; // Stop here for campaign flow, do not upload directly
+            }
+
+            showLoader(true);
 
             // 4. API വഴി ഗൂഗിൾ ഡ്രൈവിലേക്ക് അയക്കുന്നു
             callAPI('uploadProfilePhoto', {
@@ -4653,7 +5948,7 @@
 
         // --- GLOBAL CUSTOM DROPDOWN LOGIC ---
         function initCustomDropdowns() {
-            const selects = document.querySelectorAll('select.custom-select, select#profBlood, select#loginStatusFilter, select#statusFilter, select#bulkMonthSelect, select#monthWiseFilter, select#memberBatchFilter, select#batchReportFilter');
+            const selects = document.querySelectorAll('select.custom-select, select#loginStatusFilter, select#statusFilter, select#bulkMonthSelect, select#monthWiseFilter, select#memberBatchFilter, select#batchReportFilter');
 
             selects.forEach(select => {
                 if (select.nextElementSibling && select.nextElementSibling.classList.contains('custom-dropdown-container')) {
@@ -4797,7 +6092,7 @@
 
             const slides = container.children;
             const totalSlides = slides.length;
-            
+
             // Reset to 0 when initializing
             currentPosterIndex = 0;
 
@@ -4848,19 +6143,19 @@
             const scrollToSlide = (index) => {
                 if (index < 0) index = totalSlides - 1;
                 if (index >= totalSlides) index = 0;
-                
+
                 currentPosterIndex = index;
-                
+
                 // Slide translation
                 container.style.transform = `translateX(-${index * 100}%)`;
-                
+
                 // Adjust 3D transforms, scale, z-index and opacity of slides
                 for (let i = 0; i < totalSlides; i++) {
                     const slide = slides[i];
                     const diff = i - index;
-                    
+
                     slide.style.transition = 'all 0.6s cubic-bezier(0.25, 1, 0.5, 1)';
-                    
+
                     if (diff === 0) {
                         // Active slide: centered, flat, fully opaque
                         slide.classList.add('active-slide');
@@ -4900,7 +6195,7 @@
                         }
                     }
                 }
-                
+
                 adjustSliderHeight();
                 updateDots(index);
             };
@@ -4924,19 +6219,19 @@
             let startX = 0;
             let currentX = 0;
             let isDragging = false;
-            
+
             container.addEventListener('touchstart', (e) => {
                 clearInterval(sliderInterval);
                 startX = e.touches[0].clientX;
                 currentX = startX;
                 isDragging = true;
             }, { passive: true });
-            
+
             container.addEventListener('touchmove', (e) => {
                 if (!isDragging) return;
                 currentX = e.touches[0].clientX;
             }, { passive: true });
-            
+
             container.addEventListener('touchend', () => {
                 if (!isDragging) return;
                 isDragging = false;
@@ -4961,7 +6256,7 @@
             // ആദ്യ സ്ലൈഡ് കാണിക്കുന്നു
             scrollToSlide(0);
             startAutoSlide();
-            
+
             // Adjust height after rendering to ensure the first slide is sized correctly
             setTimeout(adjustSliderHeight, 150);
             setTimeout(adjustSliderHeight, 600); // Back-up adjustment after animations settle
@@ -4971,12 +6266,12 @@
         function renderAdminPosters(highlightsList) {
             const listEl = document.getElementById('adminPostersList');
             if (!listEl) return;
-            
+
             if (!highlightsList || highlightsList.length === 0) {
                 listEl.innerHTML = '<p class="text-center text-slate-400 font-bold py-6 text-xs uppercase tracking-widest">പോസ്റ്ററുകൾ ഒന്നും ചേർത്തിട്ടില്ല.</p>';
                 return;
             }
-            
+
             listEl.innerHTML = highlightsList.map((h, i) => `
                 <div class="bg-slate-50/80 p-3 rounded-2xl border border-slate-100 flex gap-3 relative group">
                     <div class="w-16 h-16 rounded-xl overflow-hidden bg-slate-200 border shadow-inner shrink-0">
@@ -5001,43 +6296,43 @@
             const fileInput = document.getElementById('posterFile');
             const headingInput = document.getElementById('posterHeading');
             const descInput = document.getElementById('posterDesc');
-            
+
             if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
                 return Swal.fire('ശ്രദ്ധിക്കുക', 'ദയവായി ഒരു ഫോട്ടോ തിരഞ്ഞെടുക്കുക!', 'warning');
             }
-            
+
             const file = fileInput.files[0];
             const heading = headingInput ? headingInput.value.trim() : '';
             const desc = descInput ? descInput.value.trim() : '';
-            
+
             showLoader(true);
             try {
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
                 reader.onload = async () => {
                     const base64 = reader.result;
-                    
+
                     // 1. ഫോട്ടോ ഗൂഗിൾ ഡ്രൈവിലേക്ക് അപ്‌ലോഡ് ചെയ്യുന്നു
                     const uploadRes = await callAPI('uploadPosterPhoto', {
                         base64: base64,
                         mimeType: file.type,
                         fileName: file.name
                     });
-                    
+
                     if (!uploadRes || uploadRes.error || !uploadRes.url) {
                         showLoader(false);
                         return Swal.fire('Error', uploadRes.error || 'ഫോട്ടോ അപ്‌ലോഡ് ചെയ്യാൻ കഴിഞ്ഞില്ല.', 'error');
                     }
-                    
+
                     const photoUrl = uploadRes.url;
-                    
+
                     // 2. പോസ്റ്റർ വിവരങ്ങൾ ഷീറ്റിലേക്ക് ചേർക്കുന്നു
                     const addRes = await callAPI('addHighlight', {
                         heading: heading,
                         url: photoUrl,
                         desc: desc
                     });
-                    
+
                     showLoader(false);
                     if (addRes && addRes.success) {
                         Swal.fire({
@@ -5047,12 +6342,12 @@
                             timer: 1500,
                             showConfirmButton: false
                         });
-                        
+
                         // ഫോം റീസെറ്റ് ചെയ്യുന്നു
                         fileInput.value = '';
                         if (headingInput) headingInput.value = '';
                         if (descInput) descInput.value = '';
-                        
+
                         const display = document.getElementById('posterFileNameDisplay');
                         if (display) display.innerText = "ഫോട്ടോ തിരഞ്ഞെടുത്തിട്ടില്ല";
                         const label = document.getElementById('posterFileLabel');
@@ -5060,7 +6355,7 @@
                             label.className = "cursor-pointer w-full p-3.5 bg-slate-50 text-indigo-700 rounded-xl font-black text-[10px] uppercase tracking-widest border-2 border-dashed border-slate-200 flex items-center justify-center gap-2 hover:bg-slate-100/50 transition-all";
                             label.innerHTML = '<i class="fas fa-image text-sm"></i> ഫോട്ടോ തിരഞ്ഞെടുക്കുക';
                         }
-                        
+
                         // ലിസ്റ്റ് പുതുക്കുന്നു
                         if (addRes.highlights) {
                             adminPosters = addRes.highlights;
@@ -5092,7 +6387,7 @@
                 confirmButtonText: 'അതെ, നീക്കം ചെയ്യുക',
                 cancelButtonText: 'Cancel'
             });
-            
+
             if (result.isConfirmed) {
                 showLoader(true);
                 try {
@@ -5106,7 +6401,7 @@
                             timer: 1500,
                             showConfirmButton: false
                         });
-                        
+
                         if (res.highlights) {
                             adminPosters = res.highlights;
                             renderAdminPosters(adminPosters);
@@ -5125,11 +6420,11 @@
         document.addEventListener('DOMContentLoaded', () => {
             const posterFileInput = document.getElementById('posterFile');
             if (posterFileInput) {
-                posterFileInput.addEventListener('change', function(e) {
+                posterFileInput.addEventListener('change', function (e) {
                     const fileName = e.target.files[0] ? e.target.files[0].name : "ഫോട്ടോ തിരഞ്ഞെടുത്തിട്ടില്ല";
                     const display = document.getElementById('posterFileNameDisplay');
                     if (display) display.innerText = fileName;
-                    
+
                     const label = document.getElementById('posterFileLabel');
                     if (label) {
                         label.className = "cursor-pointer w-full p-3.5 bg-emerald-50 text-emerald-700 rounded-xl font-black text-[10px] uppercase tracking-widest border-2 border-emerald-300 flex items-center justify-center gap-2 transition-all";
@@ -5212,6 +6507,274 @@
         </div>
     </div>
 
+    <!-- Beautiful Custom Select Logic -->
+    <script>
+        class BeautifulDropdown {
+            constructor(selectElement) {
+                this.select = selectElement;
+                if (this.select.nextElementSibling && this.select.nextElementSibling.classList.contains('beautiful-dropdown-container')) return;
+                if (this.select.matches('select.custom-select, select#loginStatusFilter, select#statusFilter, select#bulkMonthSelect, select#monthWiseFilter, select#memberBatchFilter, select#batchReportFilter')) return;
+
+                this.select.style.display = 'none';
+
+                this.container = document.createElement('div');
+                this.container.className = 'beautiful-dropdown-container relative w-full';
+
+                let originalClasses = this.select.className.replace(/appearance-none|bg-\[url.*?\]|bg-no-repeat|pr-10|bg-\[length.*?\]|bg-\[right.*?\]/g, '').trim();
+
+                this.button = document.createElement('div');
+                this.button.className = `flex items-center justify-between cursor-pointer select-none transition-all duration-300 ${originalClasses}`;
+
+                if (!this.button.className.includes('p-') && !this.button.className.includes('px-')) this.button.classList.add('px-4', 'py-3');
+                if (!this.button.className.includes('bg-')) this.button.classList.add('bg-slate-50');
+                if (!this.button.className.includes('border')) this.button.classList.add('border-2', 'border-slate-100');
+                if (!this.button.className.includes('rounded')) this.button.classList.add('rounded-xl');
+
+                this.selectedText = document.createElement('span');
+                this.selectedText.className = 'truncate pointer-events-none text-xs font-bold text-slate-700 w-full text-left';
+                if (this.select.classList.contains('text-center')) {
+                    this.selectedText.classList.remove('text-left');
+                    this.selectedText.classList.add('text-center');
+                }
+
+                this.iconWrapper = document.createElement('div');
+                this.iconWrapper.className = 'w-6 h-6 rounded-full bg-slate-200/50 flex items-center justify-center shrink-0 ml-2 transition-transform duration-300 pointer-events-none icon-wrap';
+                this.icon = document.createElement('i');
+                this.icon.className = 'fas fa-chevron-down text-slate-500 text-[10px]';
+                this.iconWrapper.appendChild(this.icon);
+
+                this.button.appendChild(this.selectedText);
+                this.button.appendChild(this.iconWrapper);
+
+                this.optionsList = document.createElement('div');
+                this.optionsList.className = 'absolute z-[60000] w-full mt-2 bg-white/95 backdrop-blur-xl border border-slate-100 rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] max-h-60 overflow-y-auto hidden opacity-0 transition-all duration-300 origin-top transform scale-95 p-1';
+
+                this.buildOptions();
+                this.updateSelectedText();
+
+                this.container.appendChild(this.button);
+                this.container.appendChild(this.optionsList);
+                this.select.parentNode.insertBefore(this.container, this.select.nextSibling);
+
+                this.bindEvents();
+
+                this.select.addEventListener('js-value-change', () => this.updateSelectedText());
+
+                this.childObserver = new MutationObserver(() => {
+                    this.buildOptions();
+                    this.updateSelectedText();
+                });
+                this.childObserver.observe(this.select, { childList: true });
+            }
+
+            buildOptions() {
+                this.optionsList.innerHTML = '';
+                Array.from(this.select.options).forEach((option, idx) => {
+                    const item = document.createElement('div');
+                    item.className = 'px-4 py-3 mx-1 my-1 text-xs font-bold text-slate-600 rounded-xl cursor-pointer transition-all duration-200 flex items-center justify-between group hover:bg-blue-50 hover:text-blue-600';
+                    if (this.select.classList.contains('text-center')) item.classList.add('justify-center');
+
+                    if (option.disabled) {
+                        item.className = 'px-4 py-3 mx-1 my-1 text-xs font-bold text-slate-300 rounded-xl bg-slate-50/50 cursor-not-allowed';
+                        if (this.select.classList.contains('text-center')) item.classList.add('text-center');
+                    }
+
+                    const textSpan = document.createElement('span');
+                    textSpan.textContent = option.textContent;
+                    item.appendChild(textSpan);
+
+                    const checkIcon = document.createElement('i');
+                    checkIcon.className = 'fas fa-check text-blue-600 text-[10px] opacity-0 transition-opacity duration-200 transform scale-50 group-hover:scale-100 check-icon';
+                    if (!this.select.classList.contains('text-center') && !option.disabled) {
+                        item.appendChild(checkIcon);
+                    }
+
+                    if (!option.disabled) {
+                        item.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            this.select.selectedIndex = idx;
+                            this.select.dispatchEvent(new Event('change'));
+                            this.updateSelectedText();
+                            this.close();
+                        });
+                    }
+                    this.optionsList.appendChild(item);
+                });
+            }
+
+            updateSelectedText() {
+                const selectedOption = this.select.options[this.select.selectedIndex];
+                this.selectedText.textContent = selectedOption ? selectedOption.textContent : 'തിരഞ്ഞെടുക്കുക';
+
+                Array.from(this.optionsList.children).forEach((child, idx) => {
+                    const checkIcon = child.querySelector('.check-icon');
+                    if (this.select.selectedIndex === idx && !this.select.options[idx].disabled) {
+                        child.classList.add('bg-blue-50', 'text-blue-700');
+                        if (checkIcon) {
+                            checkIcon.classList.remove('opacity-0', 'scale-50');
+                            checkIcon.classList.add('opacity-100', 'scale-100');
+                        }
+                    } else {
+                        child.classList.remove('bg-blue-50', 'text-blue-700');
+                        if (checkIcon) {
+                            checkIcon.classList.add('opacity-0', 'scale-50');
+                            checkIcon.classList.remove('opacity-100', 'scale-100');
+                        }
+                    }
+                });
+            }
+
+            toggle() {
+                const isOpen = !this.optionsList.classList.contains('hidden');
+
+                document.querySelectorAll('.beautiful-dropdown-container').forEach(container => {
+                    const list = container.lastElementChild;
+                    const iconWrap = container.querySelector('.icon-wrap');
+                    if (list !== this.optionsList) {
+                        list.classList.add('hidden', 'opacity-0', 'scale-95');
+                        if (iconWrap) iconWrap.classList.remove('rotate-180', 'bg-blue-100', 'text-blue-600');
+                    }
+                });
+
+                if (isOpen) {
+                    this.close();
+                } else {
+                    this.open();
+                }
+            }
+
+            open() {
+                this.optionsList.classList.remove('hidden');
+
+                const rect = this.button.getBoundingClientRect();
+                if (rect.bottom + 250 > window.innerHeight) {
+                    this.optionsList.style.bottom = '100%';
+                    this.optionsList.style.top = 'auto';
+                    this.optionsList.style.marginBottom = '8px';
+                    this.optionsList.classList.replace('origin-top', 'origin-bottom');
+                } else {
+                    this.optionsList.style.bottom = 'auto';
+                    this.optionsList.style.top = '100%';
+                    this.optionsList.style.marginTop = '8px';
+                    this.optionsList.classList.replace('origin-bottom', 'origin-top');
+                }
+
+                setTimeout(() => {
+                    this.optionsList.classList.remove('opacity-0', 'scale-95');
+                }, 10);
+
+                this.iconWrapper.classList.add('rotate-180', 'bg-blue-100', 'text-blue-600');
+                this.button.classList.add('border-blue-400', 'ring-4', 'ring-blue-50');
+            }
+
+            close() {
+                this.optionsList.classList.add('opacity-0', 'scale-95');
+                setTimeout(() => {
+                    this.optionsList.classList.add('hidden');
+                    this.optionsList.style.bottom = '';
+                    this.optionsList.style.top = '';
+                    this.optionsList.style.marginBottom = '';
+                    this.optionsList.style.marginTop = '';
+                }, 300);
+                this.iconWrapper.classList.remove('rotate-180', 'bg-blue-100', 'text-blue-600');
+                this.button.classList.remove('border-blue-400', 'ring-4', 'ring-blue-50');
+            }
+
+            bindEvents() {
+                this.button.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.toggle();
+                });
+            }
+        }
+
+        document.addEventListener('click', () => {
+            document.querySelectorAll('.beautiful-dropdown-container').forEach(container => {
+                const list = container.lastElementChild;
+                const iconWrap = container.querySelector('.icon-wrap');
+                const btn = container.firstElementChild;
+                if (!list.classList.contains('hidden')) {
+                    list.classList.add('opacity-0', 'scale-95');
+                    setTimeout(() => list.classList.add('hidden'), 300);
+                    if (iconWrap) iconWrap.classList.remove('rotate-180', 'bg-blue-100', 'text-blue-600');
+                    if (btn) btn.classList.remove('border-blue-400', 'ring-4', 'ring-blue-50');
+                }
+            });
+        });
+
+        document.addEventListener('reset', (e) => {
+            if (e.target.tagName === 'FORM') {
+                setTimeout(() => {
+                    e.target.querySelectorAll('select').forEach(select => {
+                        select.dispatchEvent(new Event('js-value-change'));
+                    });
+                }, 10);
+            }
+        });
+
+        function initBeautifulDropdowns() {
+            document.querySelectorAll('select').forEach(select => {
+                new BeautifulDropdown(select);
+            });
+        }
+
+        const selectObserver = new MutationObserver((mutations) => {
+            mutations.forEach(mutation => {
+                mutation.addedNodes.forEach(node => {
+                    if (node.tagName === 'SELECT') {
+                        new BeautifulDropdown(node);
+                    } else if (node.querySelectorAll) {
+                        node.querySelectorAll('select').forEach(select => new BeautifulDropdown(select));
+                    }
+                });
+            });
+        });
+        selectObserver.observe(document.body, { childList: true, subtree: true });
+
+        document.addEventListener('DOMContentLoaded', initBeautifulDropdowns);
+        initBeautifulDropdowns();
+
+        const originalSelectDescriptor = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value');
+        Object.defineProperty(HTMLSelectElement.prototype, 'value', {
+            get: function () {
+                return originalSelectDescriptor.get.call(this);
+            },
+            set: function (val) {
+                originalSelectDescriptor.set.call(this, val);
+                this.dispatchEvent(new Event('js-value-change'));
+            }
+        });
+
+        // --- ENGLISH ONLY VALIDATION LOGIC ---
+        document.addEventListener('input', function(e) {
+            if ((e.target.tagName === 'INPUT' && (e.target.type === 'text' || e.target.type === 'search' || e.target.type === 'email')) || e.target.tagName === 'TEXTAREA') {
+                const nonEnglishRegex = /[^\x00-\x7F]/g;
+                if (nonEnglishRegex.test(e.target.value)) {
+                    const cursorPosition = e.target.selectionStart;
+                    const oldLength = e.target.value.length;
+                    e.target.value = e.target.value.replace(nonEnglishRegex, '');
+                    const newLength = e.target.value.length;
+                    e.target.selectionEnd = cursorPosition - (oldLength - newLength);
+                    
+                    if (!window.englishOnlyWarningShown) {
+                        window.englishOnlyWarningShown = true;
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                icon: 'warning',
+                                title: 'ഇംഗ്ലീഷ് അക്ഷരങ്ങൾ മാത്രം ഉപയോഗിക്കുക (English Only)',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true
+                            });
+                        }
+                        setTimeout(() => { window.englishOnlyWarningShown = false; }, 3000);
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 
 </html>
