@@ -1676,7 +1676,7 @@
 
     <!-- Membership Campaign Form Modal -->
     <div id="campaignModal"
-        class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[30000] flex flex-col justify-end sm:justify-center p-0 sm:p-4 overflow-y-auto">
+        class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[1050] flex flex-col justify-end sm:justify-center p-0 sm:p-4 overflow-y-auto">
         <div
             class="bg-slate-50 w-full max-w-md h-[95vh] sm:h-[85vh] rounded-t-[32px] sm:rounded-[32px] shadow-2xl flex flex-col overflow-hidden animate-slide-up relative">
 
@@ -5067,7 +5067,7 @@
                 if (r.checked) paymentType = r.value;
             }
 
-            if (!name || !address || !course || !batch || !occupation || !phone || !mentorship || !placement || !volunteering || !paymentType) {
+            if (!name || !address || !course || !batch || !occupation || !phone || !mentorship || !placement || !paymentType) {
                 Swal.fire('Error', 'നിർബന്ധമായ എല്ലാ വിവരങ്ങളും പൂരിപ്പിക്കുക!', 'error');
                 return;
             }
@@ -5118,17 +5118,16 @@
                 showLoader(false);
 
                 if (res.success) {
+                    toggleCampaignModal(false);
+                    if (currentMember) {
+                        await refreshMemberDataSilently();
+                    }
                     Swal.fire({
                         title: 'വിജയകരം!',
                         text: 'നിങ്ങളുടെ വിവരങ്ങളും പേയ്മെന്റും വിജയകരമായി സമർപ്പിച്ചു. ക്യാമ്പയിനിൽ പങ്കാളിയായതിന് നന്ദി!',
                         icon: 'success',
                         confirmButtonText: '...ശരി',
                         confirmButtonColor: '#f43f5e'
-                    }).then(async () => {
-                        toggleCampaignModal(false);
-                        if (currentMember) {
-                            await refreshMemberDataSilently();
-                        }
                     });
                 } else {
                     Swal.fire('Error', res.error || 'സമർപ്പിക്കുന്നതിൽ പരാജയപ്പെട്ടു!', 'error');
@@ -6941,17 +6940,19 @@
 
         function initBeautifulDropdowns() {
             document.querySelectorAll('select').forEach(select => {
-                new BeautifulDropdown(select);
+                if (!select.classList.contains('swal2-select')) {
+                    new BeautifulDropdown(select);
+                }
             });
         }
 
         const selectObserver = new MutationObserver((mutations) => {
             mutations.forEach(mutation => {
                 mutation.addedNodes.forEach(node => {
-                    if (node.tagName === 'SELECT') {
+                    if (node.tagName === 'SELECT' && !node.classList.contains('swal2-select')) {
                         new BeautifulDropdown(node);
                     } else if (node.querySelectorAll) {
-                        node.querySelectorAll('select').forEach(select => new BeautifulDropdown(select));
+                        node.querySelectorAll('select:not(.swal2-select)').forEach(select => new BeautifulDropdown(select));
                     }
                 });
             });
