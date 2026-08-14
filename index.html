@@ -980,17 +980,17 @@
                 </div>
             </div>
 
-            <div class="flex justify-between mb-6 border-b border-slate-100 bg-white/50 rounded-2xl p-1 shadow-sm">
-                <div class="admin-tab active w-1/5 text-center" id="tabOverview" onclick="switchAdminTab('overview')">
-                    റിപ്പോർട്ട്</div>
-                <div class="admin-tab w-1/5 text-center relative" id="tabApprovals"
+            <div class="flex gap-2 mb-6 border-b border-slate-100 bg-white/50 rounded-2xl p-1 shadow-sm overflow-x-auto no-scrollbar">
+                <div class="admin-tab active whitespace-nowrap px-4 py-3 text-center flex-1" id="tabOverview" onclick="switchAdminTab('overview')">റിപ്പോർട്ട്</div>
+                <div class="admin-tab whitespace-nowrap px-4 py-3 text-center flex-1 relative" id="tabApprovals"
                     onclick="switchAdminTab('approvals')">അപ്രൂവൽ <span id="appBadge"
                         class="hidden w-2.5 h-2.5 bg-red-500 rounded-full inline-block ml-1 border-2 border-white animate-pulse"></span>
                 </div>
-                <div class="admin-tab w-1/5 text-center" id="tabMembers" onclick="switchAdminTab('members')">അംഗങ്ങൾ
+                <div class="admin-tab whitespace-nowrap px-4 py-3 text-center flex-1" id="tabMembers" onclick="switchAdminTab('members')">അംഗങ്ങൾ
                 </div>
-                <div class="admin-tab w-1/5 text-center" id="tabLogins" onclick="switchAdminTab('logins')">ലോഗിൻസ്</div>
-                <div class="admin-tab w-1/5 text-center" id="tabPosters" onclick="switchAdminTab('posters')">പോസ്റ്റർ
+                <div class="admin-tab whitespace-nowrap px-4 py-3 text-center flex-1" id="tabLogins" onclick="switchAdminTab('logins')">ലോഗിൻസ്</div>
+                <div class="admin-tab whitespace-nowrap px-4 py-3 text-center flex-1" id="tabCampaign" onclick="switchAdminTab('campaign')">കാമ്പയിൻ</div>
+                <div class="admin-tab whitespace-nowrap px-4 py-3 text-center flex-1" id="tabPosters" onclick="switchAdminTab('posters')">പോസ്റ്റർ
                 </div>
             </div>
 
@@ -1244,6 +1244,47 @@
                         (Active Posters)</p>
                     <div id="adminPostersList" class="space-y-4 max-h-[50vh] overflow-y-auto pr-1 no-scrollbar">
                         <!-- Dynamic list of posters with Delete button -->
+                    </div>
+                </div>
+            </div>
+
+            <div id="sectionCampaign" class="hidden space-y-6">
+                <!-- Header Controls -->
+                <div class="glass-card p-4 flex flex-col sm:flex-row justify-between items-center gap-4 border-t-4 border-indigo-600 shadow-md rounded-2xl">
+                    <div class="flex items-center gap-3 w-full sm:w-auto">
+                        <span class="text-xs font-black text-slate-700 uppercase tracking-widest">Status:</span>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="campaignStatusToggle" class="sr-only peer" onchange="toggleCampaignStatus(this)">
+                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+                            <span class="ml-3 text-xs font-bold text-slate-500 uppercase tracking-wider" id="campaignStatusLabel">OFF</span>
+                        </label>
+                    </div>
+                    <button onclick="downloadCampaignPDF()" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-3 rounded-xl font-black text-xs shadow-md active:scale-95 transition-all flex items-center justify-center gap-2">
+                        <i class="fas fa-file-pdf"></i> Download PDF
+                    </button>
+                </div>
+
+                <!-- Filters -->
+                <div class="glass-card p-4 shadow-md rounded-2xl flex flex-col gap-4">
+                    <div class="flex flex-col sm:flex-row gap-4 items-center justify-between">
+                        <select id="campaignBatchFilter" onchange="filterCampaignList()" class="custom-select w-full sm:w-1/3 p-3 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 outline-none focus:border-indigo-500 shadow-inner">
+                            <option value="all">എല്ലാ ബാച്ചുകളും (All Batches)</option>
+                        </select>
+                        <div class="flex rounded-xl bg-slate-100 p-1 w-full sm:w-auto shrink-0">
+                            <button id="btnCampSubmitted" onclick="switchCampaignView('submitted')" class="flex-1 px-3 sm:px-6 py-2 text-[10px] font-black uppercase tracking-wider rounded-lg bg-white shadow-sm text-indigo-700 transition-all whitespace-nowrap">Submitted</button>
+                            <button id="btnCampPending" onclick="switchCampaignView('pending')" class="flex-1 px-3 sm:px-6 py-2 text-[10px] font-black uppercase tracking-wider rounded-lg text-slate-500 hover:text-slate-700 transition-all whitespace-nowrap">Pending</button>
+                        </div>
+                    </div>
+                    <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest flex justify-between">
+                        <span id="campaignListTitle">Submitted Members</span>
+                        <span class="text-indigo-600">Total: <span id="campaignCount">0</span></span>
+                    </div>
+                </div>
+
+                <!-- Data List -->
+                <div class="glass-card overflow-hidden shadow-xl border border-slate-100 rounded-2xl">
+                    <div id="adminCampaignList" class="divide-y divide-slate-100 max-h-[60vh] overflow-y-auto no-scrollbar bg-white shadow-inner shadow-slate-50">
+                        <!-- Items rendered via JS -->
                     </div>
                 </div>
             </div>
@@ -2104,7 +2145,7 @@
         let globalAppYear = new Date().getFullYear();
         let globalAppMonth = new Date().getMonth();
 
-        let fullHistory = [], currentMember = null, pendingMonthsList = [], upcomingMonthsList = [], timerInterval, currentPaymentType = 'single', currentTargetData = null, adminMembers = [], pendingApprovalsList = [], permanentApprovals = [], sessionApprovals = [], adminChart = null, adminPosters = [];
+        let fullHistory = [], currentMember = null, pendingMonthsList = [], upcomingMonthsList = [], timerInterval, currentPaymentType = 'single', currentTargetData = null, adminMembers = [], pendingApprovalsList = [], permanentApprovals = [], sessionApprovals = [], adminChart = null, adminPosters = [], adminCampaigns = [];
         let directoryMembers = [];
         let currentDirBatch = 'all';
         let currentFilteredMembers = [];
@@ -2899,7 +2940,9 @@
 
                 adminMembers = d.members || [];
                 adminPosters = d.highlights || [];
+                adminCampaigns = d.campaigns || []; // Mocked from backend or real
                 renderAdminPosters(adminPosters);
+                if (typeof initCampaignTab === 'function') initCampaignTab();
 
                 // Approval_Queue-ൽ നിന്ന് അപ്രൂവ് ചെയ്തവയും പെൻഡിംഗ് ഉള്ളവയും വേർതിരിക്കുന്നു
                 let allApprovals = d.approvals || [];
@@ -2916,7 +2959,7 @@
         function switchAdminTab(t) {
             document.querySelectorAll('.admin-tab').forEach(el => el.classList.remove('active'));
 
-            const sections = ['Overview', 'Approvals', 'Members', 'Logins', 'Posters'];
+            const sections = ['Overview', 'Approvals', 'Members', 'Logins', 'Campaign', 'Posters'];
             sections.forEach(s => {
                 const el = document.getElementById('section' + s);
                 if (el) el.classList.add('hidden');
@@ -6260,6 +6303,190 @@
             // Adjust height after rendering to ensure the first slide is sized correctly
             setTimeout(adjustSliderHeight, 150);
             setTimeout(adjustSliderHeight, 600); // Back-up adjustment after animations settle
+        }
+
+        // ================= Campaign Tab Functions =================
+        let currentCampView = 'submitted'; // or 'pending'
+
+        function initCampaignTab() {
+            const batchFilter = document.getElementById('campaignBatchFilter');
+            if (batchFilter && adminMembers) {
+                let bt = [...new Set(adminMembers.map(m => m.batch))].filter(b => b && b !== 'UNASSIGNED').sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+                let html = '<option value="all">എല്ലാ ബാച്ചുകളും (All Batches)</option>';
+                bt.forEach(b => html += `<option value="${b}">${b}</option>`);
+                batchFilter.innerHTML = html;
+            }
+            if (APP_CONFIG && APP_CONFIG.CAMPAIGN_ACTIVE) {
+                document.getElementById('campaignStatusToggle').checked = true;
+                document.getElementById('campaignStatusLabel').innerText = 'ON';
+            } else {
+                document.getElementById('campaignStatusToggle').checked = false;
+                document.getElementById('campaignStatusLabel').innerText = 'OFF';
+            }
+            filterCampaignList();
+        }
+
+        function switchCampaignView(view) {
+            currentCampView = view;
+            const btnSub = document.getElementById('btnCampSubmitted');
+            const btnPen = document.getElementById('btnCampPending');
+            
+            if (view === 'submitted') {
+                btnSub.classList.add('bg-white', 'shadow-sm', 'text-indigo-700');
+                btnSub.classList.remove('text-slate-500', 'hover:text-slate-700');
+                btnPen.classList.remove('bg-white', 'shadow-sm', 'text-indigo-700');
+                btnPen.classList.add('text-slate-500', 'hover:text-slate-700');
+                document.getElementById('campaignListTitle').innerText = 'Submitted Members';
+            } else {
+                btnPen.classList.add('bg-white', 'shadow-sm', 'text-indigo-700');
+                btnPen.classList.remove('text-slate-500', 'hover:text-slate-700');
+                btnSub.classList.remove('bg-white', 'shadow-sm', 'text-indigo-700');
+                btnSub.classList.add('text-slate-500', 'hover:text-slate-700');
+                document.getElementById('campaignListTitle').innerText = 'Pending (Not Submitted) Members';
+            }
+            filterCampaignList();
+        }
+
+        function filterCampaignList() {
+            const batch = document.getElementById('campaignBatchFilter').value;
+            let displayList = [];
+            
+            if (currentCampView === 'submitted') {
+                displayList = adminCampaigns;
+                if (batch !== 'all') {
+                    displayList = displayList.filter(c => c.batch === batch);
+                }
+            } else {
+                let campPhones = adminCampaigns.map(c => String(c.phone || '').trim().toLowerCase()).filter(p => p);
+                let campIds = adminCampaigns.map(c => String(c.muaawinaId || c.id || '').trim().toLowerCase()).filter(id => id);
+                let baseMembers = adminMembers;
+                if (batch !== 'all') {
+                    baseMembers = baseMembers.filter(m => m.batch === batch);
+                }
+                displayList = baseMembers.filter(m => {
+                    const mPhone = String(m.phone || '').trim().toLowerCase();
+                    const mId = String(m.id || '').trim().toLowerCase();
+                    return !((mPhone && campPhones.includes(mPhone)) || (mId && campIds.includes(mId)));
+                });
+            }
+
+            renderCampaignList(displayList, currentCampView);
+        }
+
+        function renderCampaignList(list, viewType) {
+            const container = document.getElementById('adminCampaignList');
+            document.getElementById('campaignCount').innerText = list.length;
+            
+            if (!list || list.length === 0) {
+                container.innerHTML = `<div class="p-8 text-center text-slate-400 font-bold text-xs uppercase tracking-widest flex flex-col items-center gap-3 opacity-50"><i class="fas fa-folder-open text-4xl"></i>No data found</div>`;
+                return;
+            }
+
+            let html = '';
+            list.forEach((item, index) => {
+                let badgeColor = viewType === 'submitted' ? 'bg-indigo-50 text-indigo-600 border-indigo-100' : 'bg-rose-50 text-rose-600 border-rose-100';
+                let icon = viewType === 'submitted' ? 'fa-check-circle text-emerald-500' : 'fa-times-circle text-rose-400';
+                
+                html += `
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 hover:bg-slate-50/80 transition-all gap-3 border-b border-slate-100">
+                    <div class="flex items-center gap-4 w-full">
+                        <div class="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center font-black text-slate-400 text-sm shrink-0">
+                            ${index + 1}
+                        </div>
+                        <div class="flex-1 overflow-hidden">
+                            <h4 class="font-black text-sm text-slate-800 uppercase truncate">${item.name || 'Unknown'}</h4>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 mt-1">
+                                <i class="fas fa-phone-alt"></i> ${item.phone || 'N/A'} 
+                                <span class="px-2 py-0.5 rounded border ${badgeColor}">${item.batch || 'No Batch'}</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 shrink-0 self-end sm:self-auto">
+                        <i class="fas ${icon} text-lg shadow-sm rounded-full bg-white"></i>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function toggleCampaignStatus(el) {
+            const isActive = el.checked;
+            document.getElementById('campaignStatusLabel').innerText = isActive ? 'ON' : 'OFF';
+            Swal.fire({
+                title: 'Updating...',
+                allowOutsideClick: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
+            // Assumed backend endpoint
+            callAPI('toggleCampaignStatus', { status: isActive }).then(res => {
+                if (res.success) {
+                    Swal.fire('Updated', 'Campaign status updated successfully.', 'success');
+                    if (APP_CONFIG) APP_CONFIG.CAMPAIGN_ACTIVE = isActive;
+                } else {
+                    el.checked = !isActive;
+                    document.getElementById('campaignStatusLabel').innerText = !isActive ? 'ON' : 'OFF';
+                    Swal.fire('Error', res.error || 'Failed to update campaign status.', 'error');
+                }
+            });
+        }
+
+        function downloadCampaignPDF() {
+            const { jsPDF } = window.jspdf;
+            if (!jsPDF) {
+                Swal.fire('Error', 'PDF library not loaded.', 'error');
+                return;
+            }
+            
+            const doc = new jsPDF();
+            const batch = document.getElementById('campaignBatchFilter').value;
+            const batchTitle = batch === 'all' ? 'All Batches' : `Batch: ${batch}`;
+            const viewTitle = currentCampView === 'submitted' ? 'Submitted Members' : 'Pending Members';
+            const title = `Campaign Report - ${viewTitle}`;
+            
+            doc.setFontSize(16);
+            doc.text(title, 14, 15);
+            doc.setFontSize(10);
+            doc.text(`${batchTitle} | Total: ${document.getElementById('campaignCount').innerText}`, 14, 22);
+
+            let displayList = [];
+            if (currentCampView === 'submitted') {
+                displayList = adminCampaigns;
+                if (batch !== 'all') displayList = displayList.filter(c => c.batch === batch);
+            } else {
+                let campPhones = adminCampaigns.map(c => String(c.phone || '').trim().toLowerCase()).filter(p => p);
+                let campIds = adminCampaigns.map(c => String(c.muaawinaId || c.id || '').trim().toLowerCase()).filter(id => id);
+                let baseMembers = adminMembers;
+                if (batch !== 'all') baseMembers = baseMembers.filter(m => m.batch === batch);
+                displayList = baseMembers.filter(m => {
+                    const mPhone = String(m.phone || '').trim().toLowerCase();
+                    const mId = String(m.id || '').trim().toLowerCase();
+                    return !((mPhone && campPhones.includes(mPhone)) || (mId && campIds.includes(mId)));
+                });
+            }
+
+            if (displayList.length === 0) {
+                Swal.fire('Warning', 'No data to export.', 'warning');
+                return;
+            }
+
+            const head = [['#', 'Name', 'Phone', 'Batch']];
+            const body = displayList.map((item, i) => [
+                (i + 1).toString(),
+                item.name || '-',
+                item.phone || '-',
+                item.batch || '-'
+            ]);
+
+            doc.autoTable({
+                startY: 28,
+                head: head,
+                body: body,
+                theme: 'grid',
+                headStyles: { fillColor: [79, 70, 229] }, // Indigo-600
+                styles: { fontSize: 9 }
+            });
+
+            doc.save(`Campaign_${viewTitle}_${batch}.pdf`);
         }
 
         // അഡ്മിൻ പാനലിൽ നിലവിലുള്ള പോസ്റ്ററുകൾ ലിസ്റ്റ് ചെയ്യാൻ
